@@ -1,0 +1,52 @@
+# Object files
+*.o
+*.ko
+*.lst
+
+
+# Libraries
+*.lib
+*.a
+
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+
+# Executables
+*.exe
+*.out
+*.app
+*.elf
+*elf.map
+*.hex
+*.ee.hex
+
+
+# Windows files
+Thumbs.db
+thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+
+# Everything in the build dir
+build/*
+
+
+# Everything in the bin dir
+bin/*
+
+
+# Ignore dot-folders/files, except the gitignore file
+.*
+!.gitignore
