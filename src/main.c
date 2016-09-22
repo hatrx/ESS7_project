@@ -21,7 +21,7 @@ void set_system_clock_168mhz(void)
 	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
 	const uint32_t HSE_mhz = HSE_VALUE/10e5;
-    const bool HSE_is_odd  = (HSE_mhz & 1) == 1;
+	const bool HSE_is_odd  = (HSE_mhz & 1) == 1;
 
 	RCC_OscInitTypeDef RCC_OscInit = {
 		.OscillatorType = RCC_OSCILLATORTYPE_HSE,
@@ -74,6 +74,6 @@ int main(void)
 
 	while (1) {
 		printf("Hello world! : %"PRIu32"\n", counter++);
-		HAL_Delay(100*10);
+		HAL_Delay(1000);
 	}
 }
