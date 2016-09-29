@@ -1,7 +1,6 @@
 #include <stm32f4xx.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <stdio.h>
 
 #include "uart.h"
 
