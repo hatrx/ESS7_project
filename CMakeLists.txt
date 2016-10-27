@@ -15,7 +15,7 @@ project(DemoBoard C ASM)
 # Set all the compiler flags
 set(gc_flags "-ffunction-sections -fdata-sections -Wl,--gc-sections") # These flags helps with dead code elimination. More info can found at http://stackoverflow.com/a/10809541
 set(mcu_flags "-mcpu=cortex-m4 -mtune=cortex-m4 -mthumb -mlittle-endian -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb-interwork")
-set(linker_flags "-Wl,-T${CMAKE_SOURCE_DIR}/STM32F407VE_FLASH.ld -Wl,-gc-sections -Wl,-LTO -nostartfiles")
+set(linker_flags "-Wl,-T${CMAKE_SOURCE_DIR}/STM32F415RG_FLASH.ld -Wl,-gc-sections -Wl,-LTO -nostartfiles")
 set(WARNINGS "-Wall -Wextra")
 set(CFLAGS "-O0 -g -ggdb -LTO -std=c99 ${WARNINGS} ${gc_flags} ${mcu_flags} ${linker_flags}")
 set(CMAKE_C_FLAGS ${CFLAGS})
@@ -62,7 +62,7 @@ endfunction()
 
 # Compile CMSIS lib.
 add_library(CMSIS
-	${CMSIS_DIR}/Device/ST/STM32F4xx/Source/startup_stm32f407xx.s
+	${CMSIS_DIR}/Device/ST/STM32F4xx/Source/startup_stm32f415xx.s
 	${CMSIS_DIR}/Device/ST/STM32F4xx/Source/system_stm32f4xx.c
 )
 target_include_directories(CMSIS PRIVATE ${CMSIS_INCLUDE_DIRS})
