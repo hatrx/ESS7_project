@@ -27,8 +27,6 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
 	gpio_init.Alternate = USARTx_RX_AF;
 	HAL_GPIO_Init(USARTx_RX_GPIO_PORT, &gpio_init);
 
-	// Insert rx / tx DMA here
-
 	HAL_NVIC_SetPriority(USARTx_IRQn, 0, 0);
 	HAL_NVIC_EnableIRQ(USARTx_IRQn);
 }
