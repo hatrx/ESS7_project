@@ -61,9 +61,12 @@ void set_system_clock_168mhz(void)
 
 int main(void)
 {
+
+    UART_HandleTypeDef UartHandle;
+
 	HAL_Init();
 	set_system_clock_168mhz();
-
+	HAL_UART_MspInit(&UartHandle);
 
 	if (BSP_UART_init() != 0) {
 		// Shit no working!
