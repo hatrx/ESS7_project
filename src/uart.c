@@ -11,24 +11,24 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
 {
 	(void)huart;
 
-	USARTx_TX_GPIO_CLK_ENABLE();
-	USARTx_RX_GPIO_CLK_ENABLE();
-	USARTx_CLK_ENABLE();
+	UARTx_TX_GPIO_CLK_ENABLE();
+	UARTx_RX_GPIO_CLK_ENABLE();
+	UARTx_CLK_ENABLE();
 
 	GPIO_InitTypeDef gpio_init = {
-		.Pin       = USARTx_TX_PIN,
+		.Pin       = UARTx_TX_PIN,
 		.Mode      = GPIO_MODE_AF_PP,
 		.Pull      = GPIO_PULLUP,
 		.Speed     = GPIO_SPEED_FAST,
-		.Alternate = USARTx_TX_AF,
+		.Alternate = UARTx_TX_AF,
 	};
-	HAL_GPIO_Init(USARTx_TX_GPIO_PORT, &gpio_init);
-	gpio_init.Pin       = USARTx_RX_PIN;
-	gpio_init.Alternate = USARTx_RX_AF;
-	HAL_GPIO_Init(USARTx_RX_GPIO_PORT, &gpio_init);
+	HAL_GPIO_Init(UARTx_TX_GPIO_PORT, &gpio_init);
+	gpio_init.Pin       = UARTx_RX_PIN;
+	gpio_init.Alternate = UARTx_RX_AF;
+	HAL_GPIO_Init(UARTx_RX_GPIO_PORT, &gpio_init);
 
-	HAL_NVIC_SetPriority(USARTx_IRQn, 0, 0);
-	HAL_NVIC_EnableIRQ(USARTx_IRQn);
+	HAL_NVIC_SetPriority(UARTx_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(UARTx_IRQn);
 }
 
 
@@ -36,17 +36,17 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
 {
 	(void)huart;
 
-	USARTx_FORCE_RESET();
-	USARTx_RELEASE_RESET();
+	UARTx_FORCE_RESET();
+	UARTx_RELEASE_RESET();
 
-	HAL_GPIO_DeInit(USARTx_TX_GPIO_PORT, USARTx_TX_PIN);
-	HAL_GPIO_DeInit(USARTx_RX_GPIO_PORT, USARTx_RX_PIN);
+	HAL_GPIO_DeInit(UARTx_TX_GPIO_PORT, UARTx_TX_PIN);
+	HAL_GPIO_DeInit(UARTx_RX_GPIO_PORT, UARTx_RX_PIN);
 }
 
 
 int BSP_UART_init(void)
 {
-	UartHandle.Instance = USARTx;
+	UartHandle.Instance = UARTx;
 
 	UartHandle.Init.BaudRate     = 115200;
 	UartHandle.Init.WordLength   = UART_WORDLENGTH_8B;
