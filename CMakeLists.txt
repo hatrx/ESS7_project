@@ -82,6 +82,7 @@ set(SRC_FILES
 	${SRC_DIR}/uart.c
 	${SRC_DIR}/mpu.c
 	${SRC_DIR}/onboard_leds.c
+	${SRC_DIR}/system_clock.c
 )
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 target_link_libraries(${PROJECT_NAME}
