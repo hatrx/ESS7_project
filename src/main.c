@@ -6,6 +6,7 @@
 
 #include "uart.h"
 #include "mpu.h"
+#include "onboard_leds.h"
 
 
 void SysTick_Handler(void)
@@ -69,13 +70,7 @@ int main(void)
 	set_system_clock_168mhz();
 	HAL_UART_MspInit(&UartHandle);
 
-	/*Configure GPIO pin : PC13 The red LED on the board*/
-	GPIO_InitTypeDef GPIO_InitStruct;
-	GPIO_InitStruct.Pin = GPIO_PIN_13;
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
-	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+	init_onboard_LED(red_led);
 
 	if (BSP_UART_init() != 0) {
 		// Shit no working!
@@ -87,7 +82,7 @@ int main(void)
 
 	while (1) {
 		printf("Hello world! : %"PRIu32"\n", counter++);
-		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+		onboard_led_toggle(red_led);
 		HAL_Delay(1000);
 	}
 }

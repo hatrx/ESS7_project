@@ -81,6 +81,7 @@ set(SRC_FILES
 	${SRC_DIR}/syscalls.c
 	${SRC_DIR}/uart.c
 	${SRC_DIR}/mpu.c
+	${SRC_DIR}/onboard_leds.c
 )
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 target_link_libraries(${PROJECT_NAME}
