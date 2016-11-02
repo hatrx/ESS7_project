@@ -5,6 +5,7 @@
 #include <inttypes.h>
 
 #include "uart.h"
+#include "mpu.h"
 
 
 void SysTick_Handler(void)
@@ -73,6 +74,8 @@ int main(void)
 	}
 
 	uint32_t counter = 0;
+
+	init_mpu(0x20000000 + 0x2000);
 
 	while (1) {
 		printf("Hello world! : %"PRIu32"\n", counter++);
