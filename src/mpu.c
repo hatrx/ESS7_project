@@ -3,15 +3,15 @@
 #include "mpu.h"
 
 
-void init_mpu(long addr)
+void init_mpu(uint32_t base_addr, MPU_REGION_SIZE size)
 {
 	HAL_MPU_Disable();
 
 	MPU_Region_InitTypeDef MPU_InitStruct = {
 		.Enable = MPU_REGION_ENABLE,
 		.Number = MPU_REGION_NUMBER5,
-		.BaseAddress = addr,
-		.Size = MPU_REGION_SIZE_1KB,
+		.BaseAddress = base_addr,
+		.Size = size,
 		.SubRegionDisable = 0x00,
 		.TypeExtField = MPU_TEX_LEVEL0,
 		.AccessPermission = MPU_REGION_NO_ACCESS,
