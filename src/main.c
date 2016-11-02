@@ -47,6 +47,7 @@ void set_system_clock_168mhz(void)
 		.APB1CLKDivider = RCC_HCLK_DIV4,
 		.APB2CLKDivider = RCC_HCLK_DIV2,
 	};
+
 	// We set FLASH_LATENCY_5 as we are in vcc range 2.7-3.6 at 168mhz
 	// see datasheet table 10 at page 80.
 	if (HAL_RCC_ClockConfig(&RCC_ClkInit, FLASH_LATENCY_5) != HAL_OK) {
@@ -62,8 +63,7 @@ void set_system_clock_168mhz(void)
 
 int main(void)
 {
-
-    UART_HandleTypeDef UartHandle;
+	UART_HandleTypeDef UartHandle;
 
 	HAL_Init();
 	set_system_clock_168mhz();
@@ -72,10 +72,10 @@ int main(void)
 	/*Configure GPIO pin : PC13 The red LED on the board*/
 	GPIO_InitTypeDef GPIO_InitStruct;
 	GPIO_InitStruct.Pin = GPIO_PIN_13;
-    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
-    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
+	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
 	if (BSP_UART_init() != 0) {
 		// Shit no working!
