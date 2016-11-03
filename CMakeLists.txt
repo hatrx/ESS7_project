@@ -12,10 +12,17 @@ set(CMAKE_SYSTEM_NAME Generic)
 project(OS C ASM)
 
 
+# Define directories
+set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
+set(CMSIS_DIR ${CMAKE_SOURCE_DIR}/third_party/CMSIS)
+set(STM32f4xx_HAL_Driver_DIR ${CMAKE_SOURCE_DIR}/third_party/STM32F4xx_HAL_Driver)
+set(LINKER_SCRIPTS_DIR ${CMAKE_SOURCE_DIR}/third_party/linker_scripts)
+
+
 # Set all the compiler flags
 set(gc_flags "-ffunction-sections -fdata-sections -Wl,--gc-sections") # These flags helps with dead code elimination. More info can found at http://stackoverflow.com/a/10809541
 set(mcu_flags "-mcpu=cortex-m4 -mtune=cortex-m4 -mthumb -mlittle-endian -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb-interwork")
-set(linker_flags "-Wl,-T${CMAKE_SOURCE_DIR}/STM32F415RG_FLASH.ld -Wl,-gc-sections -Wl,-LTO -nostartfiles")
+set(linker_flags "-Wl,-T${LINKER_SCRIPTS_DIR}/STM32F415RG_FLASH.ld -Wl,-gc-sections -Wl,-LTO -nostartfiles")
 set(WARNINGS "-Wall -Wextra")
 set(CFLAGS "-O0 -g -ggdb -LTO -std=c99 ${WARNINGS} ${gc_flags} ${mcu_flags} ${linker_flags}")
 set(CMAKE_C_FLAGS ${CFLAGS})
@@ -23,12 +30,6 @@ set(CMAKE_C_FLAGS ${CFLAGS})
 
 # Add definition
 add_definitions(-DHSE_VALUE=16000000 -DSTM32F407xx)
-
-
-# Define directories
-set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
-set(CMSIS_DIR ${CMAKE_SOURCE_DIR}/third_party/CMSIS)
-set(STM32f4xx_HAL_Driver_DIR ${CMAKE_SOURCE_DIR}/third_party/STM32F4xx_HAL_Driver)
 
 
 # Use following dirs for header lookup
