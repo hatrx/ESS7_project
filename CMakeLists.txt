@@ -59,37 +59,5 @@ function(open_ocd_write_flash elf_file)
 	)
 endfunction()
 
-
-# Compile CMSIS lib.
-add_library(CMSIS
-	${CMSIS_DIR}/Device/ST/STM32F4xx/Source/startup_stm32f415xx.s
-	${CMSIS_DIR}/Device/ST/STM32F4xx/Source/system_stm32f4xx.c
-)
-target_include_directories(CMSIS PRIVATE ${CMSIS_INCLUDE_DIRS})
-target_compile_options(CMSIS PRIVATE -Wno-extra -Wno-pedantic) # There is a lot of unused variable warnings in some hal function-prototypes
-
-
-# Compile HAL lib.
-file(GLOB src ${STM32f4xx_HAL_Driver_DIR}/Src/*.c)
-add_library(STM32f4xx_HAL_Driver ${src})
-target_compile_options(STM32f4xx_HAL_Driver PRIVATE -Wno-extra -Wno-pedantic) # There is a lot of unused variable warnings in some hal function-prototypes
-
-
-# Compile OS
-set(SRC_FILES
-	${SRC_DIR}/main.c
-	${SRC_DIR}/syscalls.c
-	${SRC_DIR}/uart.c
-	${SRC_DIR}/mpu.c
-	${SRC_DIR}/onboard_leds.c
-	${SRC_DIR}/system_clock.c
-)
-add_executable(${PROJECT_NAME} ${SRC_FILES})
-target_link_libraries(${PROJECT_NAME}
-	CMSIS
-	STM32f4xx_HAL_Driver
-)
-
-
-# Command for writing OS to target flash.
-open_ocd_write_flash(${PROJECT_NAME})
+add_subdirectory(third_party)
+add_subdirectory(src)
