@@ -33,6 +33,9 @@ set(STM32f4xx_HAL_Driver_DIR ${CMAKE_SOURCE_DIR}/third_party/STM32F4xx_HAL_Drive
 
 # Use following dirs for header lookup
 include_directories(
+	# SRC
+	${SRC_DIR}
+
 	# CMSIS
 	${CMSIS_DIR}/Include
 	${CMSIS_DIR}/Device/ST/STM32F4xx/Include

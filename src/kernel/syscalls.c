@@ -2,7 +2,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include "uart.h"
+#include "drivers/uart.h"
 
 #define STACK_POINTER (__get_MSP())
 

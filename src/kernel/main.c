@@ -4,10 +4,10 @@
 #include <stdio.h>
 #include <inttypes.h>
 
-#include "uart.h"
-#include "mpu.h"
-#include "onboard_leds.h"
-#include "system_clock.h"
+#include "drivers/uart.h"
+#include "drivers/mpu.h"
+#include "drivers/onboard_leds.h"
+#include "drivers/system_clock.h"
 
 
 int main(void)
