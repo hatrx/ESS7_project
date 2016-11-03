@@ -9,7 +9,7 @@ set(CMAKE_SYSTEM_NAME Generic)
 
 
 # Set a name, version, and enable languages for the entire project.
-project(DemoBoard C ASM)
+project(OS C ASM)
 
 
 # Set all the compiler flags
