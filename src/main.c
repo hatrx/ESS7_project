@@ -12,17 +12,15 @@
 
 int main(void)
 {
-	UART_HandleTypeDef UartHandle;
-
 	HAL_Init();
 	set_system_clock_168mhz();
-	HAL_UART_MspInit(&UartHandle);
-
-	init_onboard_LED(red_led);
 
 	if (BSP_UART_init() != 0) {
 		// Shit no working!
 	}
+
+	init_onboard_LED(red_led);
+	init_onboard_LED(yellow_led);
 
 	uint32_t counter = 0;
 

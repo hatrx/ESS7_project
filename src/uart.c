@@ -46,6 +46,8 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
 
 int BSP_UART_init(void)
 {
+	HAL_UART_MspInit(&UartHandle);
+
 	UartHandle.Instance = UARTx;
 
 	UartHandle.Init.BaudRate     = 115200;
