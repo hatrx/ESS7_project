@@ -4,6 +4,7 @@ add_library(drivers
 	${SRC_DIR}/drivers/mpu.c
 	${SRC_DIR}/drivers/onboard_leds.c
 	${SRC_DIR}/drivers/system_clock.c
+	${SRC_DIR}/drivers/watchdog.c
 )
 target_link_libraries(drivers
 	CMSIS

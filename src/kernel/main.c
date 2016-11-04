@@ -8,6 +8,7 @@
 #include "drivers/mpu.h"
 #include "drivers/onboard_leds.h"
 #include "drivers/system_clock.h"
+#include "drivers/watchdog.h"
 
 
 int main(void)
@@ -18,6 +19,8 @@ int main(void)
 	if (BSP_UART_init() != 0) {
 		// Shit no working!
 	}
+
+	BSP_IWDG_init(3000);
 
 	init_onboard_LED(red_led);
 	init_onboard_LED(yellow_led);
@@ -30,5 +33,6 @@ int main(void)
 		printf("Hello world! : %"PRIu32"\n", counter++);
 		onboard_led_toggle(red_led);
 		HAL_Delay(1000);
-	}
+		BSP_IWDG_refresh();
+		}
 }
