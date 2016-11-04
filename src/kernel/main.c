@@ -20,7 +20,7 @@ int main(void)
 		// Shit no working!
 	}
 
-	BSP_IWDG_init(3000);
+	BSP_IWDG_init(3000);		//time slot for the watchdog to be refreshed in (in miliseconds)
 
 	init_onboard_LED(red_led);
 	init_onboard_LED(yellow_led);

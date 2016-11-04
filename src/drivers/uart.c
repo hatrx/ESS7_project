@@ -46,8 +46,6 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
 
 int BSP_UART_init(void)
 {
-	HAL_UART_MspInit(&UartHandle);
-
 	UartHandle.Instance = UARTx;
 
 	UartHandle.Init.BaudRate     = 115200;
@@ -58,7 +56,7 @@ int BSP_UART_init(void)
 	UartHandle.Init.Mode         = UART_MODE_TX_RX;
 	UartHandle.Init.OverSampling = UART_OVERSAMPLING_16;
 
-	return HAL_UART_Init(&UartHandle) == HAL_OK ? 0 : -1;
+	return HAL_UART_Init(&UartHandle) == HAL_OK ? 0 : -1; //this one calls MspInit by itself
 }
 
 
