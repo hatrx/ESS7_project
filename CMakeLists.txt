@@ -29,7 +29,7 @@ set(CMAKE_C_FLAGS ${CFLAGS})
 
 
 # Add definition
-add_definitions(-DHSE_VALUE=16000000 -DSTM32F407xx)
+add_definitions(-DHSE_VALUE=16000000 -DSTM32F415xx)
 
 
 # Use following dirs for header lookup
