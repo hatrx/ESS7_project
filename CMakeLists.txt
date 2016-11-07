@@ -80,6 +80,8 @@ set(SRC_FILES
 	${SRC_DIR}/main.c
 	${SRC_DIR}/syscalls.c
 	${SRC_DIR}/uart.c
+	${SRC_DIR}/kernel/context.c
+	${SRC_DIR}/partitions/dummy1/dummy1.c
 )
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 target_link_libraries(${PROJECT_NAME}

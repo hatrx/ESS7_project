@@ -5,11 +5,62 @@
 #include <inttypes.h>
 
 #include "uart.h"
+#include "kernel/context.h"
+#include "partitions/dummy1/dummy1.h"
 
+volatile void* taskStacks[2];
+volatile void* currProcess = NULL;
+volatile uint8_t activeProcess = 0;
 
 void SysTick_Handler(void)
 {
+	static volatile uint32_t msCount = 0;
+	register volatile uint32_t wasUserspace __asm ("r0");
+	register volatile void * stackpointer __asm ("r1");
+	__ASM volatile (
+		"AND	%0, LR, #0x0D	\n\t"		// Logical AND with 0xD
+		"CMP	%0, #0xD		\n\t"		// Use CMP to set EQ/NE flag
+		"BEQ 	use_psp			\n\t"		// Branch to use_psp if EQ is set
+		"BNE	use_msp			\n\n"		// Branch to use_msp  if NE is set
+		"use_psp:				\n\t"
+		"MRS    %1, PSP			\n\t"
+        "STMFD  %1!, {R4-R11}   \n\t"
+        "MSR    PSP, %1         \n\t"
+		"B 		exit			\n\n"
+		"use_msp:				\n\t"
+		"MRS    %1, MSP			\n\t"
+        "STMFD  %1!, {R4-R11}   \n\t"
+        "MSR    MSP, %1         \n\n"
+		"exit:					\n\t"
+		: "+r" (wasUserspace), "=r" (stackpointer)
+		: :
+	);
+	taskStacks[activeProcess] = stackpointer;
 	HAL_IncTick();
+	msCount++;
+
+	ARM_context_state * state_kernel = (ARM_context_state *) taskStacks[0];
+	ARM_context_state * state_user = (ARM_context_state *) taskStacks[1];
+
+	/*__ASM volatile (
+		"MOV %0, LR		\n"
+		: "=r" (LR)
+	);*/
+
+	activeProcess = 1;
+	//uint32_t tmp = CONTEXT_restoreContext((uint32_t) taskStacks[activeProcess]);
+	//register volatile uint32_t tmp = 0;
+	__ASM volatile (
+        "LDMFD  %0!, {R4-R11}       \n"
+        //"MOV R1, %0                 \n"
+		"MSR 	PSP, %0				\n"
+        : "+r" ((uint32_t) taskStacks[activeProcess]) : 
+    );
+	//tmp = (uint32_t) taskStacks[activeProcess];
+	//__set_PSP(tmp);
+	__ASM volatile (
+		"LDR PC,=0xFFFFFFFD"
+	);
 }
 
 
@@ -61,8 +112,31 @@ void set_system_clock_168mhz(void)
 
 int main(void)
 {
-
     UART_HandleTypeDef UartHandle;
+	void (*main_function);
+	main_function = &dummy1_main;
+
+	ARM_context_state * stack = (ARM_context_state *) 0x20010000;
+	ARM_HW_context_state * hw_stack = &stack->hw_stack;
+	hw_stack->R0=0;
+	hw_stack->R1=0;
+	hw_stack->R2=0;
+	hw_stack->R3=0;
+	hw_stack->R12=0;
+	hw_stack->LR=0;
+	hw_stack->PC=main_function;
+	hw_stack->PSR=0x21000000;
+	ARM_SW_context_state * sw_stack = &stack->sw_stack;
+	sw_stack->R4=0;
+	sw_stack->R5=0;
+	sw_stack->R6=0;
+	sw_stack->R7=0;
+	sw_stack->R8=0;
+	sw_stack->R9=0;
+	sw_stack->R10=0;
+	sw_stack->R11=0;
+
+	taskStacks[1] = (void *) stack;
 
 	HAL_Init();
 	set_system_clock_168mhz();
@@ -80,10 +154,12 @@ int main(void)
 		// Shit no working!
 	}
 
-	uint32_t counter = 0;
+	/*__ASM volatile (
+		"MRS    %0, MSP"
+		: "=r" (currProcess)
+	);*/
 
 	while (1) {
-		printf("Hello world! : %"PRIu32"\n", counter++);
 		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
 		HAL_Delay(1000);
 	}
