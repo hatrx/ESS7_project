@@ -9,13 +9,15 @@
 #include "partitions/dummy1/dummy1.h"
 
 volatile void* taskStacks[2];
-volatile void* currProcess = NULL;
+//volatile void* currProcess = NULL;
 volatile uint8_t activeProcess = 0;
 
-void SysTick_Handler(void)
+__attribute__((naked)) void SysTick_Handler(void)
 {
-	static volatile uint32_t msCount = 0;
+	//static volatile uint32_t msCount = 0;
 	register volatile uint32_t wasUserspace __asm ("r0");
+	//__ASM volatile ("MOV R0, LR");
+	//wasUserspace &= 0xF;
 	register volatile void * stackpointer __asm ("r1");
 	__ASM volatile (
 		"AND	%0, LR, #0x0D	\n\t"		// Logical AND with 0xD
@@ -37,7 +39,7 @@ void SysTick_Handler(void)
 	);
 	taskStacks[activeProcess] = stackpointer;
 	HAL_IncTick();
-	msCount++;
+	/*msCount++;
 
 	ARM_context_state * state_kernel = (ARM_context_state *) taskStacks[0];
 	ARM_context_state * state_user = (ARM_context_state *) taskStacks[1];
@@ -57,12 +59,35 @@ void SysTick_Handler(void)
         : "+r" ((uint32_t) taskStacks[activeProcess]) : 
     );
 	//tmp = (uint32_t) taskStacks[activeProcess];
-	//__set_PSP(tmp);
+	//__set_PSP(tmp);*/
 	__ASM volatile (
 		"LDR PC,=0xFFFFFFFD"
 	);
 }
 
+void UsageFault_Handler(void)
+{
+	HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+}
+
+void HardFault_Handler(void)
+{
+	SCB_Type * something = SCB;
+	uint32_t hfsr = something->HFSR;
+	uint32_t cfsr = something->CFSR;
+	HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_12);
+	while(1);
+}
+
+void MemManager_Handler(void)
+{
+	HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+}
+
+void SVC_Handler(void)
+{
+	HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+}
 
 void set_system_clock_168mhz(void)
 {
@@ -149,6 +174,8 @@ int main(void)
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
     HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+	GPIO_InitStruct.Pin = GPIO_PIN_12;
+	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
 	if (BSP_UART_init() != 0) {
 		// Shit no working!
@@ -161,6 +188,7 @@ int main(void)
 
 	while (1) {
 		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);
+		//HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_12);
 		HAL_Delay(1000);
 	}
 }
