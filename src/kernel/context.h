@@ -33,4 +33,7 @@ typedef struct {
 } ARM_context_state;
 
 
+void setup_contexts(void);
+
+
 #endif /* CONTEXT_H */
