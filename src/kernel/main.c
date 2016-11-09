@@ -9,6 +9,8 @@
 #include "drivers/onboard_leds.h"
 #include "drivers/system_clock.h"
 #include "drivers/watchdog.h"
+#include "drivers/get_time.h"
+
 
 
 int main(void)
@@ -20,7 +22,7 @@ int main(void)
 		// Shit no working!
 	}
 
-	BSP_IWDG_init(3000);		//time slot for the watchdog to be refreshed in (in miliseconds)
+	BSP_IWDG_init(4000);		//time slot for the watchdog to be refreshed in (in miliseconds)
 
 	init_onboard_LED(red_led);
 	init_onboard_LED(yellow_led);
@@ -29,10 +31,20 @@ int main(void)
 
 	init_mpu(0x20000000 + 0x2000, MPU_1KB);
 
+
+
+
+
 	while (1) {
 		printf("Hello world! : %"PRIu32"\n", counter++);
-		onboard_led_toggle(red_led);
-		HAL_Delay(1000);
+
+		//*DWT_CYCCNT  = 0;
+		start_time_ms();
+		start_time();
+		HAL_Delay(123);
+		stop_time();
+		printf("miliseconds : %"PRIu32"\n", stop_time_ms());
 		BSP_IWDG_refresh();
+		stop_time_ms();
 		}
 }

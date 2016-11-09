@@ -12,11 +12,13 @@ void reload_time_setup(uint16_t miliseconds)
 {
 	if(miliseconds < 4000)				//less than 4 seconds, 1 ms steps
 	{
+		printf("%d\n", miliseconds);
 		IwdgHandle.Init.Prescaler = IWDG_PRESCALER_32;
 		IwdgHandle.Init.Reload    = miliseconds;
 	}
 	else if(miliseconds <= 30000) 	   //less than 30 seconds, 8 ms steps
 	{
+		printf("%d\n", miliseconds);
 		IwdgHandle.Init.Prescaler = IWDG_PRESCALER_256;
 		IwdgHandle.Init.Reload    = (int)miliseconds/8;
 	}
