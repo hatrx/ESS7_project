@@ -70,3 +70,21 @@ void BSP_UARTx_IRQHandler(void)
 {
 	HAL_UART_IRQHandler(&UartHandle);
 }
+
+
+size_t BSP_UARTx_Receive(uint8_t *pData, uint16_t size) {
+	HAL_UART_Receive(&UartHandle, pData, size, 10000);
+	return 1;
+}
+
+
+uint8_t _uart_getc(void) {
+	char c = '\0';
+	HAL_UART_Receive(&UartHandle, &c, 1, 10000);
+	return c;
+}
+
+
+void _uart_putc(uint8_t c) {
+	HAL_UART_Transmit(&UartHandle, &c, 1, 0xFFFF);
+}
