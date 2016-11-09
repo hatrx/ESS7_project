@@ -14,29 +14,51 @@ volatile void* taskStacks[3];
 volatile uint8_t activeProcess = 0;
 
 
+/**
+ * @brief Handles SysTick interrupts. This should fire once every millisecond.
+ * This function also handles context switches.
+ * Note: This function is declared as naked to tell GCC not to add the usual padding, which is disastrous in a context switing function
+ * TODO: This function does not handle switches from other exception handlers yet, and it does not handle context switches from functions that use the FPU
+ */
 __attribute__((naked)) void SysTick_Handler(void)
 {
+	//static volatile uint32_t msCount = 0;
+
+	// Create a new variable to store previous EXC_RETURN code.
+	// We explicitly choose the destination register to avoid overwriting registers
+	// that have not yet been saved by hardware.
 	register volatile uint32_t wasUserspace __asm ("r0");
+	//__ASM volatile ("MOV R0, LR");
+	//wasUserspace &= 0xF;
+	// Create a new variable to store the context-saved-stack pointer of the previous process.
+	// Again we explicitly choose the register to avoid GCC picking a register that hasn't been saved yet.
 	register volatile void * stackpointer __asm ("r1");
+
+	// Context switch logic.
+	// We only save R4-R11 on the stack, because the NVIC already saved the other registers before calling this function.
 	__ASM volatile (
 		"AND	%0, LR, #0x0D	\n\t"		// Logical AND with 0xD
 		"CMP	%0, #0xD		\n\t"		// Use CMP to set EQ/NE flag
 		"BEQ 	use_psp			\n\t"		// Branch to use_psp if EQ is set
 		"BNE	use_msp			\n\n"		// Branch to use_msp  if NE is set
 		"use_psp:				\n\t"
-		"MRS    %1, PSP			\n\t"
-		"STMFD  %1!, {R4-R11}   \n\t"
-		"MSR    PSP, %1         \n\t"
-		"B 		exit			\n\n"
+		"MRS    %1, PSP			\n\t"		// Move Process Stack Pointer to R1 (the stackpointer variable)
+		"STMFD  %1!, {R4-R11}   \n\t"		// Store registers R4 to R11 on the stack. (The FD in STMFB means fully descending [stack])
+		"MSR    PSP, %1         \n\t"		// Opdate the actual PSP stackpointer register with the new value after STMFD.
+		"B 		exit			\n\n"		// Skip over the use_msp routine
 		"use_msp:				\n\t"
-		"MRS    %1, MSP			\n\t"
-		"STMFD  %1!, {R4-R11}   \n\t"
-		"MSR    MSP, %1         \n\n"
+		"MRS    %1, MSP			\n\t"		// Move Master Stack Pointer to R1 (the stackpointer variable)
+		"STMFD  %1!, {R4-R11}   \n\t"		// Store registers R4 to R11 on the stack.
+		"MSR    MSP, %1         \n\n"		// Opdate the actual MSP stackpointer register with the new value after STMFD.
 		"exit:					\n\t"
 		: "+r" (wasUserspace), "=r" (stackpointer)
 		: :
 	);
+
+	// Save the value of the stack pointer for later use.
 	taskStacks[activeProcess] = stackpointer;
+
+	// Increase HAL ticks. This is by the HAL_Delay(int) function, so we need to do this.
 	HAL_IncTick();
 
 	if (activeProcess == 1)
@@ -44,12 +66,34 @@ __attribute__((naked)) void SysTick_Handler(void)
 	else
 		activeProcess = 1;
 
+	// Increment the millisecond counter.
+	// TODO: Handle the fact that this handler is NOT called every millisecond as the documentatio otherwise shows.
+	/*msCount++;
+
+	// Primarily used for debugging. Can easily be deleted.
+	ARM_context_state * state_kernel = (ARM_context_state *) taskStacks[0];
+	ARM_context_state * state_user = (ARM_context_state *) taskStacks[1];
+
+	// The the index current active process. Right now this is hardcoded to 1, but should later be incremented.
+	activeProcess = 1;
+
+	//uint32_t tmp = CONTEXT_restoreContext((uint32_t) taskStacks[activeProcess]);
+	//register volatile uint32_t tmp = 0;
+
+	*/
+
+	// Resote the software context of the new process.
+	// TODO: Right now, this only handles switches to userspace (and without setting privilege levels),
+	// but it should be modified to be more comprehensive.
 	__ASM volatile (
 		"LDMFD  %0!, {R4-R11}       \n"
 		"MSR 	PSP, %0				\n"
 		: "+r" ((uint32_t) taskStacks[activeProcess]) :
 	);
 
+	// Switch to using the PSP, and end the function.
+	// We need to set the PC with an EXC_RETURN value. This value tells the NVIC which mode to return to;
+	// see the ARM documentation to see the meaning of these values.
 	__ASM volatile (
 		"LDR PC,=0xFFFFFFFD"
 	);
