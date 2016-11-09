@@ -82,6 +82,7 @@ set(SRC_FILES
 	${SRC_DIR}/uart.c
 	${SRC_DIR}/kernel/context.c
 	${SRC_DIR}/partitions/dummy1/dummy1.c
+	${SRC_DIR}/partitions/dummy2/dummy2.c
 )
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 target_link_libraries(${PROJECT_NAME}
