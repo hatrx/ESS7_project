@@ -5,6 +5,7 @@
 #include "drivers/uart.h"
 
 #define STACK_POINTER (__get_MSP())
+#define UART_AUTO_ECHO
 
 
 int _close(int file)
@@ -51,13 +52,23 @@ int _open(const char *name, int flags, int mode)
 int _read(int file, char *ptr, int len)
 {
 	UNUSED(file);
-
-	if(len == 0) return 0;
-	int todo;
-	for(todo = 0; todo < len; todo++) {
-		UNUSED(*ptr++);
+	int i;
+	for (i = 0; i < len; i++) {
+		ptr[i] = _uart_getc();
+#ifdef UART_AUTO_ECHO
+		_uart_putc(ptr[i]);
+#endif
+		/* Return partial buffer if we get EOL */
+		if ('\r' == ptr[i]) {
+			++i;
+			ptr[i] = '\n';
+			return i;
+		}
 	}
-	return todo;
+
+	ptr[i-1] = '\r';
+	ptr[i] = '\n';
+	return  i;
 }
 
 
