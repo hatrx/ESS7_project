@@ -3,11 +3,11 @@
 
 #include "context.h"
 
-#define MAX_TASKS	3
+#define MAX_PROCESS	3
 
-volatile void* taskStacks[MAX_TASKS];
+volatile void* taskStacks[MAX_PROCESS];
 volatile uint8_t activeProcess = 0;
-volatile uint8_t n_tasks = 1;
+volatile uint8_t n_process = 1;
 
 
 /**
@@ -57,10 +57,10 @@ __attribute__((naked)) void SysTick_Handler(void)
 	// Increase HAL ticks. This is by the HAL_Delay(int) function, so we need to do this.
 	HAL_IncTick();
 
-	if (activeProcess == 1)
-		activeProcess = 2;
-	else
+	++activeProcess;
+	if (activeProcess == MAX_PROCESS) {
 		activeProcess = 1;
+	}
 
 	// Increment the millisecond counter.
 	// TODO: Handle the fact that this handler is NOT called every millisecond as the documentatio otherwise shows.
@@ -117,9 +117,9 @@ int setup_contexts(void (*foo)(void), void *addr) {
 	sw_stack->R10 = 0;
 	sw_stack->R11 = 0;
 
-	if (n_tasks < MAX_TASKS) {
-		taskStacks[n_tasks] = (void *)stack;
-		++n_tasks;
+	if (n_process < MAX_PROCESS) {
+		taskStacks[n_process] = (void *)stack;
+		++n_process;
 		return 1;
 	}
 
