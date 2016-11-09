@@ -4,12 +4,6 @@
 #include "system_clock.h"
 
 
-void SysTick_Handler(void)
-{
-	HAL_IncTick();
-}
-
-
 void set_system_clock_168mhz(void)
 {
 	__HAL_RCC_PWR_CLK_ENABLE();

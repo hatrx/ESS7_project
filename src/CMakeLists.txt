@@ -16,6 +16,10 @@ target_link_libraries(drivers
 add_executable(${PROJECT_NAME}
 	${SRC_DIR}/kernel/main.c
 	${SRC_DIR}/kernel/syscalls.c
+	${SRC_DIR}/kernel/context.c
+
+	${SRC_DIR}/partitions/dummy1/dummy1.c
+	${SRC_DIR}/partitions/dummy2/dummy2.c
 )
 target_link_libraries(${PROJECT_NAME}
 	drivers

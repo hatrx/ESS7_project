@@ -10,9 +10,41 @@
 #include "drivers/system_clock.h"
 #include "drivers/watchdog.h"
 
+#include "kernel/context.h"
+
+
+void UsageFault_Handler(void)
+{
+	printf("UsageFault_Handler\n");
+}
+
+
+void HardFault_Handler(void)
+{
+	printf("HardFault_Handler\n");
+	// SCB_Type *something = SCB;
+	// uint32_t hfsr = something->HFSR;
+	// uint32_t cfsr = something->CFSR;
+	while(1);
+}
+
+
+void MemManager_Handler(void)
+{
+	printf("MemManager_Handler\n");
+}
+
+
+void SVC_Handler(void)
+{
+	printf("SVC_Handler\n");
+}
+
 
 int main(void)
 {
+	setup_contexts();
+
 	HAL_Init();
 	set_system_clock_168mhz();
 
@@ -20,19 +52,18 @@ int main(void)
 		// Shit no working!
 	}
 
-	BSP_IWDG_init(3000);		//time slot for the watchdog to be refreshed in (in miliseconds)
+	//BSP_IWDG_init(3000);		//time slot for the watchdog to be refreshed in (in miliseconds)
 
 	init_onboard_LED(red_led);
 	init_onboard_LED(yellow_led);
 
 	uint32_t counter = 0;
 
-	init_mpu(0x20000000 + 0x2000, MPU_1KB);
+	//init_mpu(0x20000000 + 0x2000, MPU_1KB);
 
 	while (1) {
 		printf("Hello world! : %"PRIu32"\n", counter++);
-		onboard_led_toggle(red_led);
 		HAL_Delay(1000);
-		BSP_IWDG_refresh();
-		}
+		//BSP_IWDG_refresh();
+	}
 }
