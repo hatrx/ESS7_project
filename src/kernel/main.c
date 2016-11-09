@@ -12,6 +12,9 @@
 
 #include "kernel/context.h"
 
+#include "../partitions/dummy1/dummy1.h"
+#include "../partitions/dummy2/dummy2.h"
+
 
 void UsageFault_Handler(void)
 {
@@ -43,7 +46,8 @@ void SVC_Handler(void)
 
 int main(void)
 {
-	setup_contexts();
+	setup_contexts(&dummy1_main, (void *)0x20001000);
+	setup_contexts(&dummy2_main, (void *)0x20003000);
 
 	HAL_Init();
 	set_system_clock_168mhz();
