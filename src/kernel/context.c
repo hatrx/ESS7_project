@@ -3,6 +3,7 @@
 
 #include "context.h"
 
+//#define DISABLE_CONTEXT_SWITCH
 #define MAX_PROCESS	3
 
 volatile void* taskStacks[MAX_PROCESS];
@@ -10,6 +11,7 @@ volatile uint8_t activeProcess = 0;
 volatile uint8_t n_process = 1;
 
 
+#ifndef DISABLE_CONTEXT_SWITCH
 /**
  * @brief Handles SysTick interrupts. This should fire once every millisecond.
  * This function also handles context switches.
@@ -94,6 +96,12 @@ __attribute__((naked)) void SysTick_Handler(void)
 		"LDR PC,=0xFFFFFFFD"
 	);
 }
+#else
+void SysTick_Handler(void)
+{
+	HAL_IncTick();
+}
+#endif
 
 
 int setup_contexts(void (*foo)(void), void *addr) {
