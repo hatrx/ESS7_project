@@ -67,7 +67,23 @@ int main(void)
 
 	while (1) {
 		printf("Hello world! : %"PRIu32"\n", counter++);
-		HAL_Delay(1000);
+
+		if(counter%2==0)
+		{
+			start_time_ms();
+			HAL_Delay(1000 + counter * 100);
+			uint16_t time_ms = stop_time_ms();
+			printf("time: : %d\n", time_ms);
+		}
+		else
+		{
+			start_time();
+			HAL_Delay(1000 + counter * 100);
+			uint32_t time_ns = stop_time();
+			printf("time: : %"PRIu32"\n", time_ns);
+		}
+
+		onboard_led_toggle(red_led);
 		//BSP_IWDG_refresh();
 	}
 }

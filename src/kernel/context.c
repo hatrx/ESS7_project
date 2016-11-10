@@ -3,7 +3,7 @@
 
 #include "context.h"
 
-//#define DISABLE_CONTEXT_SWITCH
+#define DISABLE_CONTEXT_SWITCH
 #define MAX_PROCESS	3
 
 volatile void* taskStacks[MAX_PROCESS];
