@@ -11,8 +11,6 @@
 #include "drivers/watchdog.h"
 #include "drivers/get_time.h"
 
-
-
 int main(void)
 {
 	HAL_Init();
@@ -41,7 +39,7 @@ int main(void)
 		//*DWT_CYCCNT  = 0;
 		start_time_ms();
 		start_time();
-		HAL_Delay(123);
+		HAL_Delay(1000);
 		stop_time();
 		printf("miliseconds : %"PRIu32"\n", stop_time_ms());
 		BSP_IWDG_refresh();
