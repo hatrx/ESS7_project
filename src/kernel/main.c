@@ -9,6 +9,7 @@
 #include "drivers/onboard_leds.h"
 #include "drivers/system_clock.h"
 #include "drivers/watchdog.h"
+#include "drivers/get_time.h"
 
 #include "kernel/context.h"
 
@@ -42,7 +43,6 @@ void SVC_Handler(void)
 {
 	printf("SVC_Handler\n");
 }
-
 
 int main(void)
 {
