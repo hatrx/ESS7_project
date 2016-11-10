@@ -15,8 +15,10 @@ volatile uint8_t n_process = 1;
 /**
  * @brief Handles SysTick interrupts. This should fire once every millisecond.
  * This function also handles context switches.
- * Note: This function is declared as naked to tell GCC not to add the usual padding, which is disastrous in a context switing function
- * TODO: This function does not handle switches from other exception handlers yet, and it does not handle context switches from functions that use the FPU
+ * Note: This function is declared as naked to tell GCC not to add the usual padding,
+ *       which is disastrous in a context switing function
+ * TODO: This function does not handle switches from other exception handlers yet,
+ *       and it does not handle context switches from functions that use the FPU
  */
 __attribute__((naked)) void SysTick_Handler(void)
 {
@@ -30,7 +32,7 @@ __attribute__((naked)) void SysTick_Handler(void)
 	//wasUserspace &= 0xF;
 	// Create a new variable to store the context-saved-stack pointer of the previous process.
 	// Again we explicitly choose the register to avoid GCC picking a register that hasn't been saved yet.
-	register volatile void * stackpointer __asm ("r1");
+	register volatile void *stackpointer __asm ("r1");
 
 	// Context switch logic.
 	// We only save R4-R11 on the stack, because the NVIC already saved the other registers before calling this function.
