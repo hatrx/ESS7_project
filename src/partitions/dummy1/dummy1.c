@@ -7,6 +7,6 @@ void dummy1_main(void)
 {
 	while (1) {
 		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_12);
-		HAL_Delay(1000);
+		HAL_Delay(50);
 	}
 }
