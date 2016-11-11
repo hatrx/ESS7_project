@@ -80,7 +80,7 @@ size_t BSP_UARTx_Receive(uint8_t *pData, uint16_t size) {
 
 uint8_t _uart_getc(void) {
 	char c = '\0';
-	HAL_UART_Receive(&UartHandle, &c, 1, 10000);
+	HAL_UART_Receive(&UartHandle, (uint8_t *)&c, 1, 10000);
 	return c;
 }
 
