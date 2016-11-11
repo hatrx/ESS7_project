@@ -9,6 +9,8 @@
 volatile void* taskStacks[MAX_PROCESS];
 volatile uint8_t activeProcess = 0;
 volatile uint8_t n_process = 1;
+volatile uint32_t timings1[MAX_PROCESS] = {2000, 2000};
+volatile uint32_t timings2 = 0;
 
 
 #ifndef DISABLE_CONTEXT_SWITCH
@@ -60,10 +62,19 @@ __attribute__((naked)) void SysTick_Handler(void)
 
 	// Increase HAL ticks. This is by the HAL_Delay(int) function, so we need to do this.
 	HAL_IncTick();
-
-	++activeProcess;
-	if (activeProcess == MAX_PROCESS) {
-		activeProcess = 1;
+	if(timings2 == HAL_GetTick()){
+		
+		timings2 = 0;
+		++activeProcess;
+		if (activeProcess == MAX_PROCESS) {
+			activeProcess = 1;
+		}
+		
+	}
+	else{
+		if(timings2 == 0)
+			timings2 = HAL_GetTick() + timings1[n_process];		
+		
 	}
 
 	// Increment the millisecond counter.
