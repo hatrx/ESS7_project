@@ -64,7 +64,7 @@ __attribute__((naked)) void SysTick_Handler(void)
 		timings2 = HAL_GetTick() + timings1[activeProcess];
 		++activeProcess;
 		if (activeProcess == MAX_PROCESS) {
-			activeProcess = 1;
+			activeProcess = 0;
 		}
 	}
 

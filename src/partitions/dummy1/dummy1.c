@@ -1,7 +1,5 @@
 #include <stm32f4xx_hal.h>
 
-#include "dummy1.h"
-
 
 void dummy1_main(void)
 {
