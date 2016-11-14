@@ -9,7 +9,7 @@
 volatile void* taskStacks[MAX_PROCESS];
 volatile uint8_t activeProcess = 0;
 volatile uint8_t n_process = 1;
-volatile uint32_t timings1[MAX_PROCESS] = {2000, 2000};
+volatile uint32_t timings1[MAX_PROCESS] = {1000, 1000, 3000};
 volatile uint32_t timings2 = 0;
 
 
@@ -60,22 +60,16 @@ __attribute__((naked)) void SysTick_Handler(void)
 	// Save the value of the stack pointer for later use.
 	taskStacks[activeProcess] = stackpointer;
 
-	// Increase HAL ticks. This is by the HAL_Delay(int) function, so we need to do this.
-	HAL_IncTick();
-	if(timings2 == HAL_GetTick()){
-		
-		timings2 = 0;
+	if(timings2 <= HAL_GetTick()){
+		timings2 = HAL_GetTick() + timings1[activeProcess];
 		++activeProcess;
 		if (activeProcess == MAX_PROCESS) {
-			activeProcess = 1;
+			activeProcess = 0;
 		}
-		
 	}
-	else{
-		if(timings2 == 0)
-			timings2 = HAL_GetTick() + timings1[n_process];		
-		
-	}
+
+	// Increase HAL ticks. This is by the HAL_Delay(int) function, so we need to do this.
+	HAL_IncTick();
 
 	// Increment the millisecond counter.
 	// TODO: Handle the fact that this handler is NOT called every millisecond as the documentatio otherwise shows.

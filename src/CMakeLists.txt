@@ -13,19 +13,35 @@ target_link_libraries(drivers
 )
 
 
+add_library(dummy1
+	${SRC_DIR}/partitions/dummy1/dummy1.c
+)
+target_link_libraries(drivers
+	STM32f4xx_HAL_Driver
+)
+
+
+add_library(dummy2
+	${SRC_DIR}/partitions/dummy2/dummy2.c
+)
+target_link_libraries(drivers
+	STM32f4xx_HAL_Driver
+)
+
+
 # Compile OS
 add_executable(${PROJECT_NAME}
 	${SRC_DIR}/kernel/main.c
 	${SRC_DIR}/kernel/syscalls.c
 	${SRC_DIR}/kernel/context.c
-
-	${SRC_DIR}/partitions/dummy1/dummy1.c
-	${SRC_DIR}/partitions/dummy2/dummy2.c
 )
 target_link_libraries(${PROJECT_NAME}
 	drivers
 	CMSIS
 	STM32f4xx_HAL_Driver
+
+	dummy1
+	dummy2
 )
 # Command for writing OS to target flash.
 open_ocd_write_flash(${PROJECT_NAME})
