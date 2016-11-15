@@ -6,6 +6,7 @@ add_library(drivers
 	${SRC_DIR}/drivers/system_clock.c
 	${SRC_DIR}/drivers/watchdog.c
 	${SRC_DIR}/drivers/get_time.c
+	${SRC_DIR}/drivers/utils.c
 )
 target_link_libraries(drivers
 	CMSIS
@@ -16,16 +17,16 @@ target_link_libraries(drivers
 add_library(dummy1
 	${SRC_DIR}/partitions/dummy1/dummy1.c
 )
-target_link_libraries(drivers
-	STM32f4xx_HAL_Driver
+target_link_libraries(dummy1
+	drivers
 )
 
 
 add_library(dummy2
 	${SRC_DIR}/partitions/dummy2/dummy2.c
 )
-target_link_libraries(drivers
-	STM32f4xx_HAL_Driver
+target_link_libraries(dummy2
+	drivers
 )
 
 

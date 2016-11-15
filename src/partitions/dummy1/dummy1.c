@@ -1,10 +1,11 @@
-#include <stm32f4xx_hal.h>
+#include <drivers/utils.h>
+#include <drivers/onboard_leds.h>
 
 
 void dummy1_main(void)
 {
 	while (1) {
-		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_12);
-		HAL_Delay(50);
+		onboard_led_toggle(yellow_led);
+		delay_ms(50);
 	}
 }
