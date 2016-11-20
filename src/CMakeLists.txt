@@ -7,6 +7,7 @@ add_library(drivers
 	${SRC_DIR}/drivers/watchdog.c
 	${SRC_DIR}/drivers/get_time.c
 	${SRC_DIR}/drivers/utils.c
+	${SRC_DIR}/drivers/rtc.c
 )
 target_link_libraries(drivers
 	CMSIS
