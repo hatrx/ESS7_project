@@ -42,7 +42,7 @@ class ParseXML:
         s_ports_struct = "typedef struct {\n\t char portname[32];\n\t int maxmessagesize;\n\t char direction[32];\n\t float refreshrateseconds;\n\t} sampling_port;\n\n"
 
         partition_memory_struct = "typedef struct{\n\t int partitionidentifier;\n\t char partitionname[32];\n\t const memory_requirements *memory_arr;\n\t} partition_memory;\n\n"
-        memory_requirements_struct = "typedef struct {\n\t char type[32];\n\t int sizebytes;\n\t char access[32];\n\t char physicaladdress[32];\n\t} memory_requirement;\n\n"
+        memory_requirements_struct = "typedef struct {\n\t char type[32];\n\t int sizebytes;\n\t char access[32];\n\t char physicaladdress[32];\n\t} memory_requirements;\n\n"
 
         partition_schedule_struct = "typedef struct{\n\t int partitionidentifier;\n\t char partitionname[32];\n\t float peroidseconds;\n\t float perioddurationseconds;\n\t const window_schedule *window_arr;\n\t} partition_schedule;\n\n"
         window_schedule_struct = "typedef struct {\n\t int windowidentifier;\n\t float windowstartseconds;\n\t float windowdurationseconds;\n\t bool partitionperiodstart;\n\t} window_schedule;\n\n"
@@ -221,7 +221,7 @@ class ParseXML:
             direction = port.get('@Direction', "nope") 
             r_rate = port.get('@RefreshRateSeconds', "nope") 
 
-            s_port_struct = "{\n\t .portName = \"%s\",\n\t .maxmessagesize = %s,\n\t .direction = \"%s\",\n\t .refreshrateseconds = %s,\n\t}," % (name.replace (" ", "_"), msg_size, direction, r_rate)
+            s_port_struct = "{\n\t .portname = \"%s\",\n\t .maxmessagesize = %s,\n\t .direction = \"%s\",\n\t .refreshrateseconds = %s,\n\t}," % (name.replace (" ", "_"), msg_size, direction, r_rate)
             s_port_string = s_port_string + s_port_struct
             x = x + 1
         return s_port_string, no_of_ports
