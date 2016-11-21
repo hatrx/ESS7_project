@@ -103,14 +103,14 @@ class ParseXML:
             if queuing_ports: #vunerable to not having a queuing port, but having a sampling port
                 queuing_ports = self.sub_sub_structure_validation(queuing_ports)
                 q_port_string, no_of_q_ports = self.create_queuing_port_structs(queuing_ports)
-                q_ports_wrapper = "const queuing_port queuep_%s[%s] = {%s};\n\n" % (element_name, no_of_q_ports, q_port_string)
+                q_ports_wrapper = "const queuing_port queuep_%s[%s] = {%s};\n\n" % (element_name.replace (" ", "_"), no_of_q_ports, q_port_string)
                 #print "\n" + q_ports_wrapper
                 self.write_to_file(q_ports_wrapper)
 
             if sampling_ports:
                 sampling_ports = self.sub_sub_structure_validation(sampling_ports)                
                 s_port_string, no_of_s_ports = self.create_sampling_port_structs(sampling_ports)
-                s_ports_wrapper = "const sampling_port samplep_%s[%s] = {%s};\n\n" % (element_name, no_of_s_ports, s_port_string)
+                s_ports_wrapper = "const sampling_port samplep_%s[%s] = {%s};\n\n" % (element_name.replace (" ", "_"), no_of_s_ports, s_port_string)
                 #print s_ports_wrapper
                 self.write_to_file(s_ports_wrapper)
             partition = None
@@ -122,7 +122,7 @@ class ParseXML:
             if memory_requirements:
                 memory_requirements = self.sub_sub_structure_validation(memory_requirements)
                 memory_requirements_string, no_of_memory_requirements = self.create_memory_requirements_structs(memory_requirements)
-                memory_requirements_wrapper = "const memory_requirements memoryp_%s[%s] = {%s};\n\n" % (element_name, no_of_memory_requirements, memory_requirements_string)
+                memory_requirements_wrapper = "const memory_requirements memoryp_%s[%s] = {%s};\n\n" % (element_name.replace (" ", "_"), no_of_memory_requirements, memory_requirements_string)
                 #print "\n" + memory_requirements_wrapper
             self.write_to_file(memory_requirements_wrapper)
             partition_memory = None
@@ -134,7 +134,7 @@ class ParseXML:
             if window_schedule:
                 window_schedule = self.sub_sub_structure_validation(window_schedule)
                 window_schedule_string, no_of_window_schedules = self.create_window_schedules_structs(window_schedule)
-                window_schedule_wrapper = "const window_schedule windowp_%s[%s] = {%s};\n\n" % (element_name, no_of_window_schedules, window_schedule_string)
+                window_schedule_wrapper = "const window_schedule windowp_%s[%s] = {%s};\n\n" % (element_name.replace (" ", "_"), no_of_window_schedules, window_schedule_string)
                 #print "\n" + window_schedule_wrapper
             self.write_to_file(window_schedule_wrapper)
             partition_schedule = None
@@ -155,7 +155,7 @@ class ParseXML:
         entry = sub_element.get('@EntryPoint', "nope") 
         queue_arr = "queuep_%s" % (name)
         sample_arr = "samplep_%s" % (name)
-        partition_struct = "{ \n\t .partitionidentifier = %s;\n\t .partitionname = \"%s\";\n\t .criticality = \"%s\";\n\t .systempartion = %s;\n\t .entrypoint = \"%s\";\n\t .queue_arr = %s;\n\t .sample_arr = %s;\n\t}," % (part_id, name, crit_level, sys_part, entry, queue_arr, sample_arr)
+        partition_struct = "{ \n\t .partitionidentifier = %s;\n\t .partitionname = \"%s\";\n\t .criticality = \"%s\";\n\t .systempartion = %s;\n\t .entrypoint = \"%s\";\n\t .queue_arr = %s;\n\t .sample_arr = %s;\n\t}," % (part_id, name.replace (" ", "_"), crit_level, sys_part, entry, queue_arr, sample_arr)
         return partition_struct, name
 
 
@@ -163,7 +163,7 @@ class ParseXML:
         part_id = sub_element.get('@PartitionIdentifier', "nope") 
         name = sub_element.get('@PartitionName', "nope") 
         memory_arr = "memoryp_%s" % (name)
-        partition_memory_struct = "{ \n\t .partitionidentifier = %s;\n\t .partitionname = \"%s\";\n\t .memory_arr = %s;\n\t}," % (part_id, name, memory_arr)
+        partition_memory_struct = "{ \n\t .partitionidentifier = %s;\n\t .partitionname = \"%s\";\n\t .memory_arr = %s;\n\t}," % (part_id, name.replace (" ", "_"), memory_arr)
         return partition_memory_struct, name
 
         
@@ -174,7 +174,7 @@ class ParseXML:
         period_duration_seconds = sub_element.get('@PeriodDurationSeconds', "nope") 
         window_arr = "windowp_%s" % (name)
 
-        partition_schedule_struct = "{ \n\t .partitionidentifier = %s;\n\t .partitionname = \"%s\";\n\t .peroidseconds = %s;\n\t .peroiddurationseconds = %s;\n\t .window_arr = %s;\n\t}," % (part_id, name, period_seconds, period_duration_seconds, window_arr)
+        partition_schedule_struct = "{ \n\t .partitionidentifier = %s;\n\t .partitionname = \"%s\";\n\t .peroidseconds = %s;\n\t .peroiddurationseconds = %s;\n\t .window_arr = %s;\n\t}," % (part_id, name.replace (" ", "_"), period_seconds, period_duration_seconds, window_arr)
         return partition_schedule_struct, name
 
 
@@ -203,7 +203,7 @@ class ParseXML:
             direction = port.get('@Direction', "nope") 
             max_msg = port.get('@MaxNbMessages', "nope") 
 
-            q_port_struct = "{\n\t .portname = \"%s\";\n\t .maxmessagesize = %s;\n\t .direction = \"%s\";\n\t .maxnbmessages = %s;\n\t}," % (name, msg_size, direction, max_msg)
+            q_port_struct = "{\n\t .portname = \"%s\";\n\t .maxmessagesize = %s;\n\t .direction = \"%s\";\n\t .maxnbmessages = %s;\n\t}," % (name.replace (" ", "_"), msg_size, direction, max_msg)
             q_port_string = q_port_string + q_port_struct
             x = x + 1
         return q_port_string, no_of_ports
@@ -221,7 +221,7 @@ class ParseXML:
             direction = port.get('@Direction', "nope") 
             r_rate = port.get('@RefreshRateSeconds', "nope") 
 
-            s_port_struct = "{\n\t .portName = \"%s\";\n\t .maxmessagesize = %s;\n\t .direction = \"%s\";\n\t .refreshrateseconds = %s;\n\t}," % (name, msg_size, direction, r_rate)
+            s_port_struct = "{\n\t .portName = \"%s\";\n\t .maxmessagesize = %s;\n\t .direction = \"%s\";\n\t .refreshrateseconds = %s;\n\t}," % (name.replace (" ", "_"), msg_size, direction, r_rate)
             s_port_string = s_port_string + s_port_struct
             x = x + 1
         return s_port_string, no_of_ports
@@ -265,6 +265,7 @@ class ParseXML:
 
 
     def main(self):
+        self.write_to_file("#include <stdbool.h>")
         xml = self.get_xml()
         parsed_xml = self.parse_xml(xml)
         declarations_list = self.print_declarations()
