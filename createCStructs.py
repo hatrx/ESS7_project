@@ -155,7 +155,7 @@ class ParseXML:
         entry = sub_element.get('@EntryPoint', "nope") 
         queue_arr = "queuep_%s" % (name)
         sample_arr = "samplep_%s" % (name)
-        partition_struct = "{ \n\t .partitionidentifier = %s;\n\t .partitionname = %s;\n\t .criticality = %s;\n\t .systempartion = %s;\n\t .entrypoint = %s;\n\t .queue_arr = %s;\n\t .sample_arr = %s;\n\t}," % (part_id, name, crit_level, sys_part, entry, queue_arr, sample_arr)
+        partition_struct = "{ \n\t .partitionidentifier = %s;\n\t .partitionname = %s;\n\t .criticality = \"%s\";\n\t .systempartion = %s;\n\t .entrypoint = %s;\n\t .queue_arr = %s;\n\t .sample_arr = %s;\n\t}," % (part_id, name, crit_level, sys_part, entry, queue_arr, sample_arr)
         return partition_struct, name
 
 
