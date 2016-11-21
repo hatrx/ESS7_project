@@ -46,7 +46,7 @@ class ParseXML:
 
         partition_schedule_struct = "typedef struct{\n\t int partitionidentifier;\n\t char partitionname[32];\n\t float peroidseconds;\n\t float perioddurationseconds;\n\t const window_schedule *window_arr;\n\t} partition_schedule;\n\n"
         window_schedule_struct = "typedef struct {\n\t int windowidentifier;\n\t float windowstartseconds;\n\t float windowdurationseconds;\n\t bool partitionperiodstart;\n\t} window_schedule;\n\n"
-        declaration_list = [partition_struct, q_ports_struct, s_ports_struct, partition_memory_struct, memory_requirements_struct, partition_schedule_struct, window_schedule_struct]
+        declaration_list = [q_ports_struct, s_ports_struct, partition_struct, memory_requirements_struct, partition_memory_struct, window_schedule_struct, partition_memory_struct]
 
         
         return declaration_list
@@ -155,7 +155,7 @@ class ParseXML:
         entry = sub_element.get('@EntryPoint', "nope") 
         queue_arr = "queuep_%s" % (name)
         sample_arr = "samplep_%s" % (name)
-        partition_struct = "{ \n\t .partitionidentifier = %s;\n\t .partitionname = %s;\n\t .criticality = \"%s\";\n\t .systempartion = %s;\n\t .entrypoint = %s;\n\t .queue_arr = %s;\n\t .sample_arr = %s;\n\t}," % (part_id, name, crit_level, sys_part, entry, queue_arr, sample_arr)
+        partition_struct = "{ \n\t .partitionidentifier = %s;\n\t .partitionname = \"%s\";\n\t .criticality = \"%s\";\n\t .systempartion = %s;\n\t .entrypoint = \"%s\";\n\t .queue_arr = %s;\n\t .sample_arr = %s;\n\t}," % (part_id, name, crit_level, sys_part, entry, queue_arr, sample_arr)
         return partition_struct, name
 
 
@@ -163,7 +163,7 @@ class ParseXML:
         part_id = sub_element.get('@PartitionIdentifier', "nope") 
         name = sub_element.get('@PartitionName', "nope") 
         memory_arr = "memoryp_%s" % (name)
-        partition_memory_struct = "{ \n\t .partitionidentifier = %s;\n\t .partitionname = %s;\n\t .memory_arr = %s;\n\t}," % (part_id, name, memory_arr)
+        partition_memory_struct = "{ \n\t .partitionidentifier = %s;\n\t .partitionname = \"%s\";\n\t .memory_arr = %s;\n\t}," % (part_id, name, memory_arr)
         return partition_memory_struct, name
 
         
@@ -174,7 +174,7 @@ class ParseXML:
         period_duration_seconds = sub_element.get('@PeriodDurationSeconds', "nope") 
         window_arr = "windowp_%s" % (name)
 
-        partition_schedule_struct = "{ \n\t .partitionidentifier = %s;\n\t .partitionname = %s;\n\t .peroidseconds = %s;\n\t .peroiddurationseconds = %s;\n\t .window_arr = %s;\n\t}," % (part_id, name, period_seconds, period_duration_seconds, window_arr)
+        partition_schedule_struct = "{ \n\t .partitionidentifier = %s;\n\t .partitionname = \"%s\";\n\t .peroidseconds = %s;\n\t .peroiddurationseconds = %s;\n\t .window_arr = %s;\n\t}," % (part_id, name, period_seconds, period_duration_seconds, window_arr)
         return partition_schedule_struct, name
 
 
@@ -203,7 +203,7 @@ class ParseXML:
             direction = port.get('@Direction', "nope") 
             max_msg = port.get('@MaxNbMessages', "nope") 
 
-            q_port_struct = "{\n\t .portname = %s;\n\t .maxmessagesize = %s;\n\t .direction = %s;\n\t .maxnbmessages = %s;\n\t}," % (name, msg_size, direction, max_msg)
+            q_port_struct = "{\n\t .portname = \"%s\";\n\t .maxmessagesize = %s;\n\t .direction = \"%s\";\n\t .maxnbmessages = %s;\n\t}," % (name, msg_size, direction, max_msg)
             q_port_string = q_port_string + q_port_struct
             x = x + 1
         return q_port_string, no_of_ports
@@ -221,7 +221,7 @@ class ParseXML:
             direction = port.get('@Direction', "nope") 
             r_rate = port.get('@RefreshRateSeconds', "nope") 
 
-            s_port_struct = "{\n\t .portName = %s;\n\t .maxmessagesize = %s;\n\t .direction = %s;\n\t .refreshrateseconds = %s;\n\t}," % (name, msg_size, direction, r_rate)
+            s_port_struct = "{\n\t .portName = \"%s\";\n\t .maxmessagesize = %s;\n\t .direction = \"%s\";\n\t .refreshrateseconds = %s;\n\t}," % (name, msg_size, direction, r_rate)
             s_port_string = s_port_string + s_port_struct
             x = x + 1
         return s_port_string, no_of_ports
@@ -239,7 +239,7 @@ class ParseXML:
             access = memory_requirement.get('@Access', "nope") 
             physical_address = memory_requirement.get('@PhysicalAddress', "nope") 
 
-            memory_requirement_struct = "{\n\t .type = %s;\n\t .sizebytes = %s;\n\t .access = %s;\n\t .physicaladdress = %s;\n\t}," % (mem_type, size_bytes, access, physical_address)
+            memory_requirement_struct = "{\n\t .type = \"%s\";\n\t .sizebytes = %s;\n\t .access = \"%s\";\n\t .physicaladdress = \"%s\";\n\t}," % (mem_type, size_bytes, access, physical_address)
             memory_requirement_string = memory_requirement_string + memory_requirement_struct
             x = x + 1
         return memory_requirement_string, no_of_memory_requirements
