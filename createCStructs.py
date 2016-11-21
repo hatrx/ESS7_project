@@ -1,4 +1,4 @@
-#!/usr/bin/python
+B#!/usr/bin/python
 import sys
 import xmltodict # to parse the xml structure to an ordered dict
 import json # to convert the ordered dict to a normal dict
@@ -257,7 +257,7 @@ class ParseXML:
             win_duration = window_schedule.get('@WindowDurationSeconds', "nope") 
             part_period_start = window_schedule.get('@PartitionPeriodStart', "nope") 
 
-            window_schedule_struct = "{\n\t .windowid = %s,\n\t .windowstartseconds = %s,\n\t .windowdurationseconds = %s,\n\t .partitionperiodstart = %s,\n\t}," % (win_id, win_start, win_duration, part_period_start)
+            window_schedule_struct = "{\n\t .windowidentifier = %s,\n\t .windowstartseconds = %s,\n\t .windowdurationseconds = %s,\n\t .partitionperiodstart = %s,\n\t}," % (win_id, win_start, win_duration, part_period_start)
             window_schedule_string = window_schedule_string + window_schedule_struct
 
             x = x + 1
