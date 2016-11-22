@@ -76,8 +76,6 @@ int main(void)
 		//printf("Hello world! : %"PRIu32"\n", counter++);
 		HAL_Delay(1000);
 
-		onboard_led_toggle(red_led);
-		RTC_state();
 		struct date printdate;
 		get_datetime(&printdate);
 		printf("%02" PRIu8 ":%02" PRIu8 ":%02" PRIu8 " ", printdate.hours, printdate.minutes, printdate.seconds);
