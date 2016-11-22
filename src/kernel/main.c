@@ -57,7 +57,7 @@ int main(void)
 
 	//BSP_IWDG_init(3000);		//time slot for the watchdog to be refreshed in (in miliseconds)
 	BSP_RTC_init();
-
+	
 	//init_mpu(0x20000000 + 0x2000, MPU_1KB);
 
 	setup_contexts(&dummy1_main, (void *)0x20001000);
@@ -79,17 +79,9 @@ int main(void)
 		onboard_led_toggle(red_led);
 		RTC_state();
 		struct date printdate;
-		//RTC_TimeTypeDef RTCtimeprint;
 		get_datetime(&printdate);
-		printf("%" PRIu8 ":%" PRIu8 ":%" PRIu8 " \n", printdate.hours, printdate.minutes, printdate.seconds);
-		//printf("Time: %" PRIu8 ":%", nowtime.Seconds);
-		/*
+		printf("%02" PRIu8 ":%02" PRIu8 ":%02" PRIu8 " ", printdate.hours, printdate.minutes, printdate.seconds);
+		printf("%02" PRIu8 "-%02" PRIu8 "-%02" PRIu8 " \n", printdate.date, printdate.month, 2000 + printdate.year);
 		
-		HAL_RTC_GetTime(&RTCHandle, &RTCtime, FORMAT_BIN);
-		HAL_RTC_GetDate(&RTCHandle, &RTCdate, FORMAT_BIN);
-		printf("%" PRIu8 ":%" PRIu8 ":%" PRIu8 " \n", RTCtime.Hours, RTCtime.Minutes, RTCtime.Seconds);
-		printf("%" PRIu8 ":%" PRIu8 ":%" PRIu8 " \n", RTCdate.Date, RTCdate.Month, RTCdate.Year);
-		HAL_RTC_GetState(&RTCHandle);
-		*/
 	}
 }
