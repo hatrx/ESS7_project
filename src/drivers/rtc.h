@@ -13,12 +13,12 @@ struct date
 };
 
 //Date and Time defined at compile time
-#define HOUR ((uint8_t) 12)
-#define MINUTE ((uint8_t) 30)
+#define HOUR ((uint8_t) 9)
+#define MINUTE ((uint8_t) 45)
 #define SECOND ((uint8_t) 0)
 #define SUBSECOND ((uint8_t) 0)
 
-#define DATE ((uint8_t) 21)
+#define DATE ((uint8_t) 23)
 #define YEAR ((uint8_t) 16)
 
 /*
@@ -31,7 +31,7 @@ TIME_BASE = 32768 / 128 * 256
 #define PRESCALER2 ((uint32_t) 255)		//Min_Data = 0x00 and Max_Data = 0x7FFF (32767)
 
 void HAL_RTC_MspInit(RTC_HandleTypeDef *RTCHandle);
-void BSP_RTC_init();
+int BSP_RTC_init();
 
 void get_datetime(struct date*);
 

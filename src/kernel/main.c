@@ -44,20 +44,32 @@ void SVC_Handler(void)
 	printf("SVC_Handler\n");
 }
 
+
+void Error_Handler(void)
+{
+	printf("Initialisation Error\n");
+	while(1);
+}
+
+
 int main(void)
 {
 	set_system_clock_168mhz();
-
-	if (BSP_UART_init() != 0) {
-		// Shit no working!
+	int x = -1;
+	if (BSP_UART_init() != 0)
+	{
+		Error_Handler();		// Shit not working!
 	}
 
 	init_onboard_LED(red_led);
 	init_onboard_LED(yellow_led);
-
 	//BSP_IWDG_init(3000);		//time slot for the watchdog to be refreshed in (in miliseconds)
-	BSP_RTC_init();
-	
+
+	if (BSP_RTC_init() != 0)
+	{
+		Error_Handler();		// Shit not working!
+	}
+
 	//init_mpu(0x20000000 + 0x2000, MPU_1KB);
 
 	setup_contexts(&dummy1_main, (void *)0x20001000);
@@ -78,8 +90,8 @@ int main(void)
 
 		struct date printdate;
 		get_datetime(&printdate);
+
 		printf("%02" PRIu8 ":%02" PRIu8 ":%02" PRIu8 " ", printdate.hours, printdate.minutes, printdate.seconds);
 		printf("%02" PRIu8 "-%02" PRIu8 "-%02" PRIu8 " \n", printdate.date, printdate.month, 2000 + printdate.year);
-		
 	}
 }

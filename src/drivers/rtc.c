@@ -20,7 +20,7 @@ void HAL_RTC_MspInit(RTC_HandleTypeDef *RTCHandle)
 
 //This function configures the RTC Prescaler and RTC hour format using the HAL_RTC_Init() function
 //Then it sets the date and time
-void BSP_RTC_init()
+int BSP_RTC_init()
 {
 	RTCHandle.Instance 			= RTC;
 	RTCHandle.Init.HourFormat 	= RTC_HOURFORMAT_24;
@@ -42,11 +42,13 @@ void BSP_RTC_init()
 	HAL_RTC_SetTime(&RTCHandle, &RTCtime, FORMAT_BIN);
 
 //the date is defined in the header file
-	RTCdate.WeekDay 	= RTC_WEEKDAY_MONDAY;
+	RTCdate.WeekDay 	= RTC_WEEKDAY_WEDNESDAY;
 	RTCdate.Month 		= RTC_MONTH_NOVEMBER;
 	RTCdate.Date 		= DATE;
 	RTCdate.Year 		= YEAR;
 	HAL_RTC_SetDate(&RTCHandle, &RTCdate, FORMAT_BIN);
+
+	return HAL_RTC_GetState(&RTCHandle) == HAL_RTC_STATE_READY ? 0 : -1;
 }
 
 //This function gets the current date and time
@@ -66,5 +68,5 @@ void get_datetime(struct date* now)
 
 int RTC_state()
 {
-	return HAL_RTC_GetState(&RTCHandle) == HAL_RTC_STATE_READY ? 1 : 0;
+	return HAL_RTC_GetState(&RTCHandle) == HAL_RTC_STATE_READY ? 0 : -1;
 }
