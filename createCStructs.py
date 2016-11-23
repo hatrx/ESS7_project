@@ -146,6 +146,8 @@ class ParseXML:
         return sub_element_struct
 
     def partition_struct(self, sub_element):
+        sampling_ports = sub_element.get("Sampling_Port", ())
+
         #had to use @ sign as it appears in the data for some unknown reason
         part_id = sub_element.get('@PartitionIdentifier', "nope") 
         name = sub_element.get('@PartitionName', "nope") 
@@ -153,8 +155,10 @@ class ParseXML:
         sys_part = sub_element.get('@SystemPartition', "nope") 
         entry = sub_element.get('@EntryPoint', "nope") 
         queue_arr = "queuep_%s" % (name)
-        sample_arr = "samplep_%s" % (name)
-        partition_struct = "{ \n\t .partitionidentifier = %s,\n\t .partitionname = \"%s\",\n\t .criticality = \"%s\",\n\t .systempartion = %s,\n\t .entrypoint = \"%s\",\n\t .queue_arr = %s,\n\t .sample_arr = %s,\n\t}," % (part_id, name.replace (" ", "_"), crit_level, sys_part, entry, queue_arr.replace (" ", "_"), sample_arr.replace (" ", "_"))
+        sample_arr = ("samplep_%s" % (name)).replace (" ", "_")
+        if not sampling_ports:
+            sample_arr = 0
+        partition_struct = "{ \n\t .partitionidentifier = %s,\n\t .partitionname = \"%s\",\n\t .criticality = \"%s\",\n\t .systempartion = %s,\n\t .entrypoint = \"%s\",\n\t .queue_arr = %s,\n\t .sample_arr = %s,\n\t}," % (part_id, name.replace (" ", "_"), crit_level, sys_part, entry, queue_arr.replace (" ", "_"), sample_arr)
         return partition_struct, name
 
 
@@ -173,7 +177,7 @@ class ParseXML:
         period_duration_seconds = sub_element.get('@PeriodDurationSeconds', "nope") 
         window_arr = "windowp_%s" % (name)
 
-        partition_schedule_struct = "{\n\t .partitionidentifier = %s,\n\t .partitionname = \"%s\",\n\t .peroidseconds = %s,\n\t .peroiddurationseconds = %s,\n\t .window_arr = %s,\n\t}," % (part_id, name.replace (" ", "_"), period_seconds, period_duration_seconds, window_arr.replace (" ", "_"))
+        partition_schedule_struct = "{\n\t .partitionidentifier = %s,\n\t .partitionname = \"%s\",\n\t .peroidseconds = %s,\n\t .perioddurationseconds = %s,\n\t .window_arr = %s,\n\t}," % (part_id, name.replace (" ", "_"), period_seconds, period_duration_seconds, window_arr.replace (" ", "_"))
         return partition_schedule_struct, name
 
 
