@@ -92,16 +92,7 @@ int main(void)
 	while (1) {
 		//printf("Hello world! : %"PRIu32"\n", counter++);
 
-		TIME_Start_ns();
 		HAL_Delay(1000);
-		uint64_t x = TIME_Stop_ns();
-		//printf("%" PRIu64 " -->\n", x);		//printf won't work on 64 bit values
-/*
-		Date_Time_t printdate;
-		RTC_Get_Date_Time(&printdate);
-		IWDG_Refresh();
-		printf("%02" PRIu8 ":%02" PRIu8 ":%02" PRIu8 " ", printdate.hours, printdate.minutes, printdate.seconds);
-		printf("%02" PRIu8 "-%02" PRIu8 "-%02" PRIu8 " \n", printdate.date, printdate.month, 2000 + printdate.year);
-*/
+
 	}
 }
