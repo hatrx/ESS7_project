@@ -56,16 +56,20 @@ int main(void)
 {
 	set_system_clock_168mhz();
 
-	if (BSP_UART_init() != 0)
+	if (BSP_UART_Init() != 0)
 	{
 		Error_Handler();		// Shit not working!
 	}
 
 	init_onboard_LED(red_led);
 	init_onboard_LED(yellow_led);
-	//BSP_IWDG_init(3000);		//time slot for the watchdog to be refreshed in (in miliseconds)
 
-	if (BSP_RTC_init() != 0)
+	if (BSP_IWDG_Init() != 0)		//Independent watchdog time initilisation
+	{
+		Error_Handler();		// Shit not working!
+	}
+
+	if (BSP_RTC_Init() != 0)		//Real time clock initialisation. Define the time interval in the header file
 	{
 		Error_Handler();		// Shit not working!
 	}
@@ -88,10 +92,12 @@ int main(void)
 		//printf("Hello world! : %"PRIu32"\n", counter++);
 		HAL_Delay(1000);
 
+
 		Date_Time_t printdate;
 		RTC_Get_Date_Time(&printdate);
-
+		IWDG_Refresh();
 		printf("%02" PRIu8 ":%02" PRIu8 ":%02" PRIu8 " ", printdate.hours, printdate.minutes, printdate.seconds);
 		printf("%02" PRIu8 "-%02" PRIu8 "-%02" PRIu8 " \n", printdate.date, printdate.month, 2000 + printdate.year);
+
 	}
 }

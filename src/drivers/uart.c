@@ -44,7 +44,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
 }
 
 
-int BSP_UART_init(void)
+int BSP_UART_Init(void)
 {
 	UartHandle.Instance = UARTx;
 

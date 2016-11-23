@@ -22,7 +22,7 @@ typedef struct
 #define YEAR ((uint8_t) 16)
 
 /*
-The asynchronous prescaler division and the synchronous division should divide our frequency, 
+The asynchronous prescaler division and the synchronous division should divide our frequency,
 so our result would be 1 Hz. This way we have the time base of 1 second.
 The registers receive the values of 128 and 256. TIME_BASE = CLOCK FREQ./PRESCALER1 * PRESCALER2
 TIME_BASE = 32768 / 128 * 256
@@ -31,10 +31,10 @@ TIME_BASE = 32768 / 128 * 256
 #define PRESCALER2 ((uint32_t) 255)		//Min_Data = 0x00 and Max_Data = 0x7FFF (32767)
 
 void HAL_RTC_MspInit(RTC_HandleTypeDef *RTCHandle);
-int BSP_RTC_init();
+int BSP_RTC_Init();
 
 void RTC_Get_Date_Time(Date_Time_t*);
 
-int RTC_state();
+int RTC_State();
 
 #endif /* UART_H */
