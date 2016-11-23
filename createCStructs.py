@@ -46,8 +46,7 @@ class ParseXML:
 
         partition_schedule_struct = "typedef struct{\n\t int partitionidentifier;\n\t char partitionname[32];\n\t float peroidseconds;\n\t float perioddurationseconds;\n\t const window_schedule *window_arr;\n\t} partition_schedule;\n\n"
         window_schedule_struct = "typedef struct {\n\t int windowidentifier;\n\t float windowstartseconds;\n\t float windowdurationseconds;\n\t bool partitionperiodstart;\n\t} window_schedule;\n\n"
-        declaration_list = [q_ports_struct, s_ports_struct, partition_struct, memory_requirements_struct, partition_memory_struct, window_schedule_struct, partition_memory_struct]
-
+        declaration_list = [q_ports_struct, s_ports_struct, partition_struct, memory_requirements_struct, partition_memory_struct, window_schedule_struct, partition_schedule_struct]
         
         return declaration_list
 
