@@ -53,7 +53,7 @@ int BSP_RTC_init()
 
 //This function gets the current date and time
 //IMPORTANT: Both HAL_RTC_GetTime and HAL_RTC_GetDate have to be called in order to get the corect values
-void get_datetime(struct date* now)
+void RTC_Get_Date_Time(Date_Time_t* now)
 {
 	HAL_RTC_GetTime(&RTCHandle, &RTCtime, FORMAT_BIN);
 	HAL_RTC_GetDate(&RTCHandle, &RTCdate, FORMAT_BIN);

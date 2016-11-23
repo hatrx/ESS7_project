@@ -1,7 +1,7 @@
 #ifndef RTC_H
 #define RTC_H
 
-struct date
+typedef struct
 {
 	uint8_t subseconds;
 	uint8_t seconds;
@@ -10,7 +10,7 @@ struct date
 	uint8_t date;
 	uint8_t month;
 	uint8_t year;
-};
+} Date_Time_t;
 
 //Date and Time defined at compile time
 #define HOUR ((uint8_t) 9)
@@ -33,7 +33,7 @@ TIME_BASE = 32768 / 128 * 256
 void HAL_RTC_MspInit(RTC_HandleTypeDef *RTCHandle);
 int BSP_RTC_init();
 
-void get_datetime(struct date*);
+void RTC_Get_Date_Time(Date_Time_t*);
 
 int RTC_state();
 

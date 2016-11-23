@@ -55,7 +55,7 @@ void Error_Handler(void)
 int main(void)
 {
 	set_system_clock_168mhz();
-	int x = -1;
+
 	if (BSP_UART_init() != 0)
 	{
 		Error_Handler();		// Shit not working!
@@ -88,8 +88,8 @@ int main(void)
 		//printf("Hello world! : %"PRIu32"\n", counter++);
 		HAL_Delay(1000);
 
-		struct date printdate;
-		get_datetime(&printdate);
+		Date_Time_t printdate;
+		RTC_Get_Date_Time(&printdate);
 
 		printf("%02" PRIu8 ":%02" PRIu8 ":%02" PRIu8 " ", printdate.hours, printdate.minutes, printdate.seconds);
 		printf("%02" PRIu8 "-%02" PRIu8 "-%02" PRIu8 " \n", printdate.date, printdate.month, 2000 + printdate.year);
