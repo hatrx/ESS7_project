@@ -64,6 +64,7 @@ int main(void)
 	init_onboard_LED(red_led);
 	init_onboard_LED(yellow_led);
 
+/*
 	if (BSP_IWDG_Init() != 0)		//Independent watchdog time initilisation
 	{
 		Error_Handler();		// Shit not working!
@@ -73,7 +74,7 @@ int main(void)
 	{
 		Error_Handler();		// Shit not working!
 	}
-
+*/
 	//init_mpu(0x20000000 + 0x2000, MPU_1KB);
 
 	setup_contexts(&dummy1_main, (void *)0x20001000);
@@ -90,14 +91,17 @@ int main(void)
 
 	while (1) {
 		//printf("Hello world! : %"PRIu32"\n", counter++);
+
+		TIME_Start_ns();
 		HAL_Delay(1000);
-
-
+		uint64_t x = TIME_Stop_ns();
+		//printf("%" PRIu64 " -->\n", x);		//printf won't work on 64 bit values
+/*
 		Date_Time_t printdate;
 		RTC_Get_Date_Time(&printdate);
 		IWDG_Refresh();
 		printf("%02" PRIu8 ":%02" PRIu8 ":%02" PRIu8 " ", printdate.hours, printdate.minutes, printdate.seconds);
 		printf("%02" PRIu8 "-%02" PRIu8 "-%02" PRIu8 " \n", printdate.date, printdate.month, 2000 + printdate.year);
-
+*/
 	}
 }
