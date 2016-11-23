@@ -273,10 +273,9 @@ class ParseXML:
         parsed_xml = self.parse_xml(xml)
         declarations_list = self.print_declarations()
 
-        x = 0
-        while x < len(declarations_list):            
-            self.write_to_file(declarations_list[x])
-            x = x + 1
+
+        for n in declarations_list:
+            self.write_to_file( n )
 
         sub_structures = self.get_sub_structures(parsed_xml) #will be a list of partitions, partition memory, ect
 
