@@ -3,7 +3,7 @@
 
 #include "context.h"
 
-#define DISABLE_CONTEXT_SWITCH
+//#define DISABLE_CONTEXT_SWITCH
 #define MAX_PROCESS	3
 
 volatile void* taskStacks[MAX_PROCESS];
@@ -24,38 +24,9 @@ volatile uint32_t timings2 = 0;
  */
 __attribute__((naked)) void SysTick_Handler(void)
 {
-	//static volatile uint32_t msCount = 0;
-
-	// Create a new variable to store previous EXC_RETURN code.
-	// We explicitly choose the destination register to avoid overwriting registers
-	// that have not yet been saved by hardware.
-	register volatile uint32_t wasUserspace __asm ("r0");
-	//__ASM volatile ("MOV R0, LR");
-	//wasUserspace &= 0xF;
-	// Create a new variable to store the context-saved-stack pointer of the previous process.
-	// Again we explicitly choose the register to avoid GCC picking a register that hasn't been saved yet.
-	register volatile void *stackpointer __asm ("r1");
-
-	// Context switch logic.
-	// We only save R4-R11 on the stack, because the NVIC already saved the other registers before calling this function.
-	__ASM volatile (
-		"AND	%0, LR, #0x0D	\n\t"		// Logical AND with 0xD
-		"CMP	%0, #0xD		\n\t"		// Use CMP to set EQ/NE flag
-		"BEQ 	use_psp			\n\t"		// Branch to use_psp if EQ is set
-		"BNE	use_msp			\n\n"		// Branch to use_msp  if NE is set
-		"use_psp:				\n\t"
-		"MRS    %1, PSP			\n\t"		// Move Process Stack Pointer to R1 (the stackpointer variable)
-		"STMFD  %1!, {R4-R11}   \n\t"		// Store registers R4 to R11 on the stack. (The FD in STMFB means fully descending [stack])
-		"MSR    PSP, %1         \n\t"		// Opdate the actual PSP stackpointer register with the new value after STMFD.
-		"B 		exit			\n\n"		// Skip over the use_msp routine
-		"use_msp:				\n\t"
-		"MRS    %1, MSP			\n\t"		// Move Master Stack Pointer to R1 (the stackpointer variable)
-		"STMFD  %1!, {R4-R11}   \n\t"		// Store registers R4 to R11 on the stack.
-		"MSR    MSP, %1         \n\n"		// Opdate the actual MSP stackpointer register with the new value after STMFD.
-		"exit:					\n\t"
-		: "+r" (wasUserspace), "=r" (stackpointer)
-		: :
-	);
+	uint32_t stackpointer = context_save();
+	uint32_t exc_return_value;
+	__asm volatile ("MOV %0, LR" : "=r" (exc_return_value));
 
 	// Save the value of the stack pointer for later use.
 	taskStacks[activeProcess] = stackpointer;
