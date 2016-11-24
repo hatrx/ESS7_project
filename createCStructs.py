@@ -9,7 +9,9 @@ class ParseXML:
 
     def __init__(self):
         self.xml_schema = "schema.xml"
-        self.file = open("hedder.c", "w")
+        self.file_h = open("xml_data.h", "w")
+        self.file_c = open("xml_data.c", "w")
+
 
     def get_xml(self):
         print "reading in xml from file %s" % (self.xml_schema)
@@ -28,7 +30,6 @@ class ParseXML:
 
 
     def get_sub_structures(self, parsed_xml): #return a list of these?
-        
         partitions = parsed_xml.get('ARINC_653_Module').get('Partition')
         partition_memory = parsed_xml.get('ARINC_653_Module').get('Partition_Memory')
         partition_schedule = parsed_xml.get('ARINC_653_Module').get('Module_Schedule').get('Partition_Schedule')
@@ -36,23 +37,98 @@ class ParseXML:
         return sub_structures
 
 
-    def print_declarations(self):
-        partition_struct = "typedef struct{\n\t int partitionidentifier;\n\t char partitionname[32];\n\t char criticality[32];\n\t bool systempartion;\n\t char entrypoint[32];\n\t const queuing_port *queue_arr;\n\t const sampling_port *sample_arr;\n\t } partition;\n\n"
-        q_ports_struct = "typedef struct {\n\t char portname[32];\n\t int maxmessagesize;\n\t char direction[32];\n\t int maxnbmessages;\n\t} queuing_port;\n\n"
-        s_ports_struct = "typedef struct {\n\t char portname[32];\n\t int maxmessagesize;\n\t char direction[32];\n\t float refreshrateseconds;\n\t} sampling_port;\n\n"
-
-        partition_memory_struct = "typedef struct{\n\t int partitionidentifier;\n\t char partitionname[32];\n\t const memory_requirements *memory_arr;\n\t} partition_memory;\n\n"
-        memory_requirements_struct = "typedef struct {\n\t char type[32];\n\t int sizebytes;\n\t char access[32];\n\t char physicaladdress[32];\n\t} memory_requirements;\n\n"
-
-        partition_schedule_struct = "typedef struct{\n\t int partitionidentifier;\n\t char partitionname[32];\n\t float peroidseconds;\n\t float perioddurationseconds;\n\t const window_schedule *window_arr;\n\t} partition_schedule;\n\n"
-        window_schedule_struct = "typedef struct {\n\t int windowidentifier;\n\t float windowstartseconds;\n\t float windowdurationseconds;\n\t bool partitionperiodstart;\n\t} window_schedule;\n\n"
-        declaration_list = [q_ports_struct, s_ports_struct, partition_struct, memory_requirements_struct, partition_memory_struct, window_schedule_struct, partition_schedule_struct]
-        
-        return declaration_list
+    def write_to_file_h(self, data):        
+        self.file_h.write(data)
 
 
-    def write_to_file(self, data):        
-        self.file.write(data)
+    def write_to_file_c(self, data):        
+        self.file_c.write(data)
+
+
+    def write_file_h_header(self):
+        self.write_to_file_h(
+            """#include <stdbool.h>
+#indef header_h
+#define header_h
+            """)
+
+
+    def write_file_h_footer(self):
+        self.write_to_file_h(
+        """
+#endif
+        """)
+
+
+    def write_file_h_declarations(self):
+        partition_struct = """
+    typedef struct{
+        int partitionidentifier;
+        char partitionname[32];
+        char criticality[32];
+        bool systempartion;
+        char entrypoint[32];
+        const queuing_port *queue_arr;
+        const sampling_port *sample_arr;
+    } partition;
+        """
+        q_ports_struct = """
+    typedef struct {
+        char portname[32];
+        int maxmessagesize;
+        char direction[32];
+        int maxnbmessages;
+    } queuing_port;
+        """
+        s_ports_struct = """
+    typedef struct {
+        char portname[32];
+        int maxmessagesize;
+        char direction[32];
+        float refreshrateseconds;
+    } sampling_port;
+        """
+
+        partition_memory_struct = """
+    typedef struct{
+        int partitionidentifier;
+        char partitionname[32];
+        const memory_requirements *memory_arr;
+    } partition_memory;
+        """
+        memory_requirements_struct = """
+    typedef struct {
+        char type[32];
+        int sizebytes;
+        char access[32];
+        char physicaladdress[32];
+    } memory_requirements;
+        """
+
+        partition_schedule_struct = """
+    typedef struct{
+        int partitionidentifier;
+        char partitionname[32];
+        float peroidseconds;
+        float perioddurationseconds;
+        const window_schedule *window_arr;
+    } partition_schedule;
+        """
+        window_schedule_struct = """
+    typedef struct {
+        int windowidentifier;
+        float windowstartseconds;
+        float windowdurationseconds;
+        bool partitionperiodstart;
+    } window_schedule;
+        """
+
+        declaration_list = [q_ports_struct, s_ports_struct, partition_struct, 
+                            memory_requirements_struct, partition_memory_struct, 
+                            window_schedule_struct, partition_schedule_struct]        
+
+        for n in declaration_list:
+            self.write_to_file_h(n)
 
 
     #iterates through sub_structure to append string partition sructs in a list
@@ -68,22 +144,21 @@ class ParseXML:
             part_string = part_string + sub_element_struct
             x = x + 1
 
-
         partition = sub_element.get('Queuing_Port', None) 
         partition_memory = sub_element.get('Memory_Requirements', None)         
         partition_schedule = sub_element.get('Window_Schedule', None)         
         if partition:
             #print "const partition partitions[%s] = {%s};\n\n" % (no_of_sub_elements, part_string)
             complete_struct = "const partition partitions[%s] = {%s};\n\n" % (no_of_sub_elements, part_string)
-            self.write_to_file(complete_struct)
+            self.write_to_file_c(complete_struct)
         if partition_memory:
             #print "const partition_memory partition_memorys[%s] = {%s};\n\n" % (no_of_sub_elements, part_string)
             complete_struct = "const partition_memory partition_memorys[%s] = {%s};\n\n" % (no_of_sub_elements, part_string)
-            self.write_to_file(complete_struct)
+            self.write_to_file_c(complete_struct)
         if partition_schedule:
             #print "const partition_schedule partition_schedules[%s] = {%s};\n\n" % (no_of_sub_elements, part_string)
             complete_struct = "const partition_schedule partition_schedules[%s] = {%s};\n\n" % (no_of_sub_elements, part_string)
-            self.write_to_file(complete_struct)
+            self.write_to_file_c(complete_struct)
 
 
     def construct_sub_element_struct(self, sub_element):
@@ -104,14 +179,14 @@ class ParseXML:
                 q_port_string, no_of_q_ports = self.create_queuing_port_structs(queuing_ports)
                 q_ports_wrapper = "const queuing_port queuep_%s[%s] = {%s};\n\n" % (element_name.replace (" ", "_"), no_of_q_ports, q_port_string)
                 #print "\n" + q_ports_wrapper
-                self.write_to_file(q_ports_wrapper)
+                self.write_to_file_c(q_ports_wrapper)
 
             if sampling_ports:
                 sampling_ports = self.sub_sub_structure_validation(sampling_ports)                
                 s_port_string, no_of_s_ports = self.create_sampling_port_structs(sampling_ports)
                 s_ports_wrapper = "const sampling_port samplep_%s[%s] = {%s};\n\n" % (element_name.replace (" ", "_"), no_of_s_ports, s_port_string)
                 #print s_ports_wrapper
-                self.write_to_file(s_ports_wrapper)
+                self.write_to_file_c(s_ports_wrapper)
             partition = None
                 
 
@@ -123,7 +198,7 @@ class ParseXML:
                 memory_requirements_string, no_of_memory_requirements = self.create_memory_requirements_structs(memory_requirements)
                 memory_requirements_wrapper = "const memory_requirements memoryp_%s[%s] = {%s};\n\n" % (element_name.replace (" ", "_"), no_of_memory_requirements, memory_requirements_string)
                 #print "\n" + memory_requirements_wrapper
-            self.write_to_file(memory_requirements_wrapper)
+            self.write_to_file_c(memory_requirements_wrapper)
             partition_memory = None
 
 
@@ -135,7 +210,7 @@ class ParseXML:
                 window_schedule_string, no_of_window_schedules = self.create_window_schedules_structs(window_schedule)
                 window_schedule_wrapper = "const window_schedule windowp_%s[%s] = {%s};\n\n" % (element_name.replace (" ", "_"), no_of_window_schedules, window_schedule_string)
                 #print "\n" + window_schedule_wrapper
-            self.write_to_file(window_schedule_wrapper)
+            self.write_to_file_c(window_schedule_wrapper)
             partition_schedule = None
 
 
@@ -268,25 +343,24 @@ class ParseXML:
 
 
     def main(self):
-        self.write_to_file("#include <stdbool.h>\n\n")
         xml = self.get_xml()
         parsed_xml = self.parse_xml(xml)
-        declarations_list = self.print_declarations()
-
-
-        for n in declarations_list:
-            self.write_to_file( n )
-
+        self.write_file_h_header()
+        self.write_file_h_declarations()
+        self.write_file_h_footer()
         sub_structures = self.get_sub_structures(parsed_xml) #will be a list of partitions, partition memory, ect
 
         no_of_sub_structures = len(sub_structures)
-        x = 0
-        while x < no_of_sub_structures:
-            sub_structure = sub_structures[x]
-            self.create_sub_structure_structs(sub_structure)
-            x = x + 1
+        for sub_structure in sub_structures:
 
-        self.file.close()
+        #x = 0
+        #while x < no_of_sub_structures:
+            #sub_structure = sub_structures[x]
+            self.create_sub_structure_structs(sub_structure)
+            #x = x + 1
+
+        self.file_h.close()
+        self.file_c.close()
 
 
 if __name__ == "__main__":
