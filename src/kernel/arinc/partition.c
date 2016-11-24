@@ -2,12 +2,12 @@
 #include "partition.h"
 
 partition_t configured_partitions[MAX_PARTITION];
-static uint8_t n_partitions = 1;
+static uint8_t n_partitions = 0;
 
 partition_t* partition_create(partition* partition_)
 {
     uint8_t i;
-    partition_t* part = &configured_partitions[n_partitions];
+    partition_t* part = &configured_partitions[n_partitions++];
     //*part = (partition_t) {0};
 
     part->partitionInfo = *partition_;
