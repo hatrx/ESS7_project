@@ -29,7 +29,7 @@ __attribute__((naked)) void SysTick_Handler(void)
 	{
 		// Save the value of the stack pointer for later use.
 		activeProcess->stackpointer = stackpointer;
-		activeProcess->exc_return_value = (uint8_t) exc_return_value;
+		activeProcess->exc_return_value = (exc_return_value & 0xFF);
 	}
 
 	// Increase HAL ticks. This is by the HAL_Delay(int) function, so we need to do this.
@@ -47,11 +47,11 @@ __attribute__((naked)) void SysTick_Handler(void)
 		: "+r" (activeProcess->stackpointer) :
 	);
 
-	// Switch to using the PSP, and end the function.
-	// We need to set the PC with an EXC_RETURN value. This value tells the NVIC which mode to return to;
-	// see the ARM documentation to see the meaning of these values.
 	__ASM volatile (
-		"LDR PC,=0xFFFFFFFD"
+		"LDR	R1, =0xFFFFFF00 		\n\t"
+		"ADD	R1, R1, %0				\n\t"
+		"BX		R1						\n\t"
+		: : "r" (activeProcess->exc_return_value) :
 	);
 }
 #else

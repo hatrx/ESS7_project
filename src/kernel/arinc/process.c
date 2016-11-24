@@ -24,6 +24,7 @@ uint8_t process_createProcess(partition_t* partition_, uint32_t memoryAddress, P
     processStatus->PROCESS_STATE    = DORMANT;
 
     process->stackpointer = memoryAddress + sizeof(ARM_context_state);
+    process->exc_return_value = 0xFD;
 
     processes[pid] = process;
 
