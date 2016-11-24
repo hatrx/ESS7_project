@@ -27,7 +27,7 @@
 
 
 void HAL_UART_MspInit     (UART_HandleTypeDef *huart);
-int  BSP_UART_init        (void);
+int  BSP_UART_Init        (void);
 void BSP_UARTx_IRQHandler (void);
 int  BSP_UARTx_transmit   (uint8_t* buf, size_t n);
 size_t BSP_UARTx_Receive(uint8_t *pData, uint16_t size);

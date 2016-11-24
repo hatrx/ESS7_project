@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ARINC_653_Module>
-      <Partition PartitionIdentifier="1" PartitionName="system management" Criticality="LEVEL_A" SystemPartition="true" EntryPoint="Initial">
+      <Partition PartitionIdentifier="1" PartitionName="system management" Criticality="LEVEL_A" SystemPartition="true" EntryPoint="main1">
          <Queuing_Port PortName="Stat_2Dq" MaxMessageSize="30" Direction="DESTINATION" MaxNbMessages="30" />
          <Queuing_Port PortName="Stat_3Dq" MaxMessageSize="30" Direction="DESTINATION" MaxNbMessages="30" />
          <Queuing_Port PortName="Stat_4Dq" MaxMessageSize="30" Direction="DESTINATION" MaxNbMessages="30" />
          <Queuing_Port PortName="Stat_5Dq" MaxMessageSize="30" Direction="DESTINATION" MaxNbMessages="30" />
       </Partition>
-      <Partition PartitionIdentifier="2" PartitionName="flight controls" Criticality="LEVEL_A" SystemPartition="false" EntryPoint="Initial">
+      <Partition PartitionIdentifier="2" PartitionName="flight controls" Criticality="LEVEL_A" SystemPartition="false" EntryPoint="main2">
          <Sampling_Port PortName="Act_1Ss" MaxMessageSize="20" Direction="SOURCE" RefreshRateSeconds="0.100" />
          <Sampling_Port PortName="Act_2Ss" MaxMessageSize="20" Direction="SOURCE" RefreshRateSeconds="0.100" />
          <Sampling_Port PortName="Sens_1Ds" MaxMessageSize="40" Direction="DESTINATION" RefreshRateSeconds="0.100" />
          <Sampling_Port PortName="Sens_2Ds" MaxMessageSize="40" Direction="DESTINATION" RefreshRateSeconds="0.100" />
          <Queuing_Port PortName="Stat_2Sq" MaxMessageSize="30" Direction="SOURCE" MaxNbMessages="30" />
       </Partition>
-      <Partition PartitionIdentifier="3" PartitionName="flight management" Criticality="LEVEL_A" SystemPartition="false" EntryPoint="Initial">
+      <Partition PartitionIdentifier="3" PartitionName="flight management" Criticality="LEVEL_A" SystemPartition="false" EntryPoint="main3">
          <Sampling_Port PortName="Sens_2Ds" MaxMessageSize="40" Direction="DESTINATION" RefreshRateSeconds="0.100" />
          <Queuing_Port PortName="Stat_3Sq" MaxMessageSize="30" Direction="SOURCE" MaxNbMessages="30" />
       </Partition>
-      <Partition PartitionIdentifier="4" PartitionName="IO Processing" Criticality="LEVEL_A" SystemPartition="true" EntryPoint="Initial">
+      <Partition PartitionIdentifier="4" PartitionName="IO Processing" Criticality="LEVEL_A" SystemPartition="true" EntryPoint="main4">
          <Queuing_Port PortName="Stat_4Sq" MaxMessageSize="30" Direction="SOURCE" MaxNbMessages="30" />
       </Partition>
-      <Partition PartitionIdentifier="5" PartitionName="IHVM" Criticality="LEVEL_B" SystemPartition="false" EntryPoint="Initial">
+      <Partition PartitionIdentifier="5" PartitionName="IHVM" Criticality="LEVEL_B" SystemPartition="false" EntryPoint="main5">
          <Sampling_Port PortName="Act_1Ds" MaxMessageSize="20" Direction="DESTINATION" RefreshRateSeconds="0.100" />
          <Sampling_Port PortName="Act_2Ds" MaxMessageSize="20" Direction="DESTINATION" RefreshRateSeconds="0.100" />
          <Queuing_Port PortName="Stat_5Sq" MaxMessageSize="30" Direction="SOURCE" MaxNbMessages="30" />
