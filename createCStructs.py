@@ -55,9 +55,7 @@ class ParseXML:
 
     def write_file_h_footer(self):
         self.write_to_file_h(
-        """
-#endif
-        """)
+"""#endif""")
 
 
     def write_file_h_declarations(self):
@@ -67,7 +65,7 @@ class ParseXML:
         char partitionname[32];
         char criticality[32];
         bool systempartion;
-        char entrypoint[32];
+        void (*entrypoint)(void);
         const queuing_port *queue_arr;
         const sampling_port *sample_arr;
     } partition;
@@ -233,7 +231,12 @@ class ParseXML:
         sample_arr = ("samplep_%s" % (name)).replace (" ", "_")
         if not sampling_ports:
             sample_arr = 0
-        partition_struct = "{ \n\t .partitionidentifier = %s,\n\t .partitionname = \"%s\",\n\t .criticality = \"%s\",\n\t .systempartion = %s,\n\t .entrypoint = \"%s\",\n\t .queue_arr = %s,\n\t .sample_arr = %s,\n\t}," % (part_id, name.replace (" ", "_"), crit_level, sys_part, entry, queue_arr.replace (" ", "_"), sample_arr)
+        partition_struct = "{ \n\t .partitionidentifier = %s,\n\t .partitionname = \"%s\",\n\t .criticality = \"%s\",\n\t .systempartion = %s,\n\t .entrypoint = %s,\n\t .queue_arr = %s,\n\t .sample_arr = %s,\n\t}," % (part_id, name.replace (" ", "_"), crit_level, sys_part, "&" + entry, queue_arr.replace (" ", "_"), sample_arr)
+
+        self.write_to_file_h("""
+void %s(void);
+        """ % (entry))
+
         return partition_struct, name
 
 
@@ -347,18 +350,14 @@ class ParseXML:
         parsed_xml = self.parse_xml(xml)
         self.write_file_h_header()
         self.write_file_h_declarations()
-        self.write_file_h_footer()
         sub_structures = self.get_sub_structures(parsed_xml) #will be a list of partitions, partition memory, ect
 
-        no_of_sub_structures = len(sub_structures)
+        #no_of_sub_structures = len(sub_structures)
         for sub_structure in sub_structures:
-
-        #x = 0
-        #while x < no_of_sub_structures:
-            #sub_structure = sub_structures[x]
             self.create_sub_structure_structs(sub_structure)
-            #x = x + 1
 
+
+        self.write_file_h_footer()
         self.file_h.close()
         self.file_c.close()
 
