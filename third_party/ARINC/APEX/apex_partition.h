@@ -4,7 +4,8 @@
 /*                                                                */
 /*----------------------------------------------------------------*/
  
-#ifndef APEX_PARTITION #define APEX_PARTITION 
+#ifndef APEX_PARTITION
+#define APEX_PARTITION 
  
 #define  MAX_NUMBER_OF_PARTITIONS  SYSTEM_LIMIT_NUMBER_OF_PARTITIONS 
  
