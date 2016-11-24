@@ -1,9 +1,7 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 
-
 #include <stdint.h>
-
 
 typedef struct {
 	uint32_t R0;    //General purpose R0 Register
@@ -37,14 +35,14 @@ typedef struct {
  * @return Returns the value of the stack pointer after saving the context
  */
 __attribute__((always_inline))
-__STATIC_INLINE uint32_t context_save()
+static inline uint32_t context_save()
 {
 	// Create a new variable to store the context-saved-stack pointer of the previous process.
 	// We explicitly choose the register to avoid GCC picking a register that hasn't been saved yet.
 	register uint32_t stackpointer __asm("r0"); 
 	// Context switch logic.
 	// We only save R4-R11 on the stack, because the NVIC already saved the other registers before calling this function.
-	__ASM volatile (
+	__asm volatile (
 		"AND	R1, LR, #0x0D	\n\t"		// Logical AND with 0xD
 		"CMP	R1, #0x0D		\n\t"		// Use CMP to set EQ/NE flag
 		"BEQ 	use_psp			\n\t"		// Branch to use_psp if EQ is set
@@ -66,7 +64,7 @@ __STATIC_INLINE uint32_t context_save()
 }
 
 
-int setup_contexts(void (*foo)(void), void *addr);
+int context_setup(void (*foo)(void), void *addr);
 
 
 #endif /* CONTEXT_H */
