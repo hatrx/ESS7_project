@@ -47,15 +47,26 @@ class ParseXML:
 
     def write_file_h_header(self):
         self.write_to_file_h(
-            """#include <stdbool.h>
-#indef header_h
-#define header_h
+            """#ifndef XML_DATA_H
+#define XML_DATA_H
+#include <stdbool.h>
             """)
 
 
     def write_file_h_footer(self):
         self.write_to_file_h(
 """#endif""")
+
+
+    def write_file_c_header(self):
+        self.write_to_file_c("""#include "xml_data.h"
+
+""")
+
+
+    def write_file_c_footer(self):
+        x = "this function is not used currently"
+        #self.write_to_file_c(""" """)
 
 
     def write_file_h_declarations(self):
@@ -350,6 +361,7 @@ void %s(void);
         parsed_xml = self.parse_xml(xml)
         self.write_file_h_header()
         self.write_file_h_declarations()
+        self.write_file_c_header()
         sub_structures = self.get_sub_structures(parsed_xml) #will be a list of partitions, partition memory, ect
 
         #no_of_sub_structures = len(sub_structures)
