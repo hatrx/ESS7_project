@@ -14,6 +14,7 @@ project(OS C ASM)
 
 # Define directories
 set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
+set(ARINC_DIR ${CMAKE_SOURCE_DIR}/third_party/ARINC)
 set(CMSIS_DIR ${CMAKE_SOURCE_DIR}/third_party/CMSIS)
 set(STM32f4xx_HAL_Driver_DIR ${CMAKE_SOURCE_DIR}/third_party/STM32F4xx_HAL_Driver)
 set(LINKER_SCRIPTS_DIR ${CMAKE_SOURCE_DIR}/third_party/linker_scripts)
@@ -36,6 +37,9 @@ add_definitions(-DHSE_VALUE=16000000 -DSTM32F415xx)
 include_directories(
 	# SRC
 	${SRC_DIR}
+
+	# ARINC APEX
+	${ARINC_DIR}/APEX
 
 	# CMSIS
 	${CMSIS_DIR}/Include
