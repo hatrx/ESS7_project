@@ -8,7 +8,7 @@ class ParseXML:
 
 
     def __init__(self):
-        self.xml_schema = "schema.xml"
+        self.xml_schema = "default_schema.xml"
         self.file_h = open("xml_data.h", "w")
         self.file_c = open("xml_data.c", "w")
 
