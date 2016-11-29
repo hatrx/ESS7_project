@@ -68,6 +68,125 @@ int main(void)
 	setup_contexts(&stdio_sys_main, (void *)0x20005000);
 
 
+	/* Initialize all ports */
+	init_queuing_ports();
+
+	{
+		/* Change partition to set up port */
+		curr_partition_id = 1;
+
+		QUEUING_PORT_ID_TYPE QUEUING_PORT_ID;
+		RETURN_CODE_TYPE RETURN_CODE;
+		CREATE_QUEUING_PORT("print_1", 8, 30, SOURCE, FIFO, &QUEUING_PORT_ID, &RETURN_CODE);
+		if (RETURN_CODE != NO_ERROR) {
+			printf("Create port error!\n");
+		} else {
+			printf("activated port '%s' with ID: %2lu\n", "print_1", QUEUING_PORT_ID);
+		}
+	}
+
+
+	{
+		/* Change partition to set up port */
+		curr_partition_id = 1;
+
+		QUEUING_PORT_ID_TYPE QUEUING_PORT_ID;
+		RETURN_CODE_TYPE RETURN_CODE;
+		GET_QUEUING_PORT_ID("print_1", &QUEUING_PORT_ID, &RETURN_CODE);
+		if (RETURN_CODE != NO_ERROR) {
+			printf("Get port ID error!\n");
+		} else {
+			printf("Got ID: %2lu of port '%s'\n\n", QUEUING_PORT_ID, "print_1");
+		}
+	}
+
+
+	{
+		/* Change partition to set up port */
+		curr_partition_id = 3;
+
+		QUEUING_PORT_ID_TYPE QUEUING_PORT_ID;
+		RETURN_CODE_TYPE RETURN_CODE;
+		CREATE_QUEUING_PORT("sys_stio", 8, 30, DESTINATION, FIFO, &QUEUING_PORT_ID, &RETURN_CODE);
+		if (RETURN_CODE != NO_ERROR) {
+			printf("Create port error!\n");
+		} else {
+			printf("activated port '%s' with ID: %2lu\n", "sys_stio", QUEUING_PORT_ID);
+		}
+	}
+
+
+	{
+		/* Change partition to set up port */
+		curr_partition_id = 3;
+
+		QUEUING_PORT_ID_TYPE QUEUING_PORT_ID;
+		RETURN_CODE_TYPE RETURN_CODE;
+		GET_QUEUING_PORT_ID("sys_stio", &QUEUING_PORT_ID, &RETURN_CODE);
+		if (RETURN_CODE != NO_ERROR) {
+			printf("Get port ID error!\n");
+		} else {
+			printf("Got ID: %2lu of port '%s'\n\n", QUEUING_PORT_ID, "sys_stio");
+		}
+	}
+
+
+	{
+		/* Change partition to send message */
+		curr_partition_id = 1;
+
+		RETURN_CODE_TYPE RETURN_CODE;
+		char *str = "Holy cow";
+		size_t len = strlen(str);
+		SEND_QUEUING_MESSAGE(0, (uint8_t *)str, len, 0, &RETURN_CODE);
+		if (RETURN_CODE != NO_ERROR) {
+			printf("Push error!\n");
+		}
+	}
+
+
+	{
+		/* Change partition to recieve message */
+		curr_partition_id = 3;
+
+		RETURN_CODE_TYPE RETURN_CODE;
+		QUEUING_PORT_STATUS_TYPE QUEUING_PORT_STATUS;
+		GET_QUEUING_PORT_STATUS(0, &QUEUING_PORT_STATUS, &RETURN_CODE);
+		if (RETURN_CODE != NO_ERROR) {
+			printf("Status error!\n");
+		}
+		printf("NB_MESSAGE: %2lu\n", QUEUING_PORT_STATUS.NB_MESSAGE);
+	}
+
+
+	{
+		/* Change partition to recieve message */
+		curr_partition_id = 3;
+
+		RETURN_CODE_TYPE RETURN_CODE;
+		char str[10] = {0};
+		MESSAGE_SIZE_TYPE len;
+		RECEIVE_QUEUING_MESSAGE(0, 0, (uint8_t *)str, &len, &RETURN_CODE);
+		if (RETURN_CODE != NO_ERROR) {
+			printf("Pop error!\n");
+		}
+		printf("Popped string: %s\n", str);
+		printf("String length: %lu\n", len);
+	}
+
+
+	{
+		/* Change partition to recieve message */
+		curr_partition_id = 3;
+
+		RETURN_CODE_TYPE RETURN_CODE;
+		QUEUING_PORT_STATUS_TYPE QUEUING_PORT_STATUS;
+		GET_QUEUING_PORT_STATUS(0, &QUEUING_PORT_STATUS, &RETURN_CODE);
+		if (RETURN_CODE != NO_ERROR) {
+			printf("Status error!\n");
+		}
+		printf("NB_MESSAGE: %2lu\n", QUEUING_PORT_STATUS.NB_MESSAGE);
+	}
 
 
 	uint32_t counter = 0;
