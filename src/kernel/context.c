@@ -3,7 +3,7 @@
 
 #include "context.h"
 
-//#define DISABLE_CONTEXT_SWITCH
+#define DISABLE_CONTEXT_SWITCH
 #define MAX_PROCESS	3
 
 volatile void* taskStacks[MAX_PROCESS];
@@ -41,7 +41,7 @@ __attribute__((naked)) void SysTick_Handler(void)
 
 	// Increase HAL ticks. This is by the HAL_Delay(int) function, so we need to do this.
 	HAL_IncTick();
-
+	TIME_Add_Count();
 	// Increment the millisecond counter.
 	// TODO: Handle the fact that this handler is NOT called every millisecond as the documentatio otherwise shows.
 	/*msCount++;
@@ -78,6 +78,7 @@ __attribute__((naked)) void SysTick_Handler(void)
 void SysTick_Handler(void)
 {
 	HAL_IncTick();
+	TIME_Add_Count();
 }
 #endif
 

@@ -5,9 +5,10 @@ add_library(drivers
 	${SRC_DIR}/drivers/onboard_leds.c
 	${SRC_DIR}/drivers/system_clock.c
 	${SRC_DIR}/drivers/watchdog.c
-	${SRC_DIR}/drivers/get_time.c
+	${SRC_DIR}/drivers/time_get.c
 	${SRC_DIR}/drivers/utils.c
 	${SRC_DIR}/drivers/rtc.c
+	${SRC_DIR}/drivers/GET_TIME.c
 )
 target_link_libraries(drivers
 	CMSIS
