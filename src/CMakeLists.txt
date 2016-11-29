@@ -31,6 +31,14 @@ target_link_libraries(dummy2
 )
 
 
+add_library(stdio_sys
+	${SRC_DIR}/partitions/stdio_sys/stdio_sys.c
+)
+target_link_libraries(stdio_sys
+	drivers
+)
+
+
 # Compile OS
 add_executable(${PROJECT_NAME}
 	${SRC_DIR}/hedder.c
@@ -51,6 +59,7 @@ target_link_libraries(${PROJECT_NAME}
 
 	dummy1
 	dummy2
+	stdio_sys
 )
 # Command for writing OS to target flash.
 open_ocd_write_flash(${PROJECT_NAME})
