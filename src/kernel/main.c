@@ -20,10 +20,10 @@
 #include "kernel/context.h"
 #include "kernel/queuing_port.h"
 
-#include "hedder.h"
-//#include "kernel/statics.h"
-void dummy1_main(void);
-void dummy2_main(void);
+//#include "hedder.h"
+#include "kernel/statics.h"
+//void dummy1_main(void);
+//void dummy2_main(void);
 
 
 void UsageFault_Handler(void)
@@ -56,8 +56,6 @@ void Error_Handler(void)
 
 int main(void)
 {
-	partition dummy1, dummy2;
-	partition_t *dummy1_partition, *dummy2_partition;
 	PROCESS_ATTRIBUTE_TYPE dummy1_mainProcess_attributes, dummy2_mainProcess_attributes;
 	PROCESS_ID_TYPE dummy1_pid, dummy2_pid;
 
@@ -84,28 +82,6 @@ int main(void)
 */
 	//init_mpu(0x20000000 + 0x2000, MPU_1KB);
 
-	dummy1 = (partition)
-	{
-		.partitionidentifier = 1,
-		.partitionname = "Dummy1",
-		.criticality = "Important",
-		.systempartion = false,
-		.entrypoint = "dummy1_main",
-		.queue_arr = NULL,
-		.sample_arr = NULL,
-	};
-
-	dummy2 = (partition)
-	{
-		.partitionidentifier = 2,
-		.partitionname = "Dummy2",
-		.criticality = "Important",
-		.systempartion = false,
-		.entrypoint = "dummy2_main",
-		.queue_arr = NULL,
-		.sample_arr = NULL,
-	};
-
 	dummy1_mainProcess_attributes = (PROCESS_ATTRIBUTE_TYPE)
 	{
 		.PERIOD = 0,
@@ -126,11 +102,10 @@ int main(void)
 		.NAME = "dummy2",
 	};
 
-	dummy1_partition = partition_create(&dummy1);
-	dummy2_partition = partition_create(&dummy2);
+	int_partitions();
 
-	process_createProcess(dummy1_partition, 0x20001000, &dummy1_mainProcess_attributes, &dummy1_pid);
-	process_createProcess(dummy2_partition, 0x20003000, &dummy2_mainProcess_attributes, &dummy2_pid);
+	process_createProcess(&test_partitions[0], 0x20001000, &dummy1_mainProcess_attributes, &dummy1_pid);
+	process_createProcess(&test_partitions[1], 0x20003000, &dummy2_mainProcess_attributes, &dummy2_pid);
 
 	//setup_contexts(&dummy1_main, (void *)0x20001000);
 	//setup_contexts(&dummy2_main, (void *)0x20003000);

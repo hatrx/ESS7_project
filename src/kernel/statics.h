@@ -26,6 +26,7 @@
 	.circ_buf = {0, 0, 0, (message_size * nb_message) + \
 		(message_size * sizeof(size_t))}
 
+#define MAX_PROCESSES_PER_PARTITIONS 3
 
 typedef enum {
 	LEVEL_A,
@@ -69,6 +70,12 @@ typedef struct {
 } port_t;
 
 typedef struct {
+	uint32_t                  stackpointer;
+	uint8_t                   exc_return_value;
+	PROCESS_STATUS_TYPE       apexDetails;
+} process_t;
+
+typedef struct {
 	PARTITION_ID_TYPE         IDENTIFIER;
 	NAME_TYPE                 partitionname;
 	CRITICALITY               criticality; /* Not used */
@@ -76,6 +83,8 @@ typedef struct {
 	void                      (*entrypoint)(void);
 	APEX_INTEGER              nb_ports;
 	port_t                    *ports;
+	uint32_t                  nb_processes;
+	process_t                 processes[MAX_PROCESSES_PER_PARTITIONS];
 } partition_t;
 
 typedef struct{
@@ -91,7 +100,7 @@ void dummy2_main(void);
 void stdio_sys_main(void);
 
 
-extern partition_t test_partitions[3];
+extern partition_t test_partitions[2];
 extern channel_t connection_table[1];
 
 

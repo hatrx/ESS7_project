@@ -2,7 +2,7 @@
 #include "partition.h"
 #include "kernel/context.h"
 
-static process_t* processes[MAX_PROCESSES_PER_PARTITIONS*MAX_PARTITION];
+static process_t* processes[MAX_PROCESSES_PER_PARTITIONS*3];
 
 uint8_t process_createProcess(partition_t* partition_, uint32_t memoryAddress, PROCESS_ATTRIBUTE_TYPE* attributes, PROCESS_ID_TYPE* processId)
 {
