@@ -40,7 +40,9 @@ add_executable(${PROJECT_NAME}
 	${SRC_DIR}/kernel/scheduler.c
 	${SRC_DIR}/kernel/arinc/partition.c
 	${SRC_DIR}/kernel/arinc/process.c
-
+	${SRC_DIR}/kernel/queuing_port.c
+	${SRC_DIR}/kernel/circular_buffer.c
+	${SRC_DIR}/kernel/statics.c
 )
 target_link_libraries(${PROJECT_NAME}
 	drivers
