@@ -1,4 +1,7 @@
+#include <apex-types.h>
+
 #include "context.h"
+#include "time_get.h"
 
 void SVC_Handler(void)
 {
@@ -15,10 +18,17 @@ void SVC_Handler(void)
 
     switch (stack->R0)
     {
-        case 0x0000000a:
-            {
-                //Insert call to CREATE_PROCESS handler here!
-            }
+        case 0x0000000a:        // CREATE_PROCESS
+        {
+            //Insert call to CREATE_PROCESS handler here!
+            return;
+        }
+        case 0xc0ffee0b:        // GET_TIME
+        {
+            stack->R0 = NO_ERROR;
+            stack->R1 = (uint32_t) TIME_Get_Total();
+            return;
+        }
         default:
             break;
     }

@@ -12,8 +12,6 @@
 #include "drivers/watchdog.h"
 #include "drivers/time_get.h"
 #include "drivers/rtc.h"
-#include "drivers/apex_time.h"
-#include "drivers/apex_types.h"
 
 #include "kernel/context.h"
 
@@ -155,7 +153,7 @@ int main(void)
 		//
 		delay_ms(1000);
 		//x = TIME_Stop_ns();
-		GET_TIME(&SYSTEM_TIME, &RETURN_CODE);
+		//GET_TIME(&SYSTEM_TIME, &RETURN_CODE);
 		z= TIME_Get_Total();
 		//HAL_Delay(1000);
 		
