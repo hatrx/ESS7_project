@@ -4,7 +4,10 @@
 /*                                                                */
 /*----------------------------------------------------------------*/
 
-#ifndef APEX_PROCESS #define APEX_PROCESS
+#ifndef APEX_PROCESS
+#define APEX_PROCESS 
+
+#include "apex_types.h"
 
 #define  MAX_NUMBER_OF_PROCESSES  SYSTEM_LIMIT_NUMBER_OF_PROCESSES
 

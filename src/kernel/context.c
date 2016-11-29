@@ -2,16 +2,13 @@
 #include <stdint.h>
 
 #include "context.h"
+#include "scheduler.h"
 
-#define DISABLE_CONTEXT_SWITCH
-#define MAX_PROCESS	3
+#include "arinc/partition.h"
 
-volatile void* taskStacks[MAX_PROCESS];
-volatile uint8_t activeProcess = 0;
-volatile uint8_t n_process = 1;
-volatile uint32_t timings1[MAX_PROCESS] = {1000, 1000, 3000};
-volatile uint32_t timings2 = 0;
+//#define DISABLE_CONTEXT_SWITCH
 
+static process_t* activeProcess = NULL;
 
 #ifndef DISABLE_CONTEXT_SWITCH
 /**
@@ -28,35 +25,18 @@ __attribute__((naked)) void SysTick_Handler(void)
 	uint32_t exc_return_value;
 	__asm volatile ("MOV %0, LR" : "=r" (exc_return_value));
 
-	// Save the value of the stack pointer for later use.
-	taskStacks[activeProcess] = stackpointer;
-
-	if(timings2 <= HAL_GetTick()){
-		timings2 = HAL_GetTick() + timings1[activeProcess];
-		++activeProcess;
-		if (activeProcess == MAX_PROCESS) {
-			activeProcess = 0;
-		}
+	if (activeProcess != NULL)
+	{
+		// Save the value of the stack pointer for later use.
+		activeProcess->stackpointer = stackpointer;
+		activeProcess->exc_return_value = (exc_return_value & 0xFF);
 	}
 
 	// Increase HAL ticks. This is by the HAL_Delay(int) function, so we need to do this.
 	HAL_IncTick();
 	TIME_Add_Count();
-	// Increment the millisecond counter.
-	// TODO: Handle the fact that this handler is NOT called every millisecond as the documentatio otherwise shows.
-	/*msCount++;
-
-	// Primarily used for debugging. Can easily be deleted.
-	ARM_context_state * state_kernel = (ARM_context_state *) taskStacks[0];
-	ARM_context_state * state_user = (ARM_context_state *) taskStacks[1];
-
-	// The the index current active process. Right now this is hardcoded to 1, but should later be incremented.
-	activeProcess = 1;
-
-	//uint32_t tmp = CONTEXT_restoreContext((uint32_t) taskStacks[activeProcess]);
-	//register volatile uint32_t tmp = 0;
-
-	*/
+	scheduler_partitionScheduler();
+	activeProcess = scheduler_processScheduler();
 
 	// Resote the software context of the new process.
 	// TODO: Right now, this only handles switches to userspace (and without setting privilege levels),
@@ -64,14 +44,14 @@ __attribute__((naked)) void SysTick_Handler(void)
 	__ASM volatile (
 		"LDMFD  %0!, {R4-R11}       \n"
 		"MSR 	PSP, %0				\n"
-		: "+r" ((uint32_t) taskStacks[activeProcess]) :
+		: "+r" (activeProcess->stackpointer) :
 	);
 
-	// Switch to using the PSP, and end the function.
-	// We need to set the PC with an EXC_RETURN value. This value tells the NVIC which mode to return to;
-	// see the ARM documentation to see the meaning of these values.
 	__ASM volatile (
-		"LDR PC,=0xFFFFFFFD"
+		"LDR	R1, =0xFFFFFF00 		\n\t"
+		"ADD	R1, R1, %0				\n\t"
+		"BX		R1						\n\t"
+		: : "r" (activeProcess->exc_return_value) :
 	);
 }
 #else
@@ -83,7 +63,7 @@ void SysTick_Handler(void)
 #endif
 
 
-int setup_contexts(void (*foo)(void), void *addr) {
+int context_setup(void (*foo)(void), void *addr) {
 	ARM_context_state *stack = (ARM_context_state *)addr;
 	ARM_HW_context_state *hw_stack = &stack->hw_stack;
 	hw_stack->R0 = 0;
@@ -103,12 +83,6 @@ int setup_contexts(void (*foo)(void), void *addr) {
 	sw_stack->R9 = 0;
 	sw_stack->R10 = 0;
 	sw_stack->R11 = 0;
-
-	if (n_process < MAX_PROCESS) {
-		taskStacks[n_process] = (void *)stack;
-		++n_process;
-		return 1;
-	}
 
 	return 0;
 }

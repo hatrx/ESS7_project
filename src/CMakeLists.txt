@@ -34,9 +34,14 @@ target_link_libraries(dummy2
 
 # Compile OS
 add_executable(${PROJECT_NAME}
+	${SRC_DIR}/hedder.c
 	${SRC_DIR}/kernel/main.c
 	${SRC_DIR}/kernel/syscalls.c
 	${SRC_DIR}/kernel/context.c
+	${SRC_DIR}/kernel/scheduler.c
+	${SRC_DIR}/kernel/arinc/partition.c
+	${SRC_DIR}/kernel/arinc/process.c
+
 )
 target_link_libraries(${PROJECT_NAME}
 	drivers
