@@ -56,8 +56,8 @@ void Error_Handler(void)
 
 int main(void)
 {
-	PROCESS_ATTRIBUTE_TYPE dummy1_mainProcess_attributes, dummy2_mainProcess_attributes;
-	PROCESS_ID_TYPE dummy1_pid, dummy2_pid;
+	PROCESS_ATTRIBUTE_TYPE dummy1_mainProcess_attributes, dummy2_mainProcess_attributes, stdio_sys_mainProcess_attributes;
+	PROCESS_ID_TYPE dummy1_pid, dummy2_pid, stdio_sys_pid;
 
 	set_system_clock_168mhz();
 
@@ -82,8 +82,7 @@ int main(void)
 */
 	//init_mpu(0x20000000 + 0x2000, MPU_1KB);
 
-	dummy1_mainProcess_attributes = (PROCESS_ATTRIBUTE_TYPE)
-	{
+	dummy1_mainProcess_attributes = (PROCESS_ATTRIBUTE_TYPE) {
 		.PERIOD = 0,
 		.TIME_CAPACITY = 0,
 		.ENTRY_POINT = &dummy1_main,
@@ -92,8 +91,7 @@ int main(void)
 		.NAME = "dummy1",
 	};
 
-	dummy2_mainProcess_attributes = (PROCESS_ATTRIBUTE_TYPE)
-	{
+	dummy2_mainProcess_attributes = (PROCESS_ATTRIBUTE_TYPE) {
 		.PERIOD = 0,
 		.TIME_CAPACITY = 0,
 		.ENTRY_POINT = &dummy2_main,
@@ -102,13 +100,20 @@ int main(void)
 		.NAME = "dummy2",
 	};
 
+	stdio_sys_mainProcess_attributes = (PROCESS_ATTRIBUTE_TYPE) {
+		.PERIOD = 0,
+		.TIME_CAPACITY = 0,
+		.ENTRY_POINT = &stdio_sys_main,
+		.BASE_PRIORITY = 1,
+		.DEADLINE = SOFT,
+		.NAME = "stdio_sys",
+	};
+
 	int_partitions();
 
 	process_createProcess(&test_partitions[0], 0x20001000, &dummy1_mainProcess_attributes, &dummy1_pid);
 	process_createProcess(&test_partitions[1], 0x20003000, &dummy2_mainProcess_attributes, &dummy2_pid);
-
-	//setup_contexts(&dummy1_main, (void *)0x20001000);
-	//setup_contexts(&dummy2_main, (void *)0x20003000);
+	process_createProcess(&test_partitions[2], 0x20005000, &stdio_sys_mainProcess_attributes, &stdio_sys_pid);
 
 #if 0
 	/* Initialize all ports */

@@ -47,9 +47,6 @@ include_directories(
 
 	# STM32 HAL
 	${STM32f4xx_HAL_Driver_DIR}/Inc
-
-	# APEX
-	third_party/ARINC
 )
 
 

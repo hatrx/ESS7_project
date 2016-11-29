@@ -35,7 +35,7 @@ port_t p_stio_sys[1] = {{
 	.portname = "sys_stio",
 },};
 
-partition_t test_partitions[2] = {{
+partition_t test_partitions[3] = {{
 	.IDENTIFIER = 1,
 	.partitionname = "dummy_1",
 	.criticality = LEVEL_A,
@@ -51,7 +51,7 @@ partition_t test_partitions[2] = {{
 	.entrypoint = &dummy2_main,
 	.nb_ports = 1,
 	.ports = p_dummy_2,
-},/*{
+},{
 	.IDENTIFIER = 3,
 	.partitionname = "stio_sys",
 	.criticality = LEVEL_A,
@@ -59,7 +59,7 @@ partition_t test_partitions[2] = {{
 	.entrypoint = &stdio_sys_main,
 	.nb_ports = 1,
 	.ports = p_stio_sys,
-},*/};
+},};
 
 port_t *stio_channel_ports[3] = {
 	&p_dummy_1[0],

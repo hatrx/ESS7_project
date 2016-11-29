@@ -100,7 +100,7 @@ void dummy2_main(void);
 void stdio_sys_main(void);
 
 
-extern partition_t test_partitions[2];
+extern partition_t test_partitions[3];
 extern channel_t connection_table[1];
 
 

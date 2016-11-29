@@ -5,7 +5,7 @@
 
 static uint8_t indexActivePartition = -1;
 
-static uint16_t timings1[3] = {1000, 1000, 3000};
+static uint16_t timings1[4] = {1000, 1000, 1000, 3000};
 static uint32_t timings2 = 0;
 
 void scheduler_partitionScheduler(void)
@@ -19,20 +19,21 @@ void scheduler_partitionScheduler(void)
 
 process_t* scheduler_processScheduler(void)
 {
-	int i;
 	process_t *tmpProcess, *activeProcess;
 	partition_t *activePartition;
 
 	activePartition = &test_partitions[indexActivePartition];
 	activeProcess = &activePartition->processes[0];
 
-	for(i=1; i < MAX_PROCESSES_PER_PARTITIONS; i++)
+	for (int i = 1; i < MAX_PROCESSES_PER_PARTITIONS; ++i)
 	{
 		tmpProcess = &test_partitions[indexActivePartition].processes[i];
-		if(tmpProcess->stackpointer == 0) break;
-		else
-			if(tmpProcess->apexDetails.CURRENT_PRIORITY > activeProcess->apexDetails.CURRENT_PRIORITY)
-				activeProcess = tmpProcess;
+		if(tmpProcess->stackpointer == 0) {
+			break;
+		} else if (tmpProcess->apexDetails.CURRENT_PRIORITY > activeProcess->apexDetails.CURRENT_PRIORITY) {
+			activeProcess = tmpProcess;
+		}
 	}
+
 	return activeProcess;
 }
