@@ -4,12 +4,12 @@
 #include "context.h"
 
 #define DISABLE_CONTEXT_SWITCH
-#define MAX_PROCESS	3
+#define MAX_PROCESS	4
 
 volatile void* taskStacks[MAX_PROCESS];
 volatile uint8_t activeProcess = 0;
 volatile uint8_t n_process = 1;
-volatile uint32_t timings1[MAX_PROCESS] = {1000, 1000, 3000};
+volatile uint32_t timings1[MAX_PROCESS] = {1000, 1000, 1000, 1000};
 volatile uint32_t timings2 = 0;
 
 

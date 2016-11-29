@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <inttypes.h>
+#include <string.h>
 
 #include "drivers/uart.h"
 #include "drivers/mpu.h"
@@ -10,11 +11,11 @@
 #include "drivers/system_clock.h"
 #include "drivers/watchdog.h"
 #include "drivers/get_time.h"
+#include "drivers/utils.h"
 
 #include "kernel/context.h"
-
-void dummy1_main(void);
-void dummy2_main(void);
+#include "kernel/statics.h"
+#include "kernel/queuing_port.h"
 
 
 void UsageFault_Handler(void)
@@ -44,10 +45,12 @@ void SVC_Handler(void)
 	printf("SVC_Handler\n");
 }
 
+
 int main(void)
 {
 	set_system_clock_168mhz();
 
+	HAL_Init();
 	if (BSP_UART_init() != 0) {
 		// Shit no working!
 	}
@@ -55,24 +58,22 @@ int main(void)
 	init_onboard_LED(red_led);
 	init_onboard_LED(yellow_led);
 
-	//BSP_IWDG_init(3000);		//time slot for the watchdog to be refreshed in (in miliseconds)
+	//time slot for the watchdog to be refreshed in (in miliseconds)
+	//BSP_IWDG_init(3000);
 
 	//init_mpu(0x20000000 + 0x2000, MPU_1KB);
 
 	setup_contexts(&dummy1_main, (void *)0x20001000);
 	setup_contexts(&dummy2_main, (void *)0x20003000);
-
-	printf("\n");
-	printf("dummy1: %02X\n", &dummy1_main);
-	printf("dummy2: %02X\n", &dummy2_main);
+	setup_contexts(&stdio_sys_main, (void *)0x20005000);
 
 
-	HAL_Init();
 
-	//uint32_t counter = 0;
+
+	uint32_t counter = 0;
 
 	while (1) {
-		//printf("Hello world! : %"PRIu32"\n", counter++);
+		printf("Hello world! : %"PRIu32"\n", counter++);
 		HAL_Delay(1000);
 		//BSP_IWDG_refresh();
 	}
