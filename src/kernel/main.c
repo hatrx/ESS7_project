@@ -67,7 +67,7 @@ int main(void)
 	init_onboard_LED(red_led);
 	init_onboard_LED(yellow_led);
 
-/*
+	/*
 	if (BSP_IWDG_Init() != 0)		//Independent watchdog time initilisation
 	{
 		Error_Handler();		// Shit not working!
@@ -77,7 +77,7 @@ int main(void)
 	{
 		Error_Handler();		// Shit not working!
 	}
-*/
+	*/
 	//init_mpu(0x20000000 + 0x2000, MPU_1KB);
 
 	dummy1 = (partition)
@@ -111,7 +111,7 @@ int main(void)
 		.DEADLINE = SOFT,
 		.NAME = "dummy1",
 	};
-	
+
 	dummy2_mainProcess_attributes = (PROCESS_ATTRIBUTE_TYPE)
 	{
 		.PERIOD = 0,
