@@ -71,4 +71,80 @@
          <Window_Schedule WindowIdentifier="501" WindowStartSeconds="0.180" WindowDurationSeconds="0.020" PartitionPeriodStart="true" />
       </Partition_Schedule>
    </Module_Schedule>
+   <Connection_Table>
+     <Channel ChannelIdentifier="1" ChannelName="Sensor 1 ">
+       <Source>
+         <Pseudo_Partition Name="Pseudo Partition 1" Procedure="receive_485_1" PhysicalAddress="0x80000000" />
+       </Source>
+       <Destination>
+         <Standard_Partition PartitionIdentifier="2" PartitionName="Flight Controls" PortName="Sens_1Ds" PhysicalAddress="0x80000000" />
+       </Destination>
+     </Channel>
+     <Channel ChannelIdentifier="2" ChannelName="Sensor 2">
+       <Source>
+         <Pseudo_Partition Name="Pseudo Partition 2" Procedure="receive_485_2" PhysicalAddress="0x80000100" />
+       </Source>
+       <Destination>
+         <Standard_Partition PartitionIdentifier="2" PartitionName="Flight Controls" PortName="Sens_2Ds" PhysicalAddress="0x80000100" />
+       </Destination>
+       <Destination>
+         <Standard_Partition PartitionIdentifier="3" PartitionName="Flight Management" PortName="Sens_2Ds" PhysicalAddress="0x80000100" />
+       </Destination>
+     </Channel>
+     <Channel ChannelIdentifier="3" ChannelName="Actuator_1">
+       <Source>
+         <Standard_Partition PartitionIdentifier="2" PartitionName="Flight Controls" PortName="Act_1Ss" />
+       </Source>
+       <Destination>
+         <Standard_Partition PartitionIdentifier="5" PartitionName="IVHM" PortName="Act_1Ds" />
+       </Destination>
+       <Destination>
+         <Pseudo_Partition Name="Pseudo Partition 3" Procedure="send_485_1" />
+       </Destination>
+     </Channel>
+     <Channel ChannelIdentifier="4" ChannelName="Actuator_2">
+       <Source>
+         <Standard_Partition PartitionIdentifier="2" PartitionName="Flight Controls" PortName="Act_2Ss" />
+       </Source>
+       <Destination>
+         <Standard_Partition PartitionIdentifier="5" PartitionName="IVHM" PortName="Act_2Ds" />
+       </Destination>
+       <Destination>
+         <Pseudo_Partition Name="Pseudo Partition 4" Procedure="send_485_2" />
+       </Destination>
+     </Channel>
+     <Channel ChannelIdentifier="5" ChannelName="Status_2">
+       <Source>
+         <Standard_Partition PartitionIdentifier="2" PartitionName="Flight Controls" PortName="Stat_2Sq" />
+       </Source>
+       <Destination>
+         <Standard_Partition PartitionIdentifier="1" PartitionName="System Management" PortName="Stat_2Dq" />
+       </Destination>
+     </Channel>
+     <Channel ChannelIdentifier="6" ChannelName="Status_3">
+       <Source>
+         <Standard_Partition PartitionIdentifier="3" PartitionName="Flight Management" PortName="Stat_3Sq" />
+       </Source>
+       <Destination>
+         <Standard_Partition PartitionIdentifier="1" PartitionName="System Management" PortName="Stat_3Dq" />
+       </Destination>
+     </Channel>
+     <Channel ChannelIdentifier="7" ChannelName="Status_4">
+       <Source>
+         <Standard_Partition PartitionIdentifier="4" PartitionName="IO Processing" PortName="Stat_4Sq" />
+       </Source>
+       <Destination>
+         <Standard_Partition PartitionIdentifier="1" PartitionName="System Management" PortName="Stat_4Dq" />
+       </Destination>
+     </Channel>
+     <Channel ChannelIdentifier="8" ChannelName="Status_5">
+       <Source>
+         <Standard_Partition PartitionIdentifier="5" PartitionName="IVHM" PortName="Stat_5Sq" />
+       </Source>
+       <Destination>
+         <Standard_Partition PartitionIdentifier="1" PartitionName="System Management" PortName="Stat_5Dq" />
+       </Destination>
+     </Channel>
+   </Connection_Table>
  </ARINC_653_Module>
+ 

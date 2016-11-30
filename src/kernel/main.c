@@ -11,9 +11,11 @@
 #include "drivers/onboard_leds.h"
 #include "drivers/system_clock.h"
 #include "drivers/watchdog.h"
-#include "drivers/get_time.h"
+#include "drivers/time_get.h"
 #include "drivers/rtc.h"
 #include "drivers/utils.h"
+#include "drivers/apex_time.h"
+#include "drivers/apex_types.h"
 
 #include "kernel/context.h"
 #include "kernel/arinc/partition.h"
@@ -121,10 +123,25 @@ int main(void)
 	process_createProcess(&test_partitions[2], 0x20005000, &stdio_sys_mainProcess_attributes, &stdio_sys_pid);
 
 	//uint32_t counter = 0;
+	int64_t x=0;
+	int32_t y=0;
+	int64_t z=0;
+	int count = 0;
+	TIME_Start_ns();
+	SYSTEM_TIME_TYPE SYSTEM_TIME;
+	RETURN_CODE_TYPE RETURN_CODE;
+
 
 	while (1) {
 		//printf("Hello world! : %"PRIu32"\n", counter++);
-		HAL_Delay(1000);
+		//
+		delay_ms(1000);
+		//x = TIME_Stop_ns();
+		GET_TIME(&SYSTEM_TIME, &RETURN_CODE);
+		z= TIME_Get_Total();
+		//HAL_Delay(1000);
 
+		//y = TIME_Get_Cycles();
+		count++;
 	}
 }

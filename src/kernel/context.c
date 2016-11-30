@@ -4,6 +4,8 @@
 #include "context.h"
 #include "scheduler.h"
 
+#include <drivers/time_get.h>
+
 #include "arinc/partition.h"
 
 //#define DISABLE_CONTEXT_SWITCH
@@ -34,7 +36,7 @@ __attribute__((naked)) void SysTick_Handler(void)
 
 	// Increase HAL ticks. This is by the HAL_Delay(int) function, so we need to do this.
 	HAL_IncTick();
-
+	TIME_Add_Count();
 	scheduler_partitionScheduler();
 	activeProcess = scheduler_processScheduler();
 
@@ -58,6 +60,7 @@ __attribute__((naked)) void SysTick_Handler(void)
 void SysTick_Handler(void)
 {
 	HAL_IncTick();
+	TIME_Add_Count();
 }
 #endif
 

@@ -8,7 +8,7 @@ class ParseXML:
 
 
     def __init__(self):
-        self.xml_schema = "schema.xml"
+        self.xml_schema = "default_schema.xml"
         self.file_h = open("xml_data.h", "w")
         self.file_c = open("xml_data.c", "w")
 
@@ -47,10 +47,32 @@ class ParseXML:
 
     def write_file_h_header(self):
         self.write_to_file_h(
-            """#ifndef XML_DATA_H
+"""#ifndef XML_DATA_H
 #define XML_DATA_H
 #include <stdbool.h>
-            """)
+#include <stddef.h>
+#include <stdint.h>
+
+#include \"APEX/apex_queuing.h\"
+#include \"APEX/apex_sampling.h\"
+#include \"APEX/apex_partition.h\"
+
+#include \"circular_buffer.h\"
+
+/*
+ * This macro simplifies the generation of message buffers.
+ * It sets the maximum message size, maximum message number
+ * and the buffer to hold them.
+ */
+#define MESSAGE_BUFFER(nb_message, message_size) \
+    .MAX_MESSAGE_SIZE = message_size, \
+    .MAX_NB_MESSAGE = nb_message, \
+    .buffer = (uint8_t [(message_size * nb_message) + \
+        (message_size * sizeof(size_t))]) {0}, \
+    .circ_buf = {0, 0, 0, (message_size * nb_message) + \
+        (message_size * sizeof(size_t))}
+
+""")
 
 
     def write_file_h_footer(self):
@@ -135,227 +157,202 @@ class ParseXML:
         declaration_list = [q_ports_struct, s_ports_struct, partition_struct, 
                             memory_requirements_struct, partition_memory_struct, 
                             window_schedule_struct, partition_schedule_struct]        
-
         for n in declaration_list:
             self.write_to_file_h(n)
 
 
-    #iterates through sub_structure to append string partition sructs in a list
     def create_sub_structure_structs(self, sub_structure):
-        x = 0
-        part_string = ""
+        structs_string = ""
         no_of_sub_elements = len(sub_structure)
-        #print "number of sub_structure elements %s" % (no_of_sub_elements)
         
-        while x < no_of_sub_elements:
-            sub_element = sub_structure[x]
-            sub_element_struct = self.construct_sub_element_struct(sub_element) #need to know if ports exist
-            part_string = part_string + sub_element_struct
-            x = x + 1
+        for sub_element in sub_structure:
+            sub_element_struct = self.construct_sub_element_struct(sub_element)
+            structs_string = structs_string + sub_element_struct
 
         partition = sub_element.get('Queuing_Port', None) 
         partition_memory = sub_element.get('Memory_Requirements', None)         
         partition_schedule = sub_element.get('Window_Schedule', None)         
         if partition:
-            #print "const partition partitions[%s] = {%s};\n\n" % (no_of_sub_elements, part_string)
-            complete_struct = "const partition partitions[%s] = {%s};\n\n" % (no_of_sub_elements, part_string)
+            complete_struct = "const partition partitions[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string)
             self.write_to_file_c(complete_struct)
         if partition_memory:
-            #print "const partition_memory partition_memorys[%s] = {%s};\n\n" % (no_of_sub_elements, part_string)
-            complete_struct = "const partition_memory partition_memorys[%s] = {%s};\n\n" % (no_of_sub_elements, part_string)
+            complete_struct = "const partition_memory partition_memorys[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string)
             self.write_to_file_c(complete_struct)
         if partition_schedule:
-            #print "const partition_schedule partition_schedules[%s] = {%s};\n\n" % (no_of_sub_elements, part_string)
-            complete_struct = "const partition_schedule partition_schedules[%s] = {%s};\n\n" % (no_of_sub_elements, part_string)
+            complete_struct = "const partition_schedule partition_schedules[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string)
             self.write_to_file_c(complete_struct)
 
 
     def construct_sub_element_struct(self, sub_element):
+        queuing_ports = sub_element.get("Queuing_Port", ())
+        sampling_ports = sub_element.get("Sampling_Port", ())
+        memory_requirements = sub_element.get("Memory_Requirements", ())
+        window_schedule = sub_element.get("Window_Schedule", ())
 
-        partition = sub_element.get('Queuing_Port', None) 
-        partition_memory = sub_element.get('Memory_Requirements', None)         
-        partition_schedule = sub_element.get('Window_Schedule', None)         
-        sub_sub_element_struct = ""
         
-        if partition: 
-            sub_element_struct, element_name = self.partition_struct(sub_element)
-            queuing_ports = sub_element.get("Queuing_Port", ())
-            sampling_ports = sub_element.get("Sampling_Port", ())
-            q_port_wrapper = ""
-            s_port_wrapper = ""
-            if queuing_ports: #vunerable to not having a queuing port, but having a sampling port
-                queuing_ports = self.sub_sub_structure_validation(queuing_ports)
-                q_port_string, no_of_q_ports = self.create_queuing_port_structs(queuing_ports)
-                q_ports_wrapper = "const queuing_port queuep_%s[%s] = {%s};\n\n" % (element_name.replace (" ", "_"), no_of_q_ports, q_port_string)
-                #print "\n" + q_ports_wrapper
-                self.write_to_file_c(q_ports_wrapper)
+        if queuing_ports:
+            sub_element_struct, sub_element_name = self.partition_struct(sub_element, sampling_ports)
+
+            structs_string = ""
+            get_list = ['@PortName', '@MaxMessageSize', '@Direction', '@MaxNbMessages']
+            no_of_ports = len(queuing_ports)
+            queuing_ports = self.sub_sub_structure_validation(queuing_ports)
+            for port in queuing_ports:
+                get_list_tuple = self.return_get_tuple(port, get_list)
+                q_port_struct = """{{
+    .portname = \"{}\",
+    .maxmessagesize = {},
+    .direction = {},
+    .maxnbmessages = {},
+    }},""".format(*get_list_tuple)
+                structs_string = structs_string + q_port_struct
+            q_ports_wrapper = "const queuing_port queuep_%s[%s] = {%s};\n\n" % (sub_element_name, no_of_ports, structs_string)
+            self.write_to_file_c(q_ports_wrapper)
 
             if sampling_ports:
+                structs_string = ""
+                get_list = ['@PortName', '@MaxMessageSize', '@Direction', '@RefreshRateSeconds']
+                no_of_ports = len(sampling_ports)
                 sampling_ports = self.sub_sub_structure_validation(sampling_ports)                
-                s_port_string, no_of_s_ports = self.create_sampling_port_structs(sampling_ports)
-                s_ports_wrapper = "const sampling_port samplep_%s[%s] = {%s};\n\n" % (element_name.replace (" ", "_"), no_of_s_ports, s_port_string)
-                #print s_ports_wrapper
+                #s_port_string, no_of_s_ports = self.create_sampling_port_structs(sampling_ports)
+                for port in sampling_ports:
+                    get_list_tuple = self.return_get_tuple(port, get_list)
+                    s_port_struct = """{{
+    .portname = \"{}\",
+    .maxmessagesize = {},
+    .direction = \"{}\",
+    .refreshrateseconds = {},
+    }},""".format(*get_list_tuple)
+                    structs_string = structs_string + s_port_struct
+                s_ports_wrapper = "const sampling_port samplep_%s[%s] = {%s};\n\n" % (sub_element_name, no_of_ports, structs_string)
                 self.write_to_file_c(s_ports_wrapper)
-            partition = None
-                
-
-        elif partition_memory:
-            sub_element_struct, element_name = self.partition_memory_struct(sub_element)
-            memory_requirements = sub_element.get("Memory_Requirements", ())
-            if memory_requirements:
-                memory_requirements = self.sub_sub_structure_validation(memory_requirements)
-                memory_requirements_string, no_of_memory_requirements = self.create_memory_requirements_structs(memory_requirements)
-                memory_requirements_wrapper = "const memory_requirements memoryp_%s[%s] = {%s};\n\n" % (element_name.replace (" ", "_"), no_of_memory_requirements, memory_requirements_string)
-                #print "\n" + memory_requirements_wrapper
-            self.write_to_file_c(memory_requirements_wrapper)
-            partition_memory = None
 
 
-        elif partition_schedule:
-            sub_element_struct, element_name = self.partition_schedule_struct(sub_element)
-            window_schedule = sub_element.get("Window_Schedule", ())
-            if window_schedule:
-                window_schedule = self.sub_sub_structure_validation(window_schedule)
-                window_schedule_string, no_of_window_schedules = self.create_window_schedules_structs(window_schedule)
-                window_schedule_wrapper = "const window_schedule windowp_%s[%s] = {%s};\n\n" % (element_name.replace (" ", "_"), no_of_window_schedules, window_schedule_string)
-                #print "\n" + window_schedule_wrapper
-            self.write_to_file_c(window_schedule_wrapper)
-            partition_schedule = None
+        elif memory_requirements:
+            sub_element_struct, sub_element_name = self.partition_memory_struct(sub_element)
+            structs_string = ""
+            get_list = ['@Type', '@SizeBytes', '@Access', '@PhysicalAddress']
+            no_of_mem_req = len(memory_requirements)
+            memory_requirements = self.sub_sub_structure_validation(memory_requirements)
+            #mem_requirements_string, no_of_mem_requirements = self.create_memory_requirements_structs(mem_requirements)
+            for requirement in memory_requirements:
+                get_list_tuple = self.return_get_tuple(requirement, get_list)
+                mem_requirement_struct = """{{
+    .type = \"{}\",
+    .sizebytes = {},
+    .access = \"{}\",
+    .physicaladdress = \"{}\",
+    }},""".format(*get_list_tuple)
+                structs_string = structs_string + mem_requirement_struct
+            mem_requirements_wrapper = "const memory_requirements memoryp_%s[%s] = {%s};\n\n" % (sub_element_name, no_of_mem_req, structs_string)
+            self.write_to_file_c(mem_requirements_wrapper)
 
+
+        elif window_schedule:
+            sub_element_struct, sub_element_name = self.partition_schedule_struct(sub_element)
+
+            structs_string = ""
+            get_list = ['@WindowIdentifier', '@WindowStartSeconds', '@WindowDurationSeconds', '@PartitionPeriodStart']
+            no_of_win_sch = len(memory_requirements)
+            window_schedule = self.sub_sub_structure_validation(window_schedule)
+            #win_schedule_string, no_of_win_schedules = self.create_window_schedules_structs(win_schedule)
+            for win in window_schedule:
+                get_list_tuple = self.return_get_tuple(win, get_list)
+                win_schedule_struct = """{{
+    .windowidentifier = {},
+    .windowstartseconds = {},
+    .windowdurationseconds = {},
+    .partitionperiodstart = {},
+    }},""".format(*get_list_tuple)
+                structs_string = structs_string + win_schedule_struct
+            win_schedule_wrapper = "const window_schedule windowp_%s[%s] = {%s};\n\n" % (sub_element_name, no_of_win_sch, structs_string)
+            self.write_to_file_c(win_schedule_wrapper)
 
         else:
-            print "dunno what it is"
-            print sub_element
+            print "unknown sub_element: %s" % (sub_element)
 
         return sub_element_struct
 
-    def partition_struct(self, sub_element):
-        sampling_ports = sub_element.get("Sampling_Port", ())
 
+    def partition_struct(self, sub_element, sampling_ports):
         #had to use @ sign as it appears in the data for some unknown reason
-        part_id = sub_element.get('@PartitionIdentifier', "nope") 
-        name = sub_element.get('@PartitionName', "nope") 
-        crit_level = sub_element.get('@Criticality', "nope") 
-        sys_part = sub_element.get('@SystemPartition', "nope") 
-        entry = sub_element.get('@EntryPoint', "nope") 
-        queue_arr = "queuep_%s" % (name)
-        sample_arr = ("samplep_%s" % (name)).replace (" ", "_")
+        part_id = sub_element.get('@PartitionIdentifier', None) 
+        name = sub_element.get('@PartitionName', None).replace (" ", "_")
+        crit_level = sub_element.get('@Criticality', None) 
+        sys_part = sub_element.get('@SystemPartition', None) 
+        entry = "&" + sub_element.get('@EntryPoint', None) 
+        queue_arr = "queuep_%s" % (name).replace (" ", "_")
+        sample_arr = "samplep_%s" % (name).replace (" ", "_")
         if not sampling_ports:
             sample_arr = 0
-        partition_struct = "{ \n\t .partitionidentifier = %s,\n\t .partitionname = \"%s\",\n\t .criticality = \"%s\",\n\t .systempartion = %s,\n\t .entrypoint = %s,\n\t .queue_arr = %s,\n\t .sample_arr = %s,\n\t}," % (part_id, name.replace (" ", "_"), crit_level, sys_part, "&" + entry, queue_arr.replace (" ", "_"), sample_arr)
+        partition_struct = """{ 
+    .partitionidentifier = %s,
+    .partitionname = \"%s\",
+    .criticality = \"%s\",
+    .systempartion = %s,
+    .entrypoint = %s,
+    .queue_arr = %s,
+    .sample_arr = %s,
+    },""" % (part_id, name, crit_level, sys_part, entry, queue_arr, sample_arr)
 
+        #this write the entry point to the .h file as it is a function needed to be defined
         self.write_to_file_h("""
 void %s(void);
-        """ % (entry))
-
+""" % (entry))
         return partition_struct, name
 
 
     def partition_memory_struct(self, sub_element):
-        part_id = sub_element.get('@PartitionIdentifier', "nope") 
-        name = sub_element.get('@PartitionName', "nope") 
-        memory_arr = "memoryp_%s" % (name)
-        partition_memory_struct = "{ \n\t .partitionidentifier = %s,\n\t .partitionname = \"%s\",\n\t .memory_arr = %s,\n\t}," % (part_id, name.replace (" ", "_"), memory_arr.replace (" ", "_"))
+        part_id = sub_element.get('@PartitionIdentifier', None)
+        name = sub_element.get('@PartitionName', None).replace (" ", "_")
+        memory_arr = "memoryp_%s" % (name).replace (" ", "_")
+
+        partition_memory_struct = """{
+    .partitionidentifier = %s,
+    .partitionname = \"%s\",
+    .memory_arr = %s,
+    },""" % (part_id, name, memory_arr)
+
         return partition_memory_struct, name
 
         
     def partition_schedule_struct(self, sub_element):
-        part_id = sub_element.get('@PartitionIdentifier', "nope") 
-        name = sub_element.get('@PartitionName', "nope") 
-        period_seconds = sub_element.get('@PeriodSeconds', "nope") 
-        period_duration_seconds = sub_element.get('@PeriodDurationSeconds', "nope") 
-        window_arr = "windowp_%s" % (name)
+        part_id = sub_element.get('@PartitionIdentifier', None)
+        name = sub_element.get('@PartitionName', "nope").replace (" ", "_")
+        period_seconds = sub_element.get('@PeriodSeconds', None)
+        period_duration_seconds = sub_element.get('@PeriodDurationSeconds', None)
+        window_arr = "windowp_%s" % (name).replace (" ", "_")
 
-        partition_schedule_struct = "{\n\t .partitionidentifier = %s,\n\t .partitionname = \"%s\",\n\t .peroidseconds = %s,\n\t .perioddurationseconds = %s,\n\t .window_arr = %s,\n\t}," % (part_id, name.replace (" ", "_"), period_seconds, period_duration_seconds, window_arr.replace (" ", "_"))
+        partition_schedule_struct = """{
+    .partitionidentifier = %s,
+    .partitionname = \"%s\",
+    .peroidseconds = %s,
+    .perioddurationseconds = %s,
+    .window_arr = %s,
+    },""" % (part_id, name, period_seconds, period_duration_seconds, window_arr)
+
         return partition_schedule_struct, name
 
 
-    # ports ----------------------------------------------------------------------
-
-    #takes in the ports and returns them in the correct structure. This is needed as ports can be in dictionaries or lists
     def sub_sub_structure_validation(self, sub_sub_structure):
         if sub_sub_structure:
             if type(sub_sub_structure) == dict:
                 sub_sub_structure_list = []
                 sub_sub_structure_list.append(sub_sub_structure)
                 sub_sub_structure = sub_sub_structure_list
-
         return sub_sub_structure
 
 
-    def create_queuing_port_structs(self, q_ports):
-        x = 0
-        q_port_string = ""
-        no_of_ports = len(q_ports)
-        while x < no_of_ports:
-            port = q_ports[x]
+    def return_get_tuple(self, element, get_list):
+        get_list_values = ()
+        for get_item in get_list:            
+            get_list_value = element.get(get_item, 0)#value set 0 because of C requirement
+            if get_list_value:
+                get_list_value = get_list_value.replace(" ", "_")
+            get_list_values = get_list_values + (get_list_value,)
+        return get_list_values
 
-            name = port.get('@PortName', "nope") 
-            msg_size = port.get('@MaxMessageSize', "nope") 
-            direction = port.get('@Direction', "nope") 
-            max_msg = port.get('@MaxNbMessages', "nope") 
-
-            q_port_struct = "{\n\t .portname = \"%s\",\n\t .maxmessagesize = %s,\n\t .direction = \"%s\",\n\t .maxnbmessages = %s,\n\t}," % (name.replace (" ", "_"), msg_size, direction, max_msg)
-            q_port_string = q_port_string + q_port_struct
-            x = x + 1
-        return q_port_string, no_of_ports
-
-
-    def create_sampling_port_structs(self, s_ports):
-        x = 0
-        s_port_string = ""
-        no_of_ports = len(s_ports)
-        while x < no_of_ports:
-            port = s_ports[x]
-
-            name = port.get('@PortName', "nope") 
-            msg_size = port.get('@MaxMessageSize', "nope") 
-            direction = port.get('@Direction', "nope") 
-            r_rate = port.get('@RefreshRateSeconds', "nope") 
-
-            s_port_struct = "{\n\t .portname = \"%s\",\n\t .maxmessagesize = %s,\n\t .direction = \"%s\",\n\t .refreshrateseconds = %s,\n\t}," % (name.replace (" ", "_"), msg_size, direction, r_rate)
-            s_port_string = s_port_string + s_port_struct
-            x = x + 1
-        return s_port_string, no_of_ports
-
-
-    def create_memory_requirements_structs(self, memory_requirements):
-        x = 0
-        memory_requirement_string = ""
-        no_of_memory_requirements = len(memory_requirements)
-        while x < no_of_memory_requirements:
-            memory_requirement = memory_requirements[x]
-
-            mem_type = memory_requirement.get('@Type', "nope") 
-            size_bytes = memory_requirement.get('@SizeBytes', "nope") 
-            access = memory_requirement.get('@Access', "nope") 
-            physical_address = memory_requirement.get('@PhysicalAddress', "nope") 
-
-            memory_requirement_struct = "{\n\t .type = \"%s\",\n\t .sizebytes = %s,\n\t .access = \"%s\",\n\t .physicaladdress = \"%s\",\n\t}," % (mem_type, size_bytes, access, physical_address)
-            memory_requirement_string = memory_requirement_string + memory_requirement_struct
-            x = x + 1
-        return memory_requirement_string, no_of_memory_requirements
-
-
-    def create_window_schedules_structs(self, window_schedules):
-        x = 0
-        window_schedule_string = ""
-        no_of_window_schedules = len(window_schedules)
-        while x < no_of_window_schedules:
-            window_schedule = window_schedules[x]
-
-            win_id = window_schedule.get('@WindowIdentifier', "nope") 
-            win_start = window_schedule.get('@WindowStartSeconds', "nope") 
-            win_duration = window_schedule.get('@WindowDurationSeconds', "nope") 
-            part_period_start = window_schedule.get('@PartitionPeriodStart', "nope") 
-
-            window_schedule_struct = "{\n\t .windowidentifier = %s,\n\t .windowstartseconds = %s,\n\t .windowdurationseconds = %s,\n\t .partitionperiodstart = %s,\n\t}," % (win_id, win_start, win_duration, part_period_start)
-            window_schedule_string = window_schedule_string + window_schedule_struct
-
-            x = x + 1
-        return window_schedule_string, no_of_window_schedules
-
-
+            
     def main(self):
         xml = self.get_xml()
         parsed_xml = self.parse_xml(xml)
@@ -364,10 +361,8 @@ void %s(void);
         self.write_file_c_header()
         sub_structures = self.get_sub_structures(parsed_xml) #will be a list of partitions, partition memory, ect
 
-        #no_of_sub_structures = len(sub_structures)
         for sub_structure in sub_structures:
             self.create_sub_structure_structs(sub_structure)
-
 
         self.write_file_h_footer()
         self.file_h.close()
@@ -377,6 +372,3 @@ void %s(void);
 if __name__ == "__main__":
     parse_xml = ParseXML()
     parse_xml.main()
-
-    
-    
