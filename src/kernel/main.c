@@ -14,8 +14,6 @@
 #include "drivers/time_get.h"
 #include "drivers/rtc.h"
 #include "drivers/utils.h"
-#include "drivers/apex_time.h"
-#include "drivers/apex_types.h"
 
 #include "kernel/context.h"
 #include "kernel/arinc/partition.h"
@@ -34,9 +32,9 @@ void UsageFault_Handler(void)
 void HardFault_Handler(void)
 {
 	printf("HardFault_Handler\n");
-	// SCB_Type *something = SCB;
-	// uint32_t hfsr = something->HFSR;
-	// uint32_t cfsr = something->CFSR;
+	SCB_Type *something = SCB;
+	uint32_t hfsr = something->HFSR;
+	uint32_t cfsr = something->CFSR;
 	while(1);
 }
 
@@ -71,7 +69,7 @@ int main(void)
 	init_onboard_LED(red_led);
 	init_onboard_LED(yellow_led);
 
-/*
+	/*
 	if (BSP_IWDG_Init() != 0)		//Independent watchdog time initilisation
 	{
 		Error_Handler();		// Shit not working!
@@ -81,7 +79,7 @@ int main(void)
 	{
 		Error_Handler();		// Shit not working!
 	}
-*/
+	*/
 	//init_mpu(0x20000000 + 0x2000, MPU_1KB);
 	/* Initialize all ports */
 	init_queuing_ports();
@@ -115,33 +113,13 @@ int main(void)
 		.DEADLINE = SOFT,
 		.NAME = "stdio_sys",
 	};
-
 	int_partitions();
-
 	process_createProcess(&test_partitions[0], 0x20001000, &dummy1_mainProcess_attributes, &dummy1_pid);
 	process_createProcess(&test_partitions[1], 0x20003000, &dummy2_mainProcess_attributes, &dummy2_pid);
 	process_createProcess(&test_partitions[2], 0x20005000, &stdio_sys_mainProcess_attributes, &stdio_sys_pid);
-
-	//uint32_t counter = 0;
-	int64_t x=0;
-	int32_t y=0;
-	int64_t z=0;
-	int count = 0;
 	TIME_Start_ns();
-	SYSTEM_TIME_TYPE SYSTEM_TIME;
-	RETURN_CODE_TYPE RETURN_CODE;
 
 
 	while (1) {
-		//printf("Hello world! : %"PRIu32"\n", counter++);
-		//
-		delay_ms(1000);
-		//x = TIME_Stop_ns();
-		GET_TIME(&SYSTEM_TIME, &RETURN_CODE);
-		z= TIME_Get_Total();
-		//HAL_Delay(1000);
-
-		//y = TIME_Get_Cycles();
-		count++;
 	}
 }

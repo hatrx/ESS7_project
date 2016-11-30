@@ -1,24 +1,37 @@
+#include <stm32f4xx_hal.h>
+#include <apex_types.h>
+
 #include "context.h"
+#include "drivers/time_get.h"
 
 void SVC_Handler(void)
 {
     ARM_HW_context_state* stack;
 
     __ASM volatile (
-        "AND	R1, LR, #0x0D	\n\t"		// Logical AND with 0xD
-		"CMP	R1, #0x0D		\n\t"		// Use CMP to set EQ/NE flag
-        "MRSEQ  %0, PSP         \n\t"       // Move PSP into pointer if EQ flag is set
-        "MRSNE  %0, MSP         \n\t"       // Move MSP into pointer if NE flag is set
+        "TST	LR, #0x4    	\n\t"		// Test bit 2 of EXC_RETURN
+		"ITE	EQ      		\n\t"		// Which stack pointer was used?
+        "MRSEQ  %0, MSP         \n\t"       // Move MSP into pointer if EQ flag is set
+        "MRSNE  %0, PSP         \n\t"       // Move SSP into pointer if NE flag is set
         : "=r"  (stack)
         : :
-    ) 
+    );
 
     switch (stack->R0)
     {
-        case 0x0000000a:
-            {
-                //Insert call to CREATE_PROCESS handler here!
-            }
+        case 0xc0ffee0a:        // CREATE_PROCESS
+        {
+            //Insert call to CREATE_PROCESS handler here!
+            return;
+        }
+        case 0xc0ffee0b:        // GET_TIME
+        {
+            uint64_t time = TIME_Get_Total();
+            stack->R0 = NO_ERROR;
+            stack->R1 = (uint32_t) time;
+            stack->R2 = (uint32_t) (time >> 32);
+            return;
+        }
         default:
             break;
     }

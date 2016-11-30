@@ -41,8 +41,8 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 MEMORY
 {
 FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 64K
-DUMMY1 (rx)       : ORIGIN = 0x8010000, LENGTH = 8K
-DUMMY2 (rx)       : ORIGIN = 0x8012000, LENGTH = 8K
+/*DUMMY1 (rx)       : ORIGIN = 0x8010000, LENGTH = 8K*/
+/*DUMMY2 (rx)       : ORIGIN = 0x8012000, LENGTH = 8K*/
 STDIO_SYS (rx)       : ORIGIN = 0x8014000, LENGTH = 8K
 RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 128K
 CCMRAM (rw)      : ORIGIN = 0x10000000, LENGTH = 64K
@@ -59,7 +59,7 @@ SECTIONS
     . = ALIGN(4);
   } >FLASH
 
-  .dummy1 :
+  /*.dummy1 :
   {
     . = ALIGN(4);
     libdummy1.a:*
@@ -71,7 +71,7 @@ SECTIONS
     . = ALIGN(4);
     libdummy2.a:*
     . = ALIGN(4);
-  } >DUMMY2
+  } >DUMMY2*/
 
   .stdio_sys :
   {

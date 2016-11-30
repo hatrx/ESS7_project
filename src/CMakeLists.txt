@@ -8,13 +8,19 @@ add_library(drivers
 	${SRC_DIR}/drivers/time_get.c
 	${SRC_DIR}/drivers/utils.c
 	${SRC_DIR}/drivers/rtc.c
-	${SRC_DIR}/drivers/get_time.c
 )
 target_link_libraries(drivers
 	CMSIS
 	STM32f4xx_HAL_Driver
 )
 
+add_library(APEX
+	${SRC_DIR}/partitions/utils/apex.c
+)
+target_link_libraries(APEX
+	CMSIS
+	STM32f4xx_HAL_Driver
+)
 
 add_library(dummy1
 	${SRC_DIR}/partitions/dummy1/dummy1.c
@@ -29,6 +35,7 @@ add_library(dummy2
 )
 target_link_libraries(dummy2
 	drivers
+	APEX
 )
 
 
@@ -47,6 +54,7 @@ add_executable(${PROJECT_NAME}
 	${SRC_DIR}/kernel/syscalls.c
 	${SRC_DIR}/kernel/context.c
 	${SRC_DIR}/kernel/scheduler.c
+	${SRC_DIR}/kernel/svc_handler.c
 	${SRC_DIR}/kernel/arinc/partition.c
 	${SRC_DIR}/kernel/arinc/process.c
 	${SRC_DIR}/kernel/queuing_port.c

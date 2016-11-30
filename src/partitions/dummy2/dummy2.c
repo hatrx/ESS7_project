@@ -3,6 +3,8 @@
 
 #include <drivers/utils.h>
 #include <drivers/onboard_leds.h>
+#include <apex_types.h>
+#include <apex_time.h>
 
 #include <apex_queuing.h>
 
@@ -12,6 +14,9 @@ void dummy2_main(void)
 	QUEUING_PORT_ID_TYPE QUEUING_PORT_ID;
 	RETURN_CODE_TYPE RETURN_CODE;
 	CREATE_QUEUING_PORT("print_2", 32, 32, SOURCE, FIFO, &QUEUING_PORT_ID, &RETURN_CODE);
+	SYSTEM_TIME_TYPE timeNow;
+	RETURN_CODE_TYPE returnCode;
+
 
 
 	while (1) {
@@ -26,5 +31,6 @@ void dummy2_main(void)
 			onboard_led_toggle(red_led);
 			delay_ms(100);
 		}
+		GET_TIME(&timeNow, &returnCode);
 	}
 }

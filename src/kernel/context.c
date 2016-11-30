@@ -8,6 +8,8 @@
 
 #include "arinc/partition.h"
 
+#include "drivers/time_get.h"
+
 //#define DISABLE_CONTEXT_SWITCH
 
 static process_t* activeProcess = NULL;
