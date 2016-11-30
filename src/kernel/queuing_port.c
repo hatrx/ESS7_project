@@ -8,7 +8,7 @@
 #include "statics.h"
 
 
-int curr_partition_id = 1;
+uint8_t curr_partition_id = 0;
 
 
 void init_queuing_ports(void)
@@ -115,8 +115,7 @@ void SEND_QUEUING_MESSAGE(
 
 		if (!port->is_queuing_port ||
 			!port->activated ||
-			!port->PORT_DIRECTION == DESTINATION) {
-
+			!(port->PORT_DIRECTION == DESTINATION)) {
 			/* Not a valid destination */
 			continue;
 		}

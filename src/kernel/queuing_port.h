@@ -1,9 +1,10 @@
 #ifndef QUEUING_H
 #define QUEUING_H
 
+#include <stdint.h>
 
-extern int curr_partition_id;
 
+extern uint8_t curr_partition_id;
 
 void init_queuing_ports(void);
 

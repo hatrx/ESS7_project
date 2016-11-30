@@ -22,9 +22,9 @@
 	.MAX_MESSAGE_SIZE = message_size, \
 	.MAX_NB_MESSAGE = nb_message, \
 	.buffer = (uint8_t [(message_size * nb_message) + \
-		(message_size * sizeof(size_t))]) {0}, \
+		(nb_message * sizeof(size_t)) + 1]) {0}, \
 	.circ_buf = {0, 0, 0, (message_size * nb_message) + \
-		(message_size * sizeof(size_t))}
+		(nb_message * sizeof(size_t)) + 1}
 
 #define MAX_PROCESSES_PER_PARTITIONS 3
 
