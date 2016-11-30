@@ -1,6 +1,7 @@
 #include <apex_process.h>
 #include <stm32f4xx_hal.h>
 
+
 void CREATE_PROCESS (
     /*in */ PROCESS_ATTRIBUTE_TYPE   *ATTRIBUTES,
     /*out*/ PROCESS_ID_TYPE          *PROCESS_ID,
@@ -28,7 +29,6 @@ void GET_TIME (
     __ASM volatile (
         "MOVW   R0, #0xee0b         \n\t"
         "MOVT   R0, #0xc0ff         \n\t"
-        "MOVW   R1, #0xface         \n\t"
         "SVC    #0x0F               \n\t"
         "MOV    %[RETURN], R0       \n\t"
         "MOV    %[TIME_LO], R1      \n\t"
