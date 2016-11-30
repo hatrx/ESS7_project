@@ -128,36 +128,10 @@ int main(void)
 	process_createProcess(dummy1_partition, 0x20001000, &dummy1_mainProcess_attributes, &dummy1_pid);
 	process_createProcess(dummy2_partition, 0x20003000, &dummy2_mainProcess_attributes, &dummy2_pid);
 
-	//setup_contexts(&dummy1_main, (void *)0x20001000);
-	//setup_contexts(&dummy2_main, (void *)0x20003000);
-
-	printf("\n");
-	printf("dummy1: %02X\n", &dummy1_main);
-	printf("dummy2: %02X\n", &dummy2_main);
-
-
 	HAL_Init();
-
-	//uint32_t counter = 0;
-	int64_t x=0;
-	int32_t y=0;
-	int64_t z=0;
-	int count = 0;
 	TIME_Start_ns();
-	SYSTEM_TIME_TYPE SYSTEM_TIME;
-	RETURN_CODE_TYPE RETURN_CODE;
 
 
 	while (1) {
-		//printf("Hello world! : %"PRIu32"\n", counter++);
-		//
-		delay_ms(1000);
-		//x = TIME_Stop_ns();
-		//GET_TIME(&SYSTEM_TIME, &RETURN_CODE);
-		z= TIME_Get_Total();
-		//HAL_Delay(1000);
-		
-		//y = TIME_Get_Cycles();
-		count++;
 	}
 }
