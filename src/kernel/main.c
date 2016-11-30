@@ -31,9 +31,9 @@ void UsageFault_Handler(void)
 void HardFault_Handler(void)
 {
 	printf("HardFault_Handler\n");
-	// SCB_Type *something = SCB;
-	// uint32_t hfsr = something->HFSR;
-	// uint32_t cfsr = something->CFSR;
+	SCB_Type *something = SCB;
+	uint32_t hfsr = something->HFSR;
+	uint32_t cfsr = something->CFSR;
 	while(1);
 }
 
