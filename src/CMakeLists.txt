@@ -19,6 +19,7 @@ add_library(APEX
 )
 target_link_libraries(APEX
 	CMSIS
+	STM32f4xx_HAL_Driver
 )
 
 add_library(dummy1
@@ -45,6 +46,7 @@ add_executable(${PROJECT_NAME}
 	${SRC_DIR}/kernel/syscalls.c
 	${SRC_DIR}/kernel/context.c
 	${SRC_DIR}/kernel/scheduler.c
+	${SRC_DIR}/kernel/svc_handler.c
 	${SRC_DIR}/kernel/arinc/partition.c
 	${SRC_DIR}/kernel/arinc/process.c
 
