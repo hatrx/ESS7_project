@@ -10,3 +10,10 @@ void init_partitions(void) {
 		test_partitions[i].nb_processes = 0;
 	}
 }
+
+void init_partition(partition_t* partition_)
+{
+	// Change the state of the first process to READY. The first process is
+	// always the main process.
+	partition_->processes[0].apexDetails.PROCESS_STATE = READY;
+}
