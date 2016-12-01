@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stm32f4xx_hal.h>
+
 #include "partition.h"
 #include "kernel/context.h"
 
@@ -25,6 +27,7 @@ uint8_t process_createProcess(partition_t* partition_, uint32_t memoryAddress, P
 
     process->stackpointer = memoryAddress + sizeof(ARM_context_state);
     process->exc_return_value = 0xFD;
+    process->tickStamp = HAL_GetTick();
 
     processes[pid] = process;
 
