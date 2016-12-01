@@ -1,5 +1,6 @@
 #include <stm32f4xx_hal.h>
 #include <apex_types.h>
+#include <apex_queuing.h>
 
 #include "context.h"
 #include "drivers/time_get.h"
@@ -64,6 +65,23 @@ void SVC_Handler(void)
 				(QUEUING_DISCIPLINE_TYPE) argv[4],
 				(QUEUING_PORT_ID_TYPE *) argv[5],
 				(RETURN_CODE_TYPE *) argv[6]);
+            break;
+        }
+		case 0xc0ffee0d:        // CREATE_QUEUING_PORT
+        {
+			uint8_t argc = 5;
+			uint32_t argv[argc];
+
+			while(argc--) {
+				argv[argc] = pop(&stack->R2);
+			}
+
+            recieve_queuing_message(
+				(QUEUING_PORT_ID_TYPE) argv[0],
+				(SYSTEM_TIME_TYPE) argv[1],
+				(MESSAGE_ADDR_TYPE) argv[2],
+				(MESSAGE_SIZE_TYPE *) argv[3],
+				(RETURN_CODE_TYPE *) argv[4]);
             break;
         }
         default:

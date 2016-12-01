@@ -149,7 +149,7 @@ void SEND_QUEUING_MESSAGE(
 }
 
 
-void RECEIVE_QUEUING_MESSAGE(
+void recieve_queuing_message(
 	/*in */ QUEUING_PORT_ID_TYPE     QUEUING_PORT_ID,
 	/*in */ SYSTEM_TIME_TYPE         TIME_OUT,
 	/*out*/ MESSAGE_ADDR_TYPE        MESSAGE_ADDR,
