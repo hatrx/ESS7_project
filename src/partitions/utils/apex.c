@@ -102,3 +102,31 @@ void RECEIVE_QUEUING_MESSAGE (
         :
     );
 }
+
+
+void SEND_QUEUING_MESSAGE (
+	/*in */ QUEUING_PORT_ID_TYPE     QUEUING_PORT_ID,
+	/*in */ MESSAGE_ADDR_TYPE        MESSAGE_ADDR,       /* by reference */
+	/*in */ MESSAGE_SIZE_TYPE        LENGTH,
+	/*in */ SYSTEM_TIME_TYPE         TIME_OUT,
+	/*out*/ RETURN_CODE_TYPE         *RETURN_CODE)
+{
+	__ASM volatile (
+        "PUSH   {%[IN_1]}           \n\t"
+        "PUSH   {%[IN_2]}           \n\t"
+        "PUSH   {%[IN_3]}           \n\t"
+        "PUSH   {%[IN_4]}           \n\t"
+        "PUSH   {%[IN_5]}           \n\t"
+        "MOV    R2, sp              \n\t"
+        "MOVW   R0, #0xee0e         \n\t"
+        "MOVT   R0, #0xc0ff         \n\t"
+        "SVC    #0x0F               \n\t"
+        :
+        : [IN_1] "r" (QUEUING_PORT_ID),
+          [IN_2] "r" (MESSAGE_ADDR),
+          [IN_3] "r" (LENGTH),
+          [IN_4] "r" (TIME_OUT),
+          [IN_5] "r" (RETURN_CODE)
+        :
+    );
+}

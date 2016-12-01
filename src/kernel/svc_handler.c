@@ -84,6 +84,23 @@ void SVC_Handler(void)
 				(RETURN_CODE_TYPE *) argv[4]);
             break;
         }
+		case 0xc0ffee0e:        // CREATE_QUEUING_PORT
+        {
+			uint8_t argc = 5;
+			uint32_t argv[argc];
+
+			while(argc--) {
+				argv[argc] = pop(&stack->R2);
+			}
+
+            send_queuing_message(
+				(QUEUING_PORT_ID_TYPE) argv[0],
+				(MESSAGE_ADDR_TYPE) argv[1],
+				(MESSAGE_SIZE_TYPE) argv[2],
+				(SYSTEM_TIME_TYPE) argv[3],
+				(RETURN_CODE_TYPE *) argv[4]);
+            break;
+        }
         default:
         break;
     }

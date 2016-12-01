@@ -85,7 +85,7 @@ void create_queuing_port(
 }
 
 
-void SEND_QUEUING_MESSAGE(
+void send_queuing_message(
 	/*in */ QUEUING_PORT_ID_TYPE     QUEUING_PORT_ID,
 	/*in */ MESSAGE_ADDR_TYPE        MESSAGE_ADDR,       /* by reference */
 	/*in */ MESSAGE_SIZE_TYPE        LENGTH,
