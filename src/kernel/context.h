@@ -63,6 +63,7 @@ static inline uint32_t context_save()
 	return stackpointer;
 }
 
+extern uint8_t indexActivePartition;
 
 void context_setup(void (*foo)(void), void *addr);
 

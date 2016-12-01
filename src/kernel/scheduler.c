@@ -4,7 +4,7 @@
 #include "arinc/statics.h"
 #include "arinc/queuing_port.h"
 
-static uint8_t indexActivePartition = -1;
+uint8_t indexActivePartition = 0;
 
 static uint16_t timings1[4] = {1000, 1000, 1000, 3000};
 static uint32_t timings2 = 0;
@@ -20,32 +20,40 @@ void scheduler_partitionScheduler(void)
 	}
 }
 
-process_t* scheduler_processScheduler(void)
+process_t* scheduler_processScheduler(partition_t *part)
 {
-	process_t *tmpProcess, *activeProcess;
-	partition_t *activePartition;
+	/* Set state of currently running process to READY. */
+	process_t *curr_process = &part->processes[part->index_running_process];
+	curr_process->PROCESS_STATE = READY;
 
-	activePartition = &partitions[indexActivePartition];
-	activeProcess = &activePartition->processes[0];
+	/* Get list of processes in partition. */
+	process_t *processes = part->processes;
 
-	for (int i = 1; i < MAX_PROCESSES_PER_PARTITIONS; ++i)
-	{
-		tmpProcess = &partitions[indexActivePartition].processes[i];
-		if (tmpProcess->stackpointer == 0)
-		{
-		    break;
-		}
-		else if (tmpProcess->PROCESS_STATE == READY)
-		{
-		    if (tmpProcess->CURRENT_PRIORITY > activeProcess->CURRENT_PRIORITY)
-		    {
-				if (tmpProcess->tickStamp < activeProcess->tickStamp)
-				{
-					activeProcess = tmpProcess;
-				}
-		    }
+	/* Find a READY partition as default candidate for execution. */
+	process_t *priority_process;
+	for (size_t i = 0; i < MAX_PROCESSES_PER_PARTITIONS; i++) {
+		if (processes[i].PROCESS_STATE == READY) {
+			priority_process = &processes[i];
 		}
 	}
 
-	return activeProcess;
+	/* Attempt to find a better candidate by comparing to default. */
+	for (size_t i = 0; i < MAX_PROCESSES_PER_PARTITIONS; i++) {
+		if (processes[i].PROCESS_STATE != READY)
+			continue;
+
+		if (processes[i].CURRENT_PRIORITY < priority_process->CURRENT_PRIORITY)
+			continue;
+
+		if (processes[i].tickStamp < priority_process->tickStamp) {
+			priority_process = &processes[i];
+			part->index_running_process = i;
+		}
+	}
+
+	/* Set state of process to RUNNING. */
+	priority_process->PROCESS_STATE = RUNNING;
+
+	/* Return pointer to highest priority candidate process */
+	return priority_process;
 }

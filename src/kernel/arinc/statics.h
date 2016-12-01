@@ -84,6 +84,7 @@ typedef struct {
 	APEX_INTEGER              nb_ports;
 	port_t                    *ports;
 	uint32_t                  nb_processes;
+	uint32_t                  index_running_process;
 	process_t                 processes[MAX_PROCESSES_PER_PARTITIONS];
 } partition_t;
 

@@ -29,6 +29,9 @@ __attribute__((naked)) void SysTick_Handler(void)
 	uint32_t exc_return_value;
 	__asm volatile ("MOV %0, LR" : "=r" (exc_return_value));
 
+	/* Get pointer to currently running partition. */
+	partition_t *part = &partitions[indexActivePartition];
+
 	if (activeProcess != NULL)
 	{
 		// Save the value of the stack pointer for later use.
@@ -40,9 +43,7 @@ __attribute__((naked)) void SysTick_Handler(void)
 	HAL_IncTick();
 	TIME_Add_Count();
 	scheduler_partitionScheduler();
-	activeProcess->PROCESS_STATE = READY;
-	activeProcess = scheduler_processScheduler();
-	activeProcess->PROCESS_STATE = RUNNING;
+	activeProcess = scheduler_processScheduler(part);
 
 	// Resote the software context of the new process.
 	// TODO: Right now, this only handles switches to userspace (and without setting privilege levels),
