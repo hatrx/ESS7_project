@@ -69,7 +69,7 @@ void SysTick_Handler(void)
 #endif
 
 
-int context_setup(void (*foo)(void), void *addr) {
+void context_setup(void (*foo)(void), void *addr) {
 	ARM_context_state *stack = (ARM_context_state *)addr;
 	ARM_HW_context_state *hw_stack = &stack->hw_stack;
 	hw_stack->R0 = 0;
@@ -89,6 +89,4 @@ int context_setup(void (*foo)(void), void *addr) {
 	sw_stack->R9 = 0;
 	sw_stack->R10 = 0;
 	sw_stack->R11 = 0;
-
-	return 0;
 }
