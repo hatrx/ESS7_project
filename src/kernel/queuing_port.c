@@ -55,7 +55,7 @@ partition_t *get_partition(void)
 }
 
 
-void CREATE_QUEUING_PORT(
+void create_queuing_port(
 	/*in */ QUEUING_PORT_NAME_TYPE   QUEUING_PORT_NAME,
 	/*in */ MESSAGE_SIZE_TYPE        MAX_MESSAGE_SIZE,
 	/*in */ MESSAGE_RANGE_TYPE       MAX_NB_MESSAGE,

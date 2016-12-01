@@ -4,6 +4,16 @@
 #include "context.h"
 #include "drivers/time_get.h"
 
+#include "queuing_port.h"
+
+
+static uint32_t pop(uint32_t *p)
+{
+	const uint32_t ret = *(uint32_t *)(*p);
+	*p += 4;
+	return ret;
+}
+
 
 void SVC_Handler(void)
 {
@@ -35,6 +45,25 @@ void SVC_Handler(void)
             stack->R0 = NO_ERROR;
             stack->R1 = (uint32_t) time;
             stack->R2 = (uint32_t) (time >> 32);
+            break;
+        }
+        case 0xc0ffee0c:        // CREATE_QUEUING_PORT
+        {
+			uint8_t argc = 7;
+			uint32_t argv[argc];
+
+			while(argc--) {
+				argv[argc] = pop(&stack->R2);
+			}
+
+            create_queuing_port(
+				(char *) argv[0],
+				(MESSAGE_SIZE_TYPE) argv[1],
+				(MESSAGE_RANGE_TYPE) argv[2],
+				(PORT_DIRECTION_TYPE) argv[3],
+				(QUEUING_DISCIPLINE_TYPE) argv[4],
+				(QUEUING_PORT_ID_TYPE *) argv[5],
+				(RETURN_CODE_TYPE *) argv[6]);
             break;
         }
         default:
