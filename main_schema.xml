@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ARINC_653_Module>
+	<Partition PartitionIdentifier="1" PartitionName="dummy_1" Criticality="LEVEL_A" SystemPartition="false" EntryPoint="dummy1_main">
+	<Queuing_Port PortName="print_1" MaxMessageSize="30" Direction="SOURCE" MaxNbMessages="8" />
+		</Partition>
+	<Partition PartitionIdentifier="2" PartitionName="dummy_2" Criticality="LEVEL_A" SystemPartition="false" EntryPoint="dummy2_main">
+		<Queuing_Port PortName="print_2" MaxMessageSize="30" Direction="SOURCE" MaxNbMessages="8" />
+	</Partition>
+	<Partition PartitionIdentifier="3" PartitionName="stio_sys" Criticality="LEVEL_A" SystemPartition="true" EntryPoint="stdio_sys_main">
+		<Queuing_Port PortName="sys_stio" MaxMessageSize="30" Direction="DESTINATION" MaxNbMessages="8" />
+	</Partition>
+	<Connection_Table>
+		<Channel ChannelIdentifier="1" ChannelName="stio_channel">
+			<Source>
+				<Standard_Partition PartitionIdentifier="1" PartitionName="dummy_1" PortName="print_1" PhysicalAddress="0x80000000" />
+			</Source>
+			<Source>
+				<Standard_Partition PartitionIdentifier="2" PartitionName="dummy_2" PortName="print_2" PhysicalAddress="0x80000000" />
+			</Source>
+			<Destination>
+				<Standard_Partition PartitionIdentifier="3" PartitionName="stio_sys" PortName="sys_stio" PhysicalAddress="0x80000000" />
+			</Destination>
+		</Channel>
+	</Connection_Table>
+</ARINC_653_Module>
