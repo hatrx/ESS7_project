@@ -7,7 +7,7 @@
 #include <stdint.h>
 
 
-#include "circular_buffer.h"
+#include "kernel/circular_buffer.h"
 
 
 /*
