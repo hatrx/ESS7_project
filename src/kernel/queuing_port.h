@@ -33,5 +33,10 @@ void recieve_queuing_message(
 	/*out*/ MESSAGE_SIZE_TYPE        *LENGTH,
 	/*out*/ RETURN_CODE_TYPE         *RETURN_CODE);
 
+void get_queuing_port_id(
+	/*in */ QUEUING_PORT_NAME_TYPE   QUEUING_PORT_NAME,
+	/*out*/ QUEUING_PORT_ID_TYPE     *QUEUING_PORT_ID,
+	/*out*/ RETURN_CODE_TYPE         *RETURN_CODE);
+
 
 #endif /* QUEUING_H */

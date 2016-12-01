@@ -177,7 +177,7 @@ void recieve_queuing_message(
 }
 
 
-void GET_QUEUING_PORT_ID(
+void get_queuing_port_id(
 	/*in */ QUEUING_PORT_NAME_TYPE   QUEUING_PORT_NAME,
 	/*out*/ QUEUING_PORT_ID_TYPE     *QUEUING_PORT_ID,
 	/*out*/ RETURN_CODE_TYPE         *RETURN_CODE)
