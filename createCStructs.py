@@ -1,4 +1,4 @@
-#!/usr/bin/python
+B#!/usr/bin/python
 import sys
 import xmltodict # to parse the xml structure to an ordered dict
 import json # to convert the ordered dict to a normal dict
@@ -64,7 +64,7 @@ class ParseXML:
 
 #include "xml_data.h"
 #include "circular_buffer.h"
-#include "queuing_port.h"
+#include "arinc/queuing_port.h"
 
 """)
 

@@ -6,9 +6,6 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "APEX/apex_queuing.h"
-#include "APEX/apex_sampling.h"
-#include "APEX/apex_partition.h"
 
 #include "circular_buffer.h"
 
