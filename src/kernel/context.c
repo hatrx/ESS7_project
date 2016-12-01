@@ -29,8 +29,6 @@ __attribute__((naked)) void SysTick_Handler(void)
 	uint32_t exc_return_value;
 	__asm volatile ("MOV %0, LR" : "=r" (exc_return_value));
 
-	/* Get pointer to currently running partition. */
-	partition_t *part = &partitions[indexActivePartition];
 
 	if (activeProcess != NULL)
 	{
@@ -43,6 +41,10 @@ __attribute__((naked)) void SysTick_Handler(void)
 	HAL_IncTick();
 	TIME_Add_Count();
 	scheduler_partitionScheduler();
+
+	/* Get pointer to currently running partition. */
+	partition_t *part = &partitions[indexActivePartition];
+
 	activeProcess = scheduler_processScheduler(part);
 
 	// Resote the software context of the new process.
