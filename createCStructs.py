@@ -1,4 +1,4 @@
-B#!/usr/bin/python
+#!/usr/bin/python
 import sys
 import xmltodict # to parse the xml structure to an ordered dict
 import json # to convert the ordered dict to a normal dict
