@@ -197,7 +197,7 @@ void get_queuing_port_id(
 }
 
 
-void GET_QUEUING_PORT_STATUS(
+void get_queuing_port_status(
 	/*in */ QUEUING_PORT_ID_TYPE     QUEUING_PORT_ID,
 	/*out*/ QUEUING_PORT_STATUS_TYPE *QUEUING_PORT_STATUS,
 	/*out*/ RETURN_CODE_TYPE         *RETURN_CODE)

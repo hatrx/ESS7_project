@@ -152,3 +152,25 @@ void GET_QUEUING_PORT_ID (
         :
     );
 }
+
+
+void GET_QUEUING_PORT_STATUS (
+	/*in */ QUEUING_PORT_ID_TYPE     QUEUING_PORT_ID,
+	/*out*/ QUEUING_PORT_STATUS_TYPE *QUEUING_PORT_STATUS,
+	/*out*/ RETURN_CODE_TYPE         *RETURN_CODE )
+{
+	__ASM volatile (
+        "PUSH   {%[IN_1]}           \n\t"
+        "PUSH   {%[IN_2]}           \n\t"
+        "PUSH   {%[IN_3]}           \n\t"
+        "MOV    R2, sp              \n\t"
+        "MOVW   R0, #0xee10         \n\t"
+        "MOVT   R0, #0xc0ff         \n\t"
+        "SVC    #0x0F               \n\t"
+        :
+        : [IN_1] "r" (QUEUING_PORT_ID),
+          [IN_2] "r" (QUEUING_PORT_STATUS),
+          [IN_3] "r" (RETURN_CODE)
+        :
+    );
+}

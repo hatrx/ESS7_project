@@ -38,5 +38,10 @@ void get_queuing_port_id(
 	/*out*/ QUEUING_PORT_ID_TYPE     *QUEUING_PORT_ID,
 	/*out*/ RETURN_CODE_TYPE         *RETURN_CODE);
 
+void get_queuing_port_status(
+	/*in */ QUEUING_PORT_ID_TYPE     QUEUING_PORT_ID,
+	/*out*/ QUEUING_PORT_STATUS_TYPE *QUEUING_PORT_STATUS,
+	/*out*/ RETURN_CODE_TYPE         *RETURN_CODE);
+
 
 #endif /* QUEUING_H */
