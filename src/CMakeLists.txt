@@ -27,6 +27,7 @@ add_library(dummy1
 )
 target_link_libraries(dummy1
 	drivers
+	APEX
 )
 
 
@@ -44,6 +45,7 @@ add_library(stdio_sys
 )
 target_link_libraries(stdio_sys
 	drivers
+	APEX
 )
 
 

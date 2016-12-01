@@ -55,7 +55,7 @@ partition_t *get_partition(void)
 }
 
 
-void CREATE_QUEUING_PORT(
+void create_queuing_port(
 	/*in */ QUEUING_PORT_NAME_TYPE   QUEUING_PORT_NAME,
 	/*in */ MESSAGE_SIZE_TYPE        MAX_MESSAGE_SIZE,
 	/*in */ MESSAGE_RANGE_TYPE       MAX_NB_MESSAGE,
@@ -85,7 +85,7 @@ void CREATE_QUEUING_PORT(
 }
 
 
-void SEND_QUEUING_MESSAGE(
+void send_queuing_message(
 	/*in */ QUEUING_PORT_ID_TYPE     QUEUING_PORT_ID,
 	/*in */ MESSAGE_ADDR_TYPE        MESSAGE_ADDR,       /* by reference */
 	/*in */ MESSAGE_SIZE_TYPE        LENGTH,
@@ -149,7 +149,7 @@ void SEND_QUEUING_MESSAGE(
 }
 
 
-void RECEIVE_QUEUING_MESSAGE(
+void recieve_queuing_message(
 	/*in */ QUEUING_PORT_ID_TYPE     QUEUING_PORT_ID,
 	/*in */ SYSTEM_TIME_TYPE         TIME_OUT,
 	/*out*/ MESSAGE_ADDR_TYPE        MESSAGE_ADDR,
@@ -177,7 +177,7 @@ void RECEIVE_QUEUING_MESSAGE(
 }
 
 
-void GET_QUEUING_PORT_ID(
+void get_queuing_port_id(
 	/*in */ QUEUING_PORT_NAME_TYPE   QUEUING_PORT_NAME,
 	/*out*/ QUEUING_PORT_ID_TYPE     *QUEUING_PORT_ID,
 	/*out*/ RETURN_CODE_TYPE         *RETURN_CODE)
@@ -197,7 +197,7 @@ void GET_QUEUING_PORT_ID(
 }
 
 
-void GET_QUEUING_PORT_STATUS(
+void get_queuing_port_status(
 	/*in */ QUEUING_PORT_ID_TYPE     QUEUING_PORT_ID,
 	/*out*/ QUEUING_PORT_STATUS_TYPE *QUEUING_PORT_STATUS,
 	/*out*/ RETURN_CODE_TYPE         *RETURN_CODE)

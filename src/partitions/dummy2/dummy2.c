@@ -21,9 +21,7 @@ void dummy2_main(void)
 		char *str = "Dummy 2\n\r";
 		size_t len = strlen(str);
 		RETURN_CODE_TYPE RETURN_CODE;
-		//SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
 		//SEND_QUEUING_MESSAGE(QUEUING_PORT_ID, (uint8_t *)str, len, 0, &RETURN_CODE);
-		//SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_TICKINT_Msk | SysTick_CTRL_ENABLE_Msk;
 
 		for (size_t i = 0; i < 8; i++) {
 			onboard_led_toggle(red_led);
