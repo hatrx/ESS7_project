@@ -16,11 +16,11 @@
 #include "drivers/utils.h"
 
 #include "kernel/context.h"
-#include "kernel/context.h"
 
 #include "kernel/arinc/partition.h"
 #include "kernel/arinc/statics.h"
 #include "kernel/arinc/queuing_port.h"
+#include "kernel/arinc/process.h"
 
 void UsageFault_Handler(void)
 {
@@ -79,6 +79,7 @@ int main(void)
 
     PROCESS_ATTRIBUTE_TYPE dummy1_mainProcess_attributes, dummy2_mainProcess_attributes, stdio_sys_mainProcess_attributes;
     PROCESS_ID_TYPE dummy1_pid, dummy2_pid, stdio_sys_pid;
+	RETURN_CODE_TYPE RETURN_CODE;
 
     set_system_clock_168mhz();
 
@@ -135,9 +136,9 @@ int main(void)
 	.NAME = "stdio_sys",
     };
     init_partitions();
-    process_createProcess(&partitions[0], 0x20001000, &dummy1_mainProcess_attributes, &dummy1_pid);
-    process_createProcess(&partitions[1], 0x20003000, &dummy2_mainProcess_attributes, &dummy2_pid);
-    process_createProcess(&partitions[2], 0x20005000, &stdio_sys_mainProcess_attributes, &stdio_sys_pid);
+    create_process(&partitions[0], 0x20001000, &dummy1_mainProcess_attributes, &dummy1_pid, &RETURN_CODE);
+    create_process(&partitions[1], 0x20003000, &dummy2_mainProcess_attributes, &dummy2_pid, &RETURN_CODE);
+    create_process(&partitions[2], 0x20005000, &stdio_sys_mainProcess_attributes, &stdio_sys_pid, &RETURN_CODE);
     init_partition(&partitions[0]);
     init_partition(&partitions[1]);
     init_partition(&partitions[2]);

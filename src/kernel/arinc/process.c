@@ -1,43 +1,56 @@
 #include <stdio.h>
 #include <stm32f4xx_hal.h>
 
-#include "partition.h"
+#include "process.h"
 #include "kernel/context.h"
 
-static process_t* processes[MAX_PROCESSES_PER_PARTITIONS*3];
 
-uint8_t process_createProcess(partition_t* partition_, uint32_t memoryAddress, PROCESS_ATTRIBUTE_TYPE* attributes, PROCESS_ID_TYPE* processId)
-{
-    uint8_t i;
-    process_t* process;
-    PROCESS_STATUS_TYPE* processStatus;
-    static PROCESS_ID_TYPE pid = 0;
+void init_processes(void) {
+	const uint32_t nb_partitions = sizeof(partitions) / sizeof(partition_t);
 
-    for (i = 0; i < MAX_PROCESSES_PER_PARTITIONS; i++)
-    {
-        if(partition_->processes[i].stackpointer == 0) break;
-    }
-    if(i == MAX_PROCESSES_PER_PARTITIONS) return INVALID_CONFIG;
+	for (size_t i = 0; i < nb_partitions; i++) {
+		process_t* processes = partitions[i].processes;
 
-    process = &partition_->processes[i];
-    processStatus = &process->apexDetails;
-    processStatus->ATTRIBUTES       = *attributes;
-    processStatus->CURRENT_PRIORITY = attributes->BASE_PRIORITY;
-    processStatus->PROCESS_STATE    = DORMANT;
-
-    process->stackpointer = memoryAddress + sizeof(ARM_context_state);
-    process->exc_return_value = 0xFD;
-    process->tickStamp = HAL_GetTick();
-
-    processes[pid] = process;
-
-    context_setup(attributes->ENTRY_POINT, (void *) process->stackpointer);
-
-    *processId = pid++;
-    return NO_ERROR;
+		for (size_t n = 0; n < MAX_PROCESSES_PER_PARTITIONS; ++n) {
+			processes[n].PROCESS_STATE = DORMANT;
+		}
+	}
 }
 
-process_t* process_getByProcessId(PROCESS_ID_TYPE processId)
+
+static int find_dormant_process(partition_t *partition)
 {
-    return processes[processId];
+	for (int i = 0; i < MAX_PROCESSES_PER_PARTITIONS; ++i) {
+		if(partition->processes[i].PROCESS_STATE == DORMANT) {
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+
+void create_process(partition_t* partition, uint32_t memoryAddress, PROCESS_ATTRIBUTE_TYPE* attributes, PROCESS_ID_TYPE* processId, RETURN_CODE_TYPE *RETURN_CODE)
+{
+	/* TODO: memoryAddress should be calculated and not given */
+	const int i = find_dormant_process(partition);
+
+	if (i == -1) {
+		*RETURN_CODE = NOT_AVAILABLE;
+		return;
+	}
+	*RETURN_CODE = NO_ERROR;
+
+	*processId = i;
+	process_t *process = &partition->processes[i];
+
+	process->ATTRIBUTES  = *attributes;
+	process->CURRENT_PRIORITY = attributes->BASE_PRIORITY;
+	process->stackpointer = memoryAddress + sizeof(ARM_context_state);
+	process->exc_return_value = 0xFD;
+	process->tickStamp = HAL_GetTick();
+
+	context_setup(attributes->ENTRY_POINT, (void *) process->stackpointer);
+
+	process->PROCESS_STATE = READY;
 }

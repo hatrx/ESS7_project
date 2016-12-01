@@ -35,9 +35,9 @@ process_t* scheduler_processScheduler(void)
 		{
 		    break;
 		}
-		else if (tmpProcess->apexDetails.PROCESS_STATE == READY)
+		else if (tmpProcess->PROCESS_STATE == READY)
 		{
-		    if (tmpProcess->apexDetails.CURRENT_PRIORITY > activeProcess->apexDetails.CURRENT_PRIORITY)
+		    if (tmpProcess->CURRENT_PRIORITY > activeProcess->CURRENT_PRIORITY)
 		    {
 				if (tmpProcess->tickStamp < activeProcess->tickStamp)
 				{

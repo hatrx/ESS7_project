@@ -15,5 +15,5 @@ void init_partition(partition_t* partition_)
 {
 	// Change the state of the first process to READY. The first process is
 	// always the main process.
-	partition_->processes[0].apexDetails.PROCESS_STATE = READY;
+	partition_->processes[0].PROCESS_STATE = READY;
 }

@@ -72,7 +72,7 @@ typedef struct {
 	uint32_t                  stackpointer;
 	uint8_t                   exc_return_value;
 	uint32_t				  tickStamp;
-	PROCESS_STATUS_TYPE       apexDetails;
+	PROCESS_STATUS_TYPE; /* unamed struct with -fms-extensions */
 } process_t;
 
 typedef struct {
