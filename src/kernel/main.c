@@ -16,12 +16,11 @@
 #include "drivers/utils.h"
 
 #include "kernel/context.h"
-#include "kernel/arinc/partition.h"
 #include "kernel/context.h"
-#include "kernel/queuing_port.h"
 
-#include "kernel/statics.h"
-
+#include "kernel/arinc/partition.h"
+#include "kernel/arinc/statics.h"
+#include "kernel/arinc/queuing_port.h"
 
 void UsageFault_Handler(void)
 {

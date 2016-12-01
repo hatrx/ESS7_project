@@ -1,7 +1,7 @@
 #include <stdint.h>
 
+#include "../circular_buffer.h"
 #include "statics.h"
-#include "circular_buffer.h"
 #include "queuing_port.h"
 
 

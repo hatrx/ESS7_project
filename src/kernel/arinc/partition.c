@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include "partition.h"
-#include "../statics.h"
+#include "statics.h"
 
 
 void int_partitions(void) {

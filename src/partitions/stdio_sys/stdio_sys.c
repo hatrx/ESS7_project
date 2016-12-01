@@ -2,7 +2,7 @@
 
 #include <drivers/utils.h>
 #include <drivers/onboard_leds.h>
-#include <kernel/queuing_port.h>
+#include <kernel/arinc/queuing_port.h>
 #include <drivers/uart.h>
 
 #include <apex_queuing.h>

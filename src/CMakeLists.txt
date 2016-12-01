@@ -57,9 +57,9 @@ add_executable(${PROJECT_NAME}
 	${SRC_DIR}/kernel/svc_handler.c
 	${SRC_DIR}/kernel/arinc/partition.c
 	${SRC_DIR}/kernel/arinc/process.c
-	${SRC_DIR}/kernel/queuing_port.c
+	${SRC_DIR}/kernel/arinc/queuing_port.c
 	${SRC_DIR}/kernel/circular_buffer.c
-	${SRC_DIR}/kernel/statics.c
+	${SRC_DIR}/kernel/arinc/statics.c
 )
 target_link_libraries(${PROJECT_NAME}
 	drivers

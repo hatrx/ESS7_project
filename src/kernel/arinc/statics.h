@@ -10,7 +10,7 @@
 #include <apex_sampling.h>
 #include <apex_partition.h>
 
-#include "circular_buffer.h"
+#include "../circular_buffer.h"
 
 
 /*
@@ -72,6 +72,7 @@ typedef struct {
 typedef struct {
 	uint32_t                  stackpointer;
 	uint8_t                   exc_return_value;
+	uint32_t				  tickStamp;
 	PROCESS_STATUS_TYPE       apexDetails;
 } process_t;
 

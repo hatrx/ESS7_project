@@ -1,8 +1,8 @@
 #include <stm32f4xx_hal.h>
 
 #include "scheduler.h"
-#include "statics.h"
-#include "queuing_port.h"
+#include "arinc/statics.h"
+#include "arinc/queuing_port.h"
 
 static uint8_t indexActivePartition = -1;
 
