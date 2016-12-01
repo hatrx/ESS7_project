@@ -29,7 +29,7 @@ void UsageFault_Handler(void)
 
 void HardFault_Handler()
 {
-    ARM_HW_context_state* stack; 
+    ARM_HW_context_state* stack;
     __ASM volatile (
         "TST	LR, #0x4    	\n\t"		// Test bit 2 of EXC_RETURN
 		"ITE	EQ      		\n\t"		// Which stack pointer was used?
@@ -45,7 +45,7 @@ void HardFault_Handler()
 
     printf("HardFault_Handler\n");
     printf("Stacked R0:\t\t%08x\n", (unsigned int) stack->R0);
-    printf("Stacked R1:\t\t%08x\n", (unsigned int) stack->R1); 
+    printf("Stacked R1:\t\t%08x\n", (unsigned int) stack->R1);
     printf("Stacked R2:\t\t%08x\n", (unsigned int) stack->R2);
     printf("Stacked R3:\t\t%08x\n", (unsigned int) stack->R3);
     printf("Stacked R12:\t\t%08x\n", (unsigned int) stack->R12);
@@ -135,12 +135,12 @@ int main(void)
 	.NAME = "stdio_sys",
     };
     init_partitions();
-    process_createProcess(&test_partitions[0], 0x20001000, &dummy1_mainProcess_attributes, &dummy1_pid);
-    process_createProcess(&test_partitions[1], 0x20003000, &dummy2_mainProcess_attributes, &dummy2_pid);
-    process_createProcess(&test_partitions[2], 0x20005000, &stdio_sys_mainProcess_attributes, &stdio_sys_pid);
-    init_partition(&test_partitions[0]);
-    init_partition(&test_partitions[1]);
-    init_partition(&test_partitions[2]);
+    process_createProcess(&partitions[0], 0x20001000, &dummy1_mainProcess_attributes, &dummy1_pid);
+    process_createProcess(&partitions[1], 0x20003000, &dummy2_mainProcess_attributes, &dummy2_pid);
+    process_createProcess(&partitions[2], 0x20005000, &stdio_sys_mainProcess_attributes, &stdio_sys_pid);
+    init_partition(&partitions[0]);
+    init_partition(&partitions[1]);
+    init_partition(&partitions[2]);
     TIME_Start_ns();
 
     /* Enable sysTick */

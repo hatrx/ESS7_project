@@ -51,7 +51,6 @@ target_link_libraries(stdio_sys
 
 # Compile OS
 add_executable(${PROJECT_NAME}
-	${SRC_DIR}/hedder.c
 	${SRC_DIR}/kernel/main.c
 	${SRC_DIR}/kernel/syscalls.c
 	${SRC_DIR}/kernel/context.c

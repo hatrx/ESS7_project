@@ -13,11 +13,11 @@ uint8_t curr_partition_id = 0;
 
 void init_queuing_ports(void)
 {
-	const size_t nb_partitions =  sizeof(test_partitions) / sizeof(partition_t);
+	const size_t nb_partitions =  sizeof(partitions) / sizeof(partition_t);
 	for (size_t i = 0; i < nb_partitions; ++i) {
-		port_t *ports = (port_t *)test_partitions[i].ports;
+		port_t *ports = (port_t *)partitions[i].ports;
 
-		for (APEX_INTEGER n = 0; n < test_partitions[i].nb_ports; ++n) {
+		for (APEX_INTEGER n = 0; n < partitions[i].nb_ports; ++n) {
 			ports[n].activated = false;
 
 			if (ports[n].is_queuing_port) {
@@ -44,10 +44,10 @@ void init_queuing_ports(void)
 /* This helper function should be removed/replaced */
 partition_t *get_partition(void)
 {
-	const size_t nb_partitions = sizeof(test_partitions) / sizeof(partition_t);
+	const size_t nb_partitions = sizeof(partitions) / sizeof(partition_t);
 	for (size_t i = 0; i < nb_partitions; ++i) {
-		if (test_partitions[i].IDENTIFIER == curr_partition_id) {
-			return &test_partitions[i];
+		if (partitions[i].IDENTIFIER == curr_partition_id) {
+			return &partitions[i];
 		}
 	}
 

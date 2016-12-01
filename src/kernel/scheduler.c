@@ -11,12 +11,12 @@ static uint32_t timings2 = 0;
 
 void scheduler_partitionScheduler(void)
 {
-	const uint32_t nb_partitions = sizeof(test_partitions) / sizeof(partition_t);
+	const uint32_t nb_partitions = sizeof(partitions) / sizeof(partition_t);
 	if(timings2 <= HAL_GetTick()){
 		indexActivePartition = (indexActivePartition + 1) % nb_partitions;
 		timings2 = HAL_GetTick() + timings1[indexActivePartition];
 
-		curr_partition_id = test_partitions[indexActivePartition].IDENTIFIER;
+		curr_partition_id = partitions[indexActivePartition].IDENTIFIER;
 	}
 }
 
@@ -25,12 +25,12 @@ process_t* scheduler_processScheduler(void)
 	process_t *tmpProcess, *activeProcess;
 	partition_t *activePartition;
 
-	activePartition = &test_partitions[indexActivePartition];
+	activePartition = &partitions[indexActivePartition];
 	activeProcess = &activePartition->processes[0];
 
 	for (int i = 1; i < MAX_PROCESSES_PER_PARTITIONS; ++i)
 	{
-		tmpProcess = &test_partitions[indexActivePartition].processes[i];
+		tmpProcess = &partitions[indexActivePartition].processes[i];
 		if (tmpProcess->stackpointer == 0)
 		{
 		    break;

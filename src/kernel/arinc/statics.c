@@ -35,7 +35,7 @@ port_t p_stio_sys[1] = {{
 	.portname = "sys_stio",
 },};
 
-partition_t test_partitions[3] = {{
+partition_t partitions[3] = {{
 	.IDENTIFIER = 1,
 	.partitionname = "dummy_1",
 	.criticality = LEVEL_A,
