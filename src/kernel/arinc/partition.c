@@ -8,6 +8,7 @@ void init_partitions(void) {
 	const uint32_t nb_processes = sizeof(partitions) / sizeof(partition_t);
 	for (size_t i = 0; i < nb_processes; i++) {
 		partitions[i].nb_processes = 0;
+		partitions[i].index_running_process = 0;
 	}
 }
 
