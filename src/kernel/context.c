@@ -40,7 +40,9 @@ __attribute__((naked)) void SysTick_Handler(void)
 	HAL_IncTick();
 	TIME_Add_Count();
 	scheduler_partitionScheduler();
+	activeProcess->apexDetails.PROCESS_STATE = READY;
 	activeProcess = scheduler_processScheduler();
+	activeProcess->apexDetails.PROCESS_STATE = RUNNING;
 
 	// Resote the software context of the new process.
 	// TODO: Right now, this only handles switches to userspace (and without setting privilege levels),
