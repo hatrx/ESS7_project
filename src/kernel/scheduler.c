@@ -31,10 +31,19 @@ process_t* scheduler_processScheduler(void)
 	for (int i = 1; i < MAX_PROCESSES_PER_PARTITIONS; ++i)
 	{
 		tmpProcess = &test_partitions[indexActivePartition].processes[i];
-		if(tmpProcess->stackpointer == 0) {
-			break;
-		} else if (tmpProcess->apexDetails.CURRENT_PRIORITY > activeProcess->apexDetails.CURRENT_PRIORITY) {
-			activeProcess = tmpProcess;
+		if (tmpProcess->stackpointer == 0)
+		{
+		    break;
+		}
+		else if (tmpProcess->apexDetails.PROCESS_STATE == READY)
+		{
+		    if (tmpProcess->apexDetails.CURRENT_PRIORITY > activeProcess->apexDetails.CURRENT_PRIORITY)
+		    {
+				if (tmpProcess->tickStamp < activeProcess->tickStamp)
+				{
+					activeProcess = tmpProcess;
+				}
+		    }
 		}
 	}
 
