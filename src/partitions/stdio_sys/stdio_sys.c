@@ -19,7 +19,7 @@ void stdio_sys_main(void)
 		MESSAGE_SIZE_TYPE len;
 		RECEIVE_QUEUING_MESSAGE(QUEUING_PORT_ID, 0, (uint8_t *)str, &len, &RETURN_CODE);
 		if (RETURN_CODE == NO_ERROR) {
-			//BSP_UARTx_transmit((uint8_t *)str, len);
+			BSP_UARTx_transmit((uint8_t *)str, len);
 		}
 
 		HAL_Delay(10);
