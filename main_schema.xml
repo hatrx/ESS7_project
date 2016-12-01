@@ -9,36 +9,37 @@
 	<Partition PartitionIdentifier="3" PartitionName="stio_sys" Criticality="LEVEL_A" SystemPartition="true" EntryPoint="stdio_sys_main">
 		<Queuing_Port PortName="sys_stio" MaxMessageSize="30" Direction="DESTINATION" MaxNbMessages="8" />
 	</Partition>
-	<Partition PartitionIdentifier="4" PartitionName="evil" Criticality="LEVEL_A" SystemPartition="false" EntryPoint="evil_main">
-	</Partition>
+        <Partition PartitionIdentifier="4" PartitionName="evil" Criticality="LEVEL_A" SystemPartition="false" EntryPoint="evil_main">
+		<Queuing_Port PortName="temp" MaxMessageSize="0" Direction="pls_delete" MaxNbMessages="0" />
+        </Partition>
 	<Module_Schedule MajorFrameSeconds="0.200">
-      <Partition_Schedule PartitionIdentifier="1" PartitionName="dummy_1" PeriodSeconds="0.100" PeriodDurationSeconds="0.020">
-         <Window_Schedule WindowIdentifier="101" WindowStartSeconds="0.0" WindowDurationSeconds="0.020" PartitionPeriodStart="true" />
-         <Window_Schedule WindowIdentifier="102" WindowStartSeconds="0.1" WindowDurationSeconds="0.020" PartitionPeriodStart="true" />
-      </Partition_Schedule>
-      <Partition_Schedule PartitionIdentifier="2" PartitionName="dummy_2" PeriodSeconds="0.100" PeriodDurationSeconds="0.010">
-         <Window_Schedule WindowIdentifier="201" WindowStartSeconds="0.030" WindowDurationSeconds="0.010" PartitionPeriodStart="true" />
-         <Window_Schedule WindowIdentifier="202" WindowStartSeconds="0.130" WindowDurationSeconds="0.010" PartitionPeriodStart="true" />
-      </Partition_Schedule>
-      <Partition_Schedule PartitionIdentifier="3" PartitionName="stio_sys" PeriodSeconds="0.100" PeriodDurationSeconds="0.030">
-         <Window_Schedule WindowIdentifier="301" WindowStartSeconds="0.040" WindowDurationSeconds="0.030" PartitionPeriodStart="true" />
-         <Window_Schedule WindowIdentifier="302" WindowStartSeconds="0.140" WindowDurationSeconds="0.030" PartitionPeriodStart="true" />
-      </Partition_Schedule>
-      <Partition_Schedule PartitionIdentifier="4" PartitionName="evil" PeriodSeconds="0.200" PeriodDurationSeconds="0.020">
-         <Window_Schedule WindowIdentifier="401" WindowStartSeconds="0.180" WindowDurationSeconds="0.020" PartitionPeriodStart="true" />
-      </Partition_Schedule>
-   </Module_Schedule>
+	  <Partition_Schedule PartitionIdentifier="1" PartitionName="dummy_1" PeriodSeconds="0.100" PeriodDurationSeconds="0.020">
+            <Window_Schedule WindowIdentifier="101" WindowStartSeconds="0.0" WindowDurationSeconds="0.020" PartitionPeriodStart="true" />
+            <Window_Schedule WindowIdentifier="102" WindowStartSeconds="0.1" WindowDurationSeconds="0.020" PartitionPeriodStart="true" />
+	  </Partition_Schedule>
+	  <Partition_Schedule PartitionIdentifier="2" PartitionName="dummy_2" PeriodSeconds="0.100" PeriodDurationSeconds="0.010">
+            <Window_Schedule WindowIdentifier="201" WindowStartSeconds="0.030" WindowDurationSeconds="0.010" PartitionPeriodStart="true" />
+            <Window_Schedule WindowIdentifier="202" WindowStartSeconds="0.130" WindowDurationSeconds="0.010" PartitionPeriodStart="true" />
+	  </Partition_Schedule>
+	  <Partition_Schedule PartitionIdentifier="3" PartitionName="stio_sys" PeriodSeconds="0.100" PeriodDurationSeconds="0.030">
+            <Window_Schedule WindowIdentifier="301" WindowStartSeconds="0.040" WindowDurationSeconds="0.030" PartitionPeriodStart="true" />
+            <Window_Schedule WindowIdentifier="302" WindowStartSeconds="0.140" WindowDurationSeconds="0.030" PartitionPeriodStart="true" />
+	  </Partition_Schedule>
+	  <Partition_Schedule PartitionIdentifier="4" PartitionName="evil" PeriodSeconds="0.200" PeriodDurationSeconds="0.020">
+            <Window_Schedule WindowIdentifier="401" WindowStartSeconds="0.180" WindowDurationSeconds="0.020" PartitionPeriodStart="true" />
+	  </Partition_Schedule>
+	</Module_Schedule>
 	<Connection_Table>
-		<Channel ChannelIdentifier="1" ChannelName="stio_channel">
-			<Source>
-				<Standard_Partition PartitionIdentifier="1" PartitionName="dummy_1" PortName="print_1" PhysicalAddress="0x80000000" />
-			</Source>
-			<Source>
-				<Standard_Partition PartitionIdentifier="2" PartitionName="dummy_2" PortName="print_2" PhysicalAddress="0x80000000" />
-			</Source>
-			<Destination>
-				<Standard_Partition PartitionIdentifier="3" PartitionName="stio_sys" PortName="sys_stio" PhysicalAddress="0x80000000" />
-			</Destination>
-		</Channel>
+	  <Channel ChannelIdentifier="1" ChannelName="stio_channel">
+	    <Source>
+	      <Standard_Partition PartitionIdentifier="1" PartitionName="dummy_1" PortName="print_1" PhysicalAddress="0x80000000" />
+	    </Source>
+	    <Source>
+	      <Standard_Partition PartitionIdentifier="2" PartitionName="dummy_2" PortName="print_2" PhysicalAddress="0x80000000" />
+	    </Source>
+	    <Destination>
+	      <Standard_Partition PartitionIdentifier="3" PartitionName="stio_sys" PortName="sys_stio" PhysicalAddress="0x80000000" />
+	    </Destination>
+	  </Channel>
 	</Connection_Table>
 </ARINC_653_Module>
