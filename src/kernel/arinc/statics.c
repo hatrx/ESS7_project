@@ -8,7 +8,6 @@
 port_t p_dummy_1[1] = {{
 	.is_queuing_port = true,
 	.q_buf = {
-		.QUEUING_DISCIPLINE = FIFO,
 		MESSAGE_BUFFER(32, 32),
 	},
 	.PORT_DIRECTION = SOURCE,
@@ -18,7 +17,6 @@ port_t p_dummy_1[1] = {{
 port_t p_dummy_2[1] = {{
 	.is_queuing_port = true,
 	.q_buf = {
-		.QUEUING_DISCIPLINE = FIFO,
 		MESSAGE_BUFFER(32, 32),
 	},
 	.PORT_DIRECTION = SOURCE,
@@ -28,7 +26,6 @@ port_t p_dummy_2[1] = {{
 port_t p_stio_sys[1] = {{
 	.is_queuing_port = true,
 	.q_buf = {
-		.QUEUING_DISCIPLINE = FIFO,
 		MESSAGE_BUFFER(32, 32),
 	},
 	.PORT_DIRECTION = DESTINATION,

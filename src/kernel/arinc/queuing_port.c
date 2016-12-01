@@ -64,6 +64,8 @@ void create_queuing_port(
 	/*out*/ QUEUING_PORT_ID_TYPE     *QUEUING_PORT_ID,
 	/*out*/ RETURN_CODE_TYPE         *RETURN_CODE)
 {
+	(void) QUEUING_DISCIPLINE;
+
 	partition_t *this_partition = get_partition();
 	port_t *ports = this_partition->ports;
 
@@ -71,7 +73,6 @@ void create_queuing_port(
 		if (!strcmp(ports[n].portname, QUEUING_PORT_NAME) &&
 			ports[n].q_buf.MAX_MESSAGE_SIZE == MAX_MESSAGE_SIZE &&
 			ports[n].q_buf.MAX_NB_MESSAGE == MAX_NB_MESSAGE &&
-			ports[n].q_buf.QUEUING_DISCIPLINE == QUEUING_DISCIPLINE &&
 			ports[n].PORT_DIRECTION == PORT_DIRECTION)
 		{
 			ports[n].activated = true;

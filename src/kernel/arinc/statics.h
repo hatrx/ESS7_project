@@ -45,7 +45,6 @@ struct queuing_port {
 	MESSAGE_RANGE_TYPE        MAX_NB_MESSAGE;
 	MESSAGE_SIZE_TYPE         MAX_MESSAGE_SIZE;
 	MESSAGE_RANGE_TYPE        NB_MESSAGE;
-	QUEUING_DISCIPLINE_TYPE   QUEUING_DISCIPLINE; /* Not used*/
 	circBuf_t                 circ_buf;
 	uint8_t                   *buffer;
 };
