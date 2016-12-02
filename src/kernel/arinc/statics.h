@@ -41,6 +41,18 @@ typedef enum {
 	QUEUING_PORT,
 } PORT_TYPE;
 
+typedef enum {
+	CODE,
+	DATA,
+	INPUT_OUTPUT,
+} mem_type_t;
+
+typedef enum {
+	READ_ONLY,
+	WRITE_ONLY,
+	READ_WRITE,
+} mem_access_t;
+
 struct queuing_port {
 	MESSAGE_RANGE_TYPE        MAX_NB_MESSAGE;
 	MESSAGE_SIZE_TYPE         MAX_MESSAGE_SIZE;
@@ -94,6 +106,19 @@ typedef struct{
 	APEX_INTEGER              nb_ports;
 	port_t                    **ports;
 } channel_t;
+
+typedef struct {
+	mem_type_t                type;
+	uint32_t                  size;
+	mem_access_t              access;
+	void                      *address;
+} mem_req_t;
+
+typedef struct{
+	PARTITION_ID_TYPE         IDENTIFIER;
+	NAME_TYPE                 partitionname;
+	mem_req_t                 *memory_arr;
+} part_mem_t;
 
 
 void dummy1_main(void);
