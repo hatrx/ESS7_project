@@ -3,6 +3,7 @@
 #include "partition.h"
 #include "statics.h"
 #include "process.h"
+#include <kernel/error_handler.h>
 
 
 mem_req_t get_ram_info(partition_t *partition)
@@ -23,8 +24,8 @@ mem_req_t get_ram_info(partition_t *partition)
 		}
 	}
 
-	/* TODO: KERNEL PANIC */
-	return (mem_req_t){0};
+	/* KERNEL PANIC */
+	Error_Handler();
 }
 
 
@@ -53,11 +54,13 @@ void init_partitions(void) {
 		create_process(part, mem_req.address, &attributes, &processId, &RETURN_CODE);
 
 		if (RETURN_CODE != NO_ERROR) {
-			/* TODO: KERNEL PANIC */
+			/* KERNEL PANIC */
+			Error_Handler();
 		}
 
 		if (processId != 0) {
-			/* TODO: KERNEL PANIC */
+			/* KERNEL PANIC */
+			Error_Handler();
 		}
 
 		/* Set the rest og the processes as DORMANT */
