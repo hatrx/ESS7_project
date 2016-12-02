@@ -1,19 +1,15 @@
 #include <stm32f4xx_hal.h>
 #include <stdint.h>
 
-#include "context.h"
-#include "scheduler.h"
-
+#include "drivers/time_get.h"
 #include <drivers/time_get.h>
 
 #include "arinc/partition.h"
+#include "context.h"
+#include "scheduler.h"
 
-#include "drivers/time_get.h"
 
 //#define DISABLE_CONTEXT_SWITCH
-
-static process_t* activeProcess = NULL;
-
 #ifndef DISABLE_CONTEXT_SWITCH
 /**
  * @brief Handles SysTick interrupts. This should fire once every millisecond.
@@ -30,11 +26,12 @@ __attribute__((naked)) void SysTick_Handler(void)
 	__asm volatile ("MOV %0, LR" : "=r" (exc_return_value));
 
 
-	if (activeProcess != NULL)
+	static process_t* active_process = NULL;
+	if (active_process != NULL)
 	{
 		// Save the value of the stack pointer for later use.
-		activeProcess->stackpointer = stackpointer;
-		activeProcess->exc_return_value = (exc_return_value & 0xFF);
+		active_process->stackpointer = stackpointer;
+		active_process->exc_return_value = (exc_return_value & 0xFF);
 	}
 
 	// Increase HAL ticks. This is by the HAL_Delay(int) function, so we need to do this.
@@ -45,7 +42,7 @@ __attribute__((naked)) void SysTick_Handler(void)
 	/* Get pointer to currently running partition. */
 	partition_t *part = &partitions[indexActivePartition];
 
-	activeProcess = scheduler_processScheduler(part);
+	active_process = scheduler_processScheduler(part);
 
 	// Resote the software context of the new process.
 	// TODO: Right now, this only handles switches to userspace (and without setting privilege levels),
@@ -53,14 +50,14 @@ __attribute__((naked)) void SysTick_Handler(void)
 	__ASM volatile (
 		"LDMFD  %0!, {R4-R11}       \n"
 		"MSR 	PSP, %0				\n"
-		: "+r" (activeProcess->stackpointer) :
+		: "+r" (active_process->stackpointer) :
 	);
 
 	__ASM volatile (
 		"LDR	R1, =0xFFFFFF00 		\n\t"
 		"ADD	R1, R1, %0				\n\t"
 		"BX		R1						\n\t"
-		: : "r" (activeProcess->exc_return_value) :
+		: : "r" (active_process->exc_return_value) :
 	);
 }
 #else
