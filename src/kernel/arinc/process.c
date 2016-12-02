@@ -5,19 +5,6 @@
 #include "kernel/context.h"
 
 
-void init_processes(void) {
-	const uint32_t nb_partitions = sizeof(partitions) / sizeof(partition_t);
-
-	for (size_t i = 0; i < nb_partitions; i++) {
-		process_t* processes = partitions[i].processes;
-
-		for (size_t n = 0; n < MAX_PROCESSES_PER_PARTITIONS; ++n) {
-			processes[n].PROCESS_STATE = DORMANT;
-		}
-	}
-}
-
-
 static int find_dormant_process(partition_t *partition)
 {
 	for (int i = 0; i < MAX_PROCESSES_PER_PARTITIONS; ++i) {

@@ -77,10 +77,6 @@ int main(void)
     /* Disable sysTick */
     SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
 
-    PROCESS_ATTRIBUTE_TYPE dummy1_mainProcess_attributes, dummy2_mainProcess_attributes, stdio_sys_mainProcess_attributes;
-    PROCESS_ID_TYPE dummy1_pid, dummy2_pid, stdio_sys_pid;
-	RETURN_CODE_TYPE RETURN_CODE;
-
     set_system_clock_168mhz();
 
     if (BSP_UART_Init() != 0)
@@ -106,42 +102,10 @@ int main(void)
 	}
 	*/
     //init_mpu(0x20000000 + 0x2000, MPU_1KB);
-    /* Initialize all ports */
+
+	/* Initialize all ports */
     init_queuing_ports();
-
-    dummy1_mainProcess_attributes = (PROCESS_ATTRIBUTE_TYPE){
-	.PERIOD = 0,
-	.TIME_CAPACITY = 0,
-	.ENTRY_POINT = &dummy1_main,
-	.BASE_PRIORITY = 1,
-	.DEADLINE = SOFT,
-	.NAME = "dummy1",
-    };
-
-    dummy2_mainProcess_attributes = (PROCESS_ATTRIBUTE_TYPE){
-	.PERIOD = 0,
-	.TIME_CAPACITY = 0,
-	.ENTRY_POINT = &dummy2_main,
-	.BASE_PRIORITY = 1,
-	.DEADLINE = SOFT,
-	.NAME = "dummy2",
-    };
-
-    stdio_sys_mainProcess_attributes = (PROCESS_ATTRIBUTE_TYPE){
-	.PERIOD = 0,
-	.TIME_CAPACITY = 0,
-	.ENTRY_POINT = &stdio_sys_main,
-	.BASE_PRIORITY = 1,
-	.DEADLINE = SOFT,
-	.NAME = "stdio_sys",
-    };
-    init_partitions();
-    create_process(&partitions[0], 0x20001000, &dummy1_mainProcess_attributes, &dummy1_pid, &RETURN_CODE);
-    create_process(&partitions[1], 0x20003000, &dummy2_mainProcess_attributes, &dummy2_pid, &RETURN_CODE);
-    create_process(&partitions[2], 0x20005000, &stdio_sys_mainProcess_attributes, &stdio_sys_pid, &RETURN_CODE);
-    init_partition(&partitions[0]);
-    init_partition(&partitions[1]);
-    init_partition(&partitions[2]);
+	init_partitions();
     TIME_Start_ns();
 
     /* Enable sysTick */

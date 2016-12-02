@@ -9,7 +9,6 @@
 
 
 void init_partitions(void);
-void init_partition(partition_t* );
 
 
 #endif // PARTITION_H

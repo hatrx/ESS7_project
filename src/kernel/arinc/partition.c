@@ -2,19 +2,67 @@
 #include <stddef.h>
 #include "partition.h"
 #include "statics.h"
+#include "process.h"
+
+
+mem_req_t get_ram_info(partition_t *partition)
+{
+	PARTITION_ID_TYPE id = partition->IDENTIFIER;
+
+	const uint32_t nb_mem_infos = sizeof(partition_memmory) / sizeof(part_mem_t);
+	for (size_t i = 0; i < nb_mem_infos; ++i) {
+		if (id != partition_memmory[i].IDENTIFIER) {
+			continue;
+		}
+
+		const uint32_t nb_mem = partition_memmory[i].arr_size;
+		for (size_t n = 0; n < nb_mem; n++) {
+			if (partition_memmory[i].memory_arr[n].type == DATA) {
+				return partition_memmory[i].memory_arr[n];
+			}
+		}
+	}
+
+	/* TODO: KERNEL PANIC */
+	return (mem_req_t){0};
+}
 
 
 void init_partitions(void) {
-	const uint32_t nb_processes = sizeof(partitions) / sizeof(partition_t);
-	for (size_t i = 0; i < nb_processes; i++) {
-		partitions[i].nb_processes = 0;
-		partitions[i].index_running_process = 0;
-	}
-}
+	const uint32_t nb_partitions = sizeof(partitions) / sizeof(partition_t);
+	for (size_t i = 0; i < nb_partitions; i++) {
+		partition_t *part = &partitions[i];
+		process_t* processes = part->processes;
 
-void init_partition(partition_t* partition_)
-{
-	// Change the state of the first process to READY. The first process is
-	// always the main process.
-	partition_->processes[0].PROCESS_STATE = READY;
+		part->nb_processes = 1;
+		part->index_running_process = 0;
+
+		const mem_req_t mem_req = get_ram_info(part);
+
+		PROCESS_ATTRIBUTE_TYPE attributes = {
+			.PERIOD = 0,
+			.TIME_CAPACITY = 0,
+			.ENTRY_POINT = part->entrypoint,
+			.BASE_PRIORITY = 1,
+			.DEADLINE = SOFT,
+			.NAME = "main",
+		};
+
+		PROCESS_ID_TYPE processId;
+		RETURN_CODE_TYPE RETURN_CODE;
+		create_process(part, mem_req.address, &attributes, &processId, &RETURN_CODE);
+
+		if (RETURN_CODE != NO_ERROR) {
+			/* TODO: KERNEL PANIC */
+		}
+
+		if (processId != 0) {
+			/* TODO: KERNEL PANIC */
+		}
+
+		/* Set the rest og the processes as DORMANT */
+		for (size_t n = 1; n < MAX_PROCESSES_PER_PARTITIONS; ++n) {
+			processes[n].PROCESS_STATE = DORMANT;
+		}
+	}
 }

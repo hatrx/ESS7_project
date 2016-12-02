@@ -9,7 +9,6 @@
 #include "statics.h"
 
 
-void init_processes(void);
 void create_process (
 	partition_t* partition,
 	uint32_t memoryAddress,

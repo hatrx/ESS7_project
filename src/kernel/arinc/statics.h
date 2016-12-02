@@ -106,12 +106,13 @@ typedef struct {
 	mem_type_t                type;
 	uint32_t                  size;
 	mem_access_t              access;
-	void                      *address;
+	uint32_t                  address;
 } mem_req_t;
 
 typedef struct{
 	PARTITION_ID_TYPE         IDENTIFIER;
 	NAME_TYPE                 partitionname;
+	uint32_t                  arr_size;
 	mem_req_t                 *memory_arr;
 } part_mem_t;
 
@@ -123,6 +124,7 @@ void stdio_sys_main(void);
 
 extern partition_t partitions[3];
 extern channel_t connection_table[1];
+extern part_mem_t partition_memmory[3];
 
 
 #endif /* STATICS_H */
