@@ -34,12 +34,7 @@ typedef enum {
 	LEVEL_C,
 	LEVEL_D,
 	LEVEL_E,
-} CRITICALITY;
-
-typedef enum {
-	SAMPLING_PORT,
-	QUEUING_PORT,
-} PORT_TYPE;
+} criticality_t;
 
 typedef enum {
 	CODE,
@@ -90,7 +85,7 @@ typedef struct {
 typedef struct {
 	PARTITION_ID_TYPE         IDENTIFIER;
 	NAME_TYPE                 partitionname;
-	CRITICALITY               criticality; /* Not used */
+	criticality_t             criticality; /* Not used */
 	bool                      systempartion; /* Not used*/
 	void                      (*entrypoint)(void);
 	APEX_INTEGER              nb_ports;
