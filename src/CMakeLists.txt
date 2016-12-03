@@ -48,9 +48,26 @@ target_link_libraries(stdio_sys
 	APEX
 )
 
+add_library(idle_sys
+	${SRC_DIR}/partitions/idle_sys/idle_sys.c
+)
+target_link_libraries(idle_sys
+	drivers
+	APEX
+)
+
+add_library(evil
+	${SRC_DIR}/partitions/evil/evil.c
+)
+target_link_libraries(evil
+	drivers
+	APEX
+)
+
 
 # Compile OS
 add_executable(${PROJECT_NAME}
+	${SRC_DIR}/xml_data.c
 	${SRC_DIR}/kernel/main.c
 	${SRC_DIR}/kernel/syscalls.c
 	${SRC_DIR}/kernel/context.c
@@ -71,6 +88,8 @@ target_link_libraries(${PROJECT_NAME}
 	dummy1
 	dummy2
 	stdio_sys
+	idle_sys
+	evil
 )
 # Command for writing OS to target flash.
 open_ocd_write_flash(${PROJECT_NAME})
