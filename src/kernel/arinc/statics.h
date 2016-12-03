@@ -124,7 +124,6 @@ void stdio_sys_main(void);
 
 extern partition_t partitions[3];
 extern channel_t connection_table[1];
-extern part_mem_t partition_memmory[3];
-
+extern part_mem_t partition_memory[3];
 
 #endif /* STATICS_H */

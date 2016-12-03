@@ -10,16 +10,16 @@ mem_req_t get_ram_info(partition_t *partition)
 {
 	PARTITION_ID_TYPE id = partition->IDENTIFIER;
 
-	const uint32_t nb_mem_infos = sizeof(partition_memmory) / sizeof(part_mem_t);
+	const uint32_t nb_mem_infos = sizeof(partition_memory) / sizeof(part_mem_t);
 	for (size_t i = 0; i < nb_mem_infos; ++i) {
-		if (id != partition_memmory[i].IDENTIFIER) {
+		if (id != partition_memory[i].IDENTIFIER) {
 			continue;
 		}
 
-		const uint32_t nb_mem = partition_memmory[i].arr_size;
+		const uint32_t nb_mem = partition_memory[i].arr_size;
 		for (size_t n = 0; n < nb_mem; n++) {
-			if (partition_memmory[i].memory_arr[n].type == DATA) {
-				return partition_memmory[i].memory_arr[n];
+			if (partition_memory[i].memory_arr[n].type == DATA) {
+				return partition_memory[i].memory_arr[n];
 			}
 		}
 	}

@@ -94,7 +94,7 @@ mem_req_t mem_stdio_sys[2] = {{
 	.address = 0x20014000,
 },};
 
-part_mem_t partition_memmory[3] = {{
+part_mem_t partition_memory[3] = {{
 	.IDENTIFIER = 1,
 	.partitionname = "dummy_1",
 	.arr_size = 2,
