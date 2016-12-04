@@ -49,11 +49,9 @@ target_link_libraries(stdio_sys
 )
 
 add_library(idle_sys
-	${SRC_DIR}/partitions/idle_sys/idle_sys.c
+	${SRC_DIR}/partitions/idle_sys/idle_sys.s
 )
 target_link_libraries(idle_sys
-	drivers
-	APEX
 )
 
 add_library(evil
