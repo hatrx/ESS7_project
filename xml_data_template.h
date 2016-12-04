@@ -10,7 +10,7 @@
 #include <apex_sampling.h>
 #include <apex_partition.h>
 
-#include "../circular_buffer.h"
+#include "kernel/circular_buffer.h"
 
 
 /*
@@ -22,9 +22,9 @@
 	.MAX_MESSAGE_SIZE = message_size, \
 	.MAX_NB_MESSAGE = nb_message, \
 	.buffer = (uint8_t [(message_size * nb_message) + \
-		(message_size * sizeof(size_t))]) {0}, \
+		(nb_message * sizeof(size_t)) + 1]) {0}, \
 	.circ_buf = {0, 0, 0, (message_size * nb_message) + \
-		(message_size * sizeof(size_t))}
+		(nb_message * sizeof(size_t)) + 1}
 
 #define MAX_PROCESSES_PER_PARTITIONS 3
 
@@ -52,7 +52,6 @@ struct queuing_port {
 	MESSAGE_RANGE_TYPE        MAX_NB_MESSAGE;
 	MESSAGE_SIZE_TYPE         MAX_MESSAGE_SIZE;
 	MESSAGE_RANGE_TYPE        NB_MESSAGE;
-	QUEUING_DISCIPLINE_TYPE   QUEUING_DISCIPLINE; /* Not used*/
 	circBuf_t                 circ_buf;
 	uint8_t                   *buffer;
 };
