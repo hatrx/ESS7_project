@@ -18,4 +18,5 @@ void evil_main(void)
         : : :
     );
     #endif
+    while(1) ;
 }

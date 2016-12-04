@@ -51,6 +51,7 @@ void MemManager_Handler(void)
     printf("MemManager_Handler\n");
 }
 
+__attribute__((noreturn))
 void Error_Handler(void)
 {
     printf("Initialisation Error\n");

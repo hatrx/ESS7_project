@@ -34,30 +34,32 @@ __attribute__((naked)) void SysTick_Handler(void)
 		active_process->exc_return_value = (exc_return_value & 0xFF);
 	}
 
+	/* Get pointer to currently running partition. */
+	partition_t *part = scheduler_partitionScheduler();
+
+	active_process = scheduler_processScheduler(part);
+
 	// Increase HAL ticks. This is by the HAL_Delay(int) function, so we need to do this.
 	HAL_IncTick();
 	TIME_Add_Count();
-	scheduler_partitionScheduler();
-
-	/* Get pointer to currently running partition. */
-	partition_t *part = &partitions[indexActivePartition];
-
-	active_process = scheduler_processScheduler(part);
 
 	// Resote the software context of the new process.
 	// TODO: Right now, this only handles switches to userspace (and without setting privilege levels),
 	// but it should be modified to be more comprehensive.
 	__ASM volatile (
-		"LDMFD  %0!, {R4-R11}       \n"
-		"MSR 	PSP, %0				\n"
-		: "+r" (active_process->stackpointer) :
+		"LDMFD  %[stack]!, {R4-R11}     \n\t"
+		"TST	%[exc], #0x4    		\n\t"		// Test bit 2 of EXC_RETURN
+		"ITE	EQ      				\n\t"		// Which stack pointer was used?
+		"MSREQ	MSP, %[stack]		 	\n\n"		// Update MSP if EQ is set
+		"MSRNE 	PSP, %[stack]			\n\t"		// Update PSP if NE is set
+		: [stack] "+r" (active_process->stackpointer) : [exc] "r" (active_process->exc_return_value) :
 	);
 
-	__ASM volatile (
+	__ASM volatile(
 		"LDR	R1, =0xFFFFFF00 		\n\t"
-		"ADD	R1, R1, %0				\n\t"
+		"ADD	R1, R1, %[exc]			\n\t"
 		"BX		R1						\n\t"
-		: : "r" (active_process->exc_return_value) :
+		: : [exc] "r" (active_process->exc_return_value) :
 	);
 }
 #else

@@ -3,10 +3,13 @@
 
 #include <stdint.h>
 
-#include "arinc/partition.h"
+#include "arinc/statics.h"
 
-void scheduler_partitionScheduler(void);
+#define MAX_NUM_WINDOWS 20
+
+partition_t* scheduler_partitionScheduler(void);
 process_t* scheduler_processScheduler(partition_t *part);
 void process_stop_self(void);
+void scheduler_buildSchedule(void);
 
 #endif // !SCHEDULER_H
