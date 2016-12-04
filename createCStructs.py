@@ -85,8 +85,8 @@ class ParseXML:
         elif partition_memory:
             complete_struct = "const partition_memory partition_memorys[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string)
             self.write_to_file_c(complete_struct)
-            major_frame = self.major_frame.get('@MajorFrameSeconds', None)
-            mf_wrapper = "const uint32_t majorFrameSeconds = %s\n\n;" % (major_frame)
+            major_frame = int(float(self.major_frame.get('@MajorFrameSeconds', None)) * 1000)
+            mf_wrapper = "const uint32_t majorFrameSeconds = %s;\n\n" % (major_frame)
             self.write_to_file_c(mf_wrapper)
             self.externs_for_h_footer = self.externs_for_h_footer + "extern partition_memory partition_memorys[%s]\n" % (no_of_sub_elements)
         elif partition_schedule:
