@@ -15,18 +15,17 @@ class ParseXML:
         with open (self.xml_schema, "r") as xmlfile:
             xml=xmlfile.read()
         xmlfile.closed
-        #print "xml file contents: %s" % (xml)
         return xml
 
 
     def parse_xml(self, xml):
-        print "parsing xml file contents"
+        #print "parsing xml file contents"
         parsed_xml = json.loads(json.dumps(xmltodict.parse(xml)))
         #print "parsed xml: %s" % (parsedxml)
         return parsed_xml
 
 
-    def get_sub_structures(self, parsed_xml): #return a list of these?
+    def get_sub_structures(self, parsed_xml):
         partitions = parsed_xml.get('ARINC_653_Module').get('Partition', None)
         partition_memory = parsed_xml.get('ARINC_653_Module').get('Partition_Memory', None)
         partition_schedule = parsed_xml.get('ARINC_653_Module').get('Module_Schedule', None)
@@ -53,8 +52,7 @@ class ParseXML:
 
 
     def write_file_h_footer(self):
-        self.write_to_file_h(
-"""#endif""")
+        self.write_to_file_h("""#endif""")
 
 
     def write_file_c_header(self):
@@ -99,20 +97,9 @@ class ParseXML:
         window_schedule = sub_element.get("Window_Schedule", ())
         channels = sub_element.get('Source', None)    
         if partitions:
-            ports = None
-            queuing_ports = sub_element.get("Queuing_Port", None)
-            sampling_ports = sub_element.get("Sampling_Port", None)
-
-            if queuing_ports and sampling_ports:
-                queuing_ports = self.put_dicts_in_list(queuing_ports)
-                sampling_ports = self.put_dicts_in_list(sampling_ports)
-                ports = queuing_ports + sampling_ports
-            elif queuing_ports:
-                queuing_ports = self.put_dicts_in_list(queuing_ports)
-                ports = queuing_ports
-            elif sampling_ports:
-                sampling_ports = self.put_dicts_in_list(sampling_ports)
-                ports = sampling_ports
+            queuing_ports = self.put_dicts_in_list( sub_element.get("Queuing_Port", []) )
+            sampling_ports = self.put_dicts_in_list( sub_element.get("Sampling_Port", []) )
+            ports = queuing_ports + sampling_ports
 
             if not ports:
                 no_of_ports = 0
@@ -133,7 +120,6 @@ class ParseXML:
     }},""".format(*get_list_tuple)
                         port_struct = port_struct.replace ("[", "{")
                         port_struct = port_struct.replace ("]", "}")
-                        structs_string = structs_string + port_struct
                     else:
                         get_list = ['@PortName', '@MaxMessageSize', '@Direction', '@RefreshRateSeconds']
                         get_list_tuple = self.return_get_tuple(port, get_list)
@@ -143,7 +129,8 @@ class ParseXML:
     .direction = \"{}\",
     .refreshrateseconds = {},
     }},""".format(*get_list_tuple)
-                        structs_string = structs_string + port_struct
+
+                    structs_string = structs_string + port_struct
 
                 ports_wrapper = "port_t p_%s[%s] = {%s};\n\n" % (sub_element_name, no_of_ports, structs_string)
                 self.write_to_file_c(ports_wrapper)
@@ -155,7 +142,6 @@ class ParseXML:
             get_list = ['@Type', '@SizeBytes', '@Access', '@PhysicalAddress']
             memory_requirements = self.put_dicts_in_list(memory_requirements)
             no_of_mem_req = len(memory_requirements)
-            #mem_requirements_string, no_of_mem_requirements = self.create_memory_requirements_structs(mem_requirements)
             for requirement in memory_requirements:
                 get_list_tuple = self.return_get_tuple(requirement, get_list)
                 mem_requirement_struct = """{{
@@ -171,12 +157,10 @@ class ParseXML:
 
         elif window_schedule:
             sub_element_struct, sub_element_name = self.partition_schedule_struct(sub_element)
-
             structs_string = ""
             get_list = ['@WindowIdentifier', '@WindowStartSeconds', '@WindowDurationSeconds', '@PartitionPeriodStart']
             window_schedule = self.put_dicts_in_list(window_schedule)
             no_of_win_sch = len(window_schedule)
-            #win_schedule_string, no_of_win_schedules = self.create_window_schedules_structs(win_schedule)
             for win in window_schedule:
                 get_list_tuple = self.return_get_tuple(win, get_list)
                 win_schedule_struct = """{{
@@ -192,33 +176,22 @@ class ParseXML:
         elif channels:
             ports = None
             source_list = []
-            source = sub_element.get("Source", None)
-            if len(source) > 0:
+            source = self.put_dicts_in_list( sub_element.get("Source", []) )
+            if source:
                 for src in source:
-                    s = src.get("Standard_Partition", None)
+                    s = src.get("Standard_Partition", [])
                     source_list.append(s)
             source = source_list
 
             des_list = []
-            t_list = []
-            destination = sub_element.get("Destination", None)
-            t_list.append(destination)
+            destination = self.put_dicts_in_list( sub_element.get("Destination", []) )
             if destination:
-                for des in t_list:
-                    d = des.get("Standard_Partition", None)
+                for des in destination:
+                    d = des.get("Standard_Partition", [])
                     des_list.append(d)
             destination = des_list
 
-            if source and destination:
-                source = self.put_dicts_in_list(source)
-                destination = self.put_dicts_in_list(destination)
-                ports = source + destination
-            elif source:
-                source = self.put_dicts_in_list(source)
-                ports = source
-            elif destination:
-                destination = self.put_dicts_in_list(destination)
-                ports = destination
+            ports = source + destination
             no_of_ports = len(ports)
             sub_element_struct, sub_element_name = self.channel_struct(sub_element, no_of_ports)#change function
 
@@ -235,7 +208,6 @@ class ParseXML:
                 structs_string = structs_string + channel_struct
             channel_wrapper = "port_t *stio_channel_ports[%s] = {%s};\n\n" % (no_of_channels, structs_string)
             self.write_to_file_c(channel_wrapper)
-
 
         else:
             print "unknown sub_element: %s" % (sub_element)
@@ -312,7 +284,6 @@ void %s(void);
         return channel_struct, name
 
 
-    #sub_sub_structure_validation
     def put_dicts_in_list(self, structure):
         if structure:
             if type(structure) == dict:
