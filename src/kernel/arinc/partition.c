@@ -30,10 +30,38 @@ mem_req_t get_ram_info(partition_t *partition)
 
 
 void init_partitions(void) {
+	// Set up idle partition
+	partition_t *part = &partitions[0];
+	process_t* processes = part->processes;
+
+	PROCESS_ATTRIBUTE_TYPE attributes = {
+			.PERIOD = 0,
+			.TIME_CAPACITY = 0,
+			.ENTRY_POINT = part->entrypoint,
+			.BASE_PRIORITY = 1,
+			.DEADLINE = SOFT,
+			.NAME = "main",
+		};
+
+	PROCESS_ID_TYPE processId;
+	RETURN_CODE_TYPE RETURN_CODE;
+	create_process(part, 0x20000100, &attributes, &processId, &RETURN_CODE);
+
+	if (RETURN_CODE != NO_ERROR) {
+		/* KERNEL PANIC */
+		Error_Handler();
+	}
+
+	if (processId != 0) {
+		/* KERNEL PANIC */
+		Error_Handler();
+	}
+
+	// Set up the rest of the partitions
 	const uint32_t nb_partitions = sizeof(partitions) / sizeof(partition_t);
-	for (size_t i = 0; i < nb_partitions; i++) {
-		partition_t *part = &partitions[i];
-		process_t* processes = part->processes;
+	for (size_t i = 1; i < nb_partitions; i++) {
+		part = &partitions[i];
+		processes = part->processes;
 
 		part->nb_processes = 1;
 		part->index_running_process = 0;
@@ -49,8 +77,6 @@ void init_partitions(void) {
 			.NAME = "main",
 		};
 
-		PROCESS_ID_TYPE processId;
-		RETURN_CODE_TYPE RETURN_CODE;
 		create_process(part, mem_req.address, &attributes, &processId, &RETURN_CODE);
 
 		if (RETURN_CODE != NO_ERROR) {
