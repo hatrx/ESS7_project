@@ -10,15 +10,17 @@ void CREATE_PROCESS (
     /*out*/ RETURN_CODE_TYPE         *RETURN_CODE )
 {
     __asm volatile (
-        "MOV    R1, %[ATTR]         \n\t"
-        "MOVT   R0, #0xc0ff         \n\t"
+        "PUSH   {%[IN_1]}           \n\t"
+		"PUSH   {%[IN_2]}           \n\t"
+		"PUSH   {%[IN_3]}           \n\t"
+		"MOV    R2, sp              \n\t"
         "MOVW   R0, #0xee0a         \n\t"
+		"MOVT   R0, #0xc0ff         \n\t"
         "SVC    #0xa                \n\t"
-        "NOP                        \n\t"
-        "MOV    %[RETURN], R0       \n\t"
-        "MOV    %[PID], R1          \n\t"
-        : [RETURN] "=r" (*RETURN_CODE), [PID] "=r" (*PROCESS_ID)
-        : [ATTR] "r" (ATTRIBUTES)
+        :
+        : [IN_1] "r" (ATTRIBUTES),
+		  [IN_2] "r" (PROCESS_ID),
+		  [IN_3] "r" (RETURN_CODE)
         :
     );
 }
@@ -171,6 +173,19 @@ void GET_QUEUING_PORT_STATUS (
         : [IN_1] "r" (QUEUING_PORT_ID),
           [IN_2] "r" (QUEUING_PORT_STATUS),
           [IN_3] "r" (RETURN_CODE)
+        :
+    );
+}
+
+
+void STOP_SELF()
+{
+	__ASM volatile (
+        "MOVW   R0, #0xee11         \n\t"
+        "MOVT   R0, #0xc0ff         \n\t"
+        "SVC    #0x0F               \n\t"
+        :
+        :
         :
     );
 }

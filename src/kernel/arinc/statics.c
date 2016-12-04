@@ -99,16 +99,19 @@ part_mem_t partition_memmory[3] = {{
 	.partitionname = "dummy_1",
 	.arr_size = 2,
 	.memory_arr = mem_dummy_1,
+	.mem_offset = 1024, /* TODO: This could be initialized at memeory init. */
 },{
 	.IDENTIFIER = 2,
 	.partitionname = "dummy_2",
 	.arr_size = 2,
 	.memory_arr = mem_dummy_2,
+	.mem_offset = 1024, /* TODO: This could be initialized at memeory init. */
 },{
 	.IDENTIFIER = 3,
 	.partitionname = "stio_sys",
 	.arr_size = 2,
 	.memory_arr = mem_stdio_sys,
+	.mem_offset = 1024, /* TODO: This could be initialized at memeory init. */
 },};
 
 port_t *stio_channel_ports[3] = {

@@ -114,6 +114,10 @@ typedef struct{
 	NAME_TYPE                 partitionname;
 	uint32_t                  arr_size;
 	mem_req_t                 *memory_arr;
+
+	/* This value could be calculated every time we make a new process,
+	   but this is just way easier... */
+	uint32_t                  mem_offset;
 } part_mem_t;
 
 

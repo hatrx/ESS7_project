@@ -9,7 +9,31 @@
 #include <apex_queuing.h>
 
 
+static void worker(void);
+
+
 void dummy2_main(void)
+{
+	PROCESS_ATTRIBUTE_TYPE attributes = {
+		.PERIOD = 0,
+		.TIME_CAPACITY = 0,
+		.ENTRY_POINT = &worker,
+		.STACK_SIZE = 1024,
+		.BASE_PRIORITY = 1,
+		.DEADLINE = SOFT,
+		.NAME = "worker",
+	};
+
+	PROCESS_ID_TYPE processId;
+	RETURN_CODE_TYPE RETURN_CODE;
+	CREATE_PROCESS(&attributes, &processId, &RETURN_CODE);
+	STOP_SELF();
+
+	while(1);
+}
+
+
+void worker(void)
 {
 	QUEUING_PORT_ID_TYPE QUEUING_PORT_ID;
 	RETURN_CODE_TYPE RETURN_CODE;

@@ -16,5 +16,10 @@ void create_process (
 	/*out*/ PROCESS_ID_TYPE          *PROCESS_ID,
 	/*out*/ RETURN_CODE_TYPE         *RETURN_CODE );
 
+void runtime_create_process(
+	PROCESS_ATTRIBUTE_TYPE *attributes,
+	PROCESS_ID_TYPE *processId,
+	RETURN_CODE_TYPE *RETURN_CODE);
+
 
 #endif /* PROCESS_H */

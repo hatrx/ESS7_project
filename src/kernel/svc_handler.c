@@ -4,6 +4,7 @@
 
 #include "context.h"
 #include "drivers/time_get.h"
+#include "arinc/process.h"
 
 #include "arinc/queuing_port.h"
 
@@ -37,7 +38,17 @@ void SVC_Handler(void)
     switch (stack->R0) {
         case 0xc0ffee0a:        // CREATE_PROCESS
         {
-            //Insert call to CREATE_PROCESS handler here!
+			uint8_t argc = 3;
+			uint32_t argv[argc];
+
+			while(argc--) {
+				argv[argc] = pop(&stack->R2);
+			}
+
+            runtime_create_process(
+				(PROCESS_ATTRIBUTE_TYPE *) argv[0],
+				(PROCESS_ID_TYPE *) argv[1],
+				(RETURN_CODE_TYPE *) argv[2]);
             break;
         }
         case 0xc0ffee0b:        // GET_TIME
@@ -129,6 +140,11 @@ void SVC_Handler(void)
 				(QUEUING_PORT_ID_TYPE) argv[0],
 				(QUEUING_PORT_STATUS_TYPE *) argv[1],
 				(RETURN_CODE_TYPE *) argv[2]);
+            break;
+        }
+		case 0xc0ffee11:        // CREATE_QUEUING_PORT
+        {
+            process_stop_self();
             break;
         }
         default:
