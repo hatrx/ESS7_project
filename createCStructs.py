@@ -328,7 +328,7 @@ class ParseXML:
         name = sub_element.get('@PartitionName', None).replace (" ", "_")
         crit_level = sub_element.get('@Criticality', None) 
         sys_part = sub_element.get('@SystemPartition', None) 
-        entry = "&" + sub_element.get('@EntryPoint', None) 
+        entry = sub_element.get('@EntryPoint', None) 
         partition_struct = """{ 
     .IDENTIFIER = %s,
     .partitionname = \"%s\",
@@ -337,12 +337,12 @@ class ParseXML:
     .entrypoint = %s,
     .nb_ports = %s,
     .ports = p_%s,
-    },""" % (part_id, name, crit_level, sys_part, entry, no_of_ports, name)
+    },""" % (part_id, name, crit_level, sys_part, "&"+entry, no_of_ports, name)
 
         #this write the entry point to the .h file as it is a function needed to be defined
         self.write_to_file_h("""
 void %s(void);
-""" % (entry))
+        """ % (entry))
         return partition_struct, name
 
 
