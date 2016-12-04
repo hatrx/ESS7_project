@@ -9,7 +9,7 @@
 
 #include "arinc/statics.h"
 #include "arinc/window.h"
-#include "arinc/queuing_port.h"
+#include "arinc/ports.h"
 
 static window_t schedule[MAX_NUM_WINDOWS];
 static int32_t majorFrameMillis = -1;

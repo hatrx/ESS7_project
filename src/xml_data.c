@@ -2,7 +2,7 @@
 
 #include "xml_data.h"
 #include "kernel/circular_buffer.h"
-#include "kernel/arinc/queuing_port.h"
+#include "kernel/arinc/ports.h"
 
 port_t p_dummy_1[1] = {{
     .is_queuing_port = true,

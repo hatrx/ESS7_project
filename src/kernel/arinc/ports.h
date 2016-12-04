@@ -1,9 +1,49 @@
-#ifndef QUEUING_H
-#define QUEUING_H
+#ifndef PORTS_H
+#define PORTS_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #include <apex_queuing.h>
+#include <apex_sampling.h>
+
+#include "../circular_buffer.h"
+
+
+struct queuing_port {
+	MESSAGE_RANGE_TYPE        MAX_NB_MESSAGE;
+	MESSAGE_SIZE_TYPE         MAX_MESSAGE_SIZE;
+	MESSAGE_RANGE_TYPE        NB_MESSAGE;
+	QUEUING_DISCIPLINE_TYPE   QUEUING_DISCIPLINE;
+	circBuf_t                 circ_buf;
+	uint8_t                   *buffer;
+};
+
+struct sampling_port {
+	MESSAGE_SIZE_TYPE         MAX_MESSAGE_SIZE;
+	SYSTEM_TIME_TYPE          REFRESH_PERIOD;
+	circBuf_t                 circ_buf;
+	uint8_t                   *buffer;
+};
+
+typedef struct {
+	bool                      is_queuing_port;
+	union {
+		struct queuing_port   q_buf;
+		struct sampling_port  s_buf;
+	};
+	bool                      activated;
+	void                      *channel_link;
+	PORT_DIRECTION_TYPE       PORT_DIRECTION;
+	NAME_TYPE                 portname;
+} port_t;
+
+typedef struct{
+	int                       channelidentifier;
+	NAME_TYPE                 channelname;
+	APEX_INTEGER              nb_ports;
+	port_t                    **ports;
+} channel_t;
 
 
 void init_queuing_ports(void);
@@ -42,4 +82,4 @@ void get_queuing_port_status(
 	/*out*/ RETURN_CODE_TYPE         *RETURN_CODE);
 
 
-#endif /* QUEUING_H */
+#endif /* PORTS_H */

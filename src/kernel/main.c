@@ -13,7 +13,7 @@
 #include "kernel/scheduler.h"
 #include "kernel/error_handler.h"
 #include "kernel/arinc/partition.h"
-#include "kernel/arinc/queuing_port.h"
+#include "kernel/arinc/ports.h"
 
 
 int main(void)

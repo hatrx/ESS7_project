@@ -2,7 +2,7 @@
 
 #include "../circular_buffer.h"
 #include "statics.h"
-#include "queuing_port.h"
+#include "ports.h"
 
 mem_req_t mem_dummy_1[2] = {{
 	.type = CODE,

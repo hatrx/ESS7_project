@@ -5,6 +5,7 @@
 
 #include <apex_types.h>
 #include <apex_partition.h>
+#include "ports.h"
 
 #include "../circular_buffer.h"
 
@@ -43,34 +44,6 @@ typedef enum {
 	READ_WRITE,
 } mem_access_t;
 
-struct queuing_port {
-	MESSAGE_RANGE_TYPE        MAX_NB_MESSAGE;
-	MESSAGE_SIZE_TYPE         MAX_MESSAGE_SIZE;
-	MESSAGE_RANGE_TYPE        NB_MESSAGE;
-	QUEUING_DISCIPLINE_TYPE   QUEUING_DISCIPLINE;
-	circBuf_t                 circ_buf;
-	uint8_t                   *buffer;
-};
-
-struct sampling_port {
-	MESSAGE_SIZE_TYPE         MAX_MESSAGE_SIZE;
-	SYSTEM_TIME_TYPE          REFRESH_PERIOD;
-	circBuf_t                 circ_buf;
-	uint8_t                   *buffer;
-};
-
-typedef struct {
-	bool                      is_queuing_port;
-	union {
-		struct queuing_port   q_buf;
-		struct sampling_port  s_buf;
-	};
-	bool                      activated;
-	void                      *channel_link;
-	PORT_DIRECTION_TYPE       PORT_DIRECTION;
-	NAME_TYPE                 portname;
-} port_t;
-
 typedef struct {
 	uint32_t                  stackpointer;
 	uint8_t                   exc_return_value;
@@ -90,13 +63,6 @@ typedef struct {
 	uint32_t                  index_running_process;
 	process_t                 processes[MAX_PROCESSES_PER_PARTITIONS];
 } partition_t;
-
-typedef struct{
-	int                       channelidentifier;
-	NAME_TYPE                 channelname;
-	APEX_INTEGER              nb_ports;
-	port_t                    **ports;
-} channel_t;
 
 typedef struct {
 	mem_type_t                type;

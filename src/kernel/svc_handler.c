@@ -7,7 +7,7 @@
 #include "arinc/process.h"
 #include "scheduler.h"
 
-#include "arinc/queuing_port.h"
+#include "arinc/ports.h"
 
 
 static uint32_t pop(uint32_t *p)

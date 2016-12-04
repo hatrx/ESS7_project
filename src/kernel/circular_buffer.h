@@ -1,5 +1,5 @@
-#ifndef PORTS_H
-#define PORTS_H
+#ifndef CIRC_BUF_H
+#define CIRC_BUF_H
 
 
 #include <stdint.h>
@@ -20,4 +20,4 @@ int8_t push_item(circBuf_t *c, uint8_t *data, size_t len);
 int8_t pop_item(circBuf_t *c, uint8_t *data, size_t *len);
 
 
-#endif /* PORTS_H */
+#endif /* CIRC_BUF_H */
