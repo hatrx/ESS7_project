@@ -40,7 +40,19 @@ mem_req_t mem_stdio_sys[2] = {{
 	.address = 0x20014000,
 },};
 
-part_mem_t partition_memory[3] = {{
+mem_req_t mem_evil[2] = {{
+	.type = CODE,
+	.size = 8000,
+	.access = READ_ONLY,
+	.address = 0x8016000,
+},{
+	.type = DATA,
+	.size = 8000,
+	.access = READ_WRITE,
+	.address = 0x20016000,
+},};
+
+part_mem_t partition_memory[4] = {{
 	.IDENTIFIER = 1,
 	.partitionname = "dummy_1",
 	.arr_size = 2,
@@ -55,6 +67,11 @@ part_mem_t partition_memory[3] = {{
 	.partitionname = "stio_sys",
 	.arr_size = 2,
 	.memory_arr = mem_stdio_sys,
+},{
+	.IDENTIFIER = 4,
+	.partitionname = "evil",
+	.arr_size = 2,
+	.memory_arr = mem_evil,
 },};
 
 /*port_t *stio_channel_ports[3] = {
