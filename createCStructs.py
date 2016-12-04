@@ -53,15 +53,16 @@ class ParseXML:
 
 
     def write_file_h_footer(self):
-        self.write_to_file_h("""#endif""")
+        self.write_to_file_h("""\n\n#endif""")
 
 
     def write_file_c_header(self):
-        self.write_to_file_c("""#include <stdint.h>
+        self.write_to_file_c("""
+#include <stdint.h>
 
 #include "xml_data.h"
-#include "circular_buffer.h"
-#include "arinc/queuing_port.h"
+#include "kernel/circular_buffer.h"
+#include "kernel/arinc/ports.h"
 
 """)
 
@@ -81,21 +82,21 @@ class ParseXML:
         if partition:
             complete_struct = "partition_t partitions[%s] = {%s};\n\n" % (no_of_sub_elements + 1, structs_string) #+1 added
             self.write_to_file_c(complete_struct)
-            self.externs_for_h_footer = self.externs_for_h_footer + "\n\nextern partition_t partitions[%s]\n" % (no_of_sub_elements + 1)
+            self.externs_for_h_footer = self.externs_for_h_footer + "\n\nextern partition_t partitions[%s];\n" % (no_of_sub_elements + 1)
         elif partition_memory:
-            complete_struct = "const partition_memory partition_memorys[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string)
+            complete_struct = "part_mem_t partition_memorys[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string)
             self.write_to_file_c(complete_struct)
             major_frame = int(float(self.major_frame.get('@MajorFrameSeconds', None)) * 1000)
             mf_wrapper = "const uint32_t majorFrameSeconds = %s;\n\n" % (major_frame)
             self.write_to_file_c(mf_wrapper)
-            self.externs_for_h_footer = self.externs_for_h_footer + "extern partition_memory partition_memorys[%s]\n" % (no_of_sub_elements)
+            self.externs_for_h_footer = self.externs_for_h_footer + "extern part_mem_t partition_memorys[%s];\n" % (no_of_sub_elements)
         elif partition_schedule:
             complete_struct = "const partition_schedule partition_schedules[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string)
             self.write_to_file_c(complete_struct)
         elif channels:
             complete_struct = "channel_t connection_table[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string)
             self.write_to_file_c(complete_struct)
-            self.externs_for_h_footer = self.externs_for_h_footer + "extern channel_t connection_table[%s]\n" % (no_of_sub_elements + 1)
+            self.externs_for_h_footer = self.externs_for_h_footer + "extern channel_t connection_table[%s];\n" % (no_of_sub_elements)
 
 
     def construct_sub_element_struct(self, sub_element):
@@ -121,7 +122,9 @@ class ParseXML:
                         get_list_tuple = self.return_get_tuple(port, get_list)
                         port_struct = """{{
     .is_queuing_port = true,
-    .q_buf = [ MESSAGE_BUFFER({}, {}), ]
+    .q_buf = [
+        MESSAGE_BUFFER({}, {}),
+    ],
     .PORT_DIRECTION = {},
     .portname = \"{}\",
     }},""".format(*get_list_tuple)
@@ -152,13 +155,13 @@ class ParseXML:
             for requirement in memory_requirements:
                 get_list_tuple = self.return_get_tuple(requirement, get_list)
                 mem_requirement_struct = """{{
-    .type = \"{}\",
-    .sizebytes = {},
-    .access = \"{}\",
-    .physicaladdress = \"{}\",
+    .type = {},
+    .size = {},
+    .access = {},
+    .address = {},
     }},""".format(*get_list_tuple)
                 structs_string = structs_string + mem_requirement_struct
-            mem_requirements_wrapper = "const memory_requirements memoryp_%s[%s] = {%s};\n\n" % (sub_element_name, no_of_mem_req, structs_string)
+            mem_requirements_wrapper = "mem_req_t memoryp_%s[%s] = {%s};\n\n" % (sub_element_name, no_of_mem_req, structs_string)
             self.write_to_file_c(mem_requirements_wrapper)
 
 
@@ -172,8 +175,8 @@ class ParseXML:
                 get_list_tuple = self.return_get_tuple(win, get_list)
                 win_schedule_struct = """{{
     .windowidentifier = {},
-    .windowstartseconds = {},
-    .windowdurationseconds = {},
+    .windowstartmilliseconds = {},
+    .windowdurationmilliseconds = {},
     .partitionperiodstart = {},
     }},""".format(*get_list_tuple)
                 structs_string = structs_string + win_schedule_struct
@@ -251,7 +254,7 @@ void %s(void);""" % (entry))
         memory_arr = "memoryp_%s" % (name).replace (" ", "_")
 
         partition_memory_struct = """{
-    .partitionidentifier = %s,
+    .IDENTIFIER = %s,
     .partitionname = \"%s\",
     .memory_arr = %s,
     },""" % (part_id, name, memory_arr)
