@@ -17,9 +17,9 @@
 	.MAX_MESSAGE_SIZE = message_size, \
 	.MAX_NB_MESSAGE = nb_message, \
 	.buffer = (uint8_t [(message_size * nb_message) + \
-		(nb_message * sizeof(size_t)) + 1]) {0}, \
+		(message_size * sizeof(size_t))]) {0}, \
 	.circ_buf = {0, 0, 0, (message_size * nb_message) + \
-		(nb_message * sizeof(size_t)) + 1}
+		(message_size * sizeof(size_t))}
 
 #define MAX_PROCESSES_PER_PARTITIONS 3
 
@@ -29,7 +29,7 @@ typedef enum {
 	LEVEL_C,
 	LEVEL_D,
 	LEVEL_E,
-} criticality_t;
+} CRITICALITY;
 
 typedef enum {
 	SAMPLING_PORT,
@@ -86,7 +86,7 @@ typedef struct {
 typedef struct {
 	PARTITION_ID_TYPE         IDENTIFIER;
 	NAME_TYPE                 partitionname;
-	criticality_t             criticality; /* Not used */
+	CRITICALITY	              criticality; /* Not used */
 	bool                      systempartion; /* Not used*/
 	void                      (*entrypoint)(void);
 	APEX_INTEGER              nb_ports;
@@ -115,6 +115,10 @@ typedef struct{
 	NAME_TYPE                 partitionname;
 	uint32_t                  arr_size;
 	mem_req_t                 *memory_arr;
+	
+	/* This value could be calculated every time we make a new process,
+	   but this is just way easier... */
+	uint32_t                  mem_offset;
 } part_mem_t;
 
 typedef struct {

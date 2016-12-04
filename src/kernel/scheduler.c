@@ -13,12 +13,12 @@
 
 static window_t schedule[MAX_NUM_WINDOWS];
 static int32_t majorFrameMillis = -1;
+static window_t* activeWindow;
 
 partition_t* scheduler_partitionScheduler(void)
 {
 	static int8_t activeWindowIndex = -1;
 	static uint32_t majorFrameStopMillis = 0;
-	static window_t* activeWindow;
 
 	uint32_t posMajorFrameMillis = HAL_GetTick() % majorFrameSeconds;
 	if(majorFrameStopMillis <= posMajorFrameMillis || posMajorFrameMillis == 0) {
@@ -36,7 +36,7 @@ partition_t* scheduler_partitionScheduler(void)
 		} while (activeWindow->partition == NULL);
 		majorFrameStopMillis = activeWindow->frameStartTimeMillis + activeWindow->durationMillis;
 
-		curr_partition_id = activeWindow->partition->IDENTIFIER;
+		//curr_partition_id = activeWindow->partition->IDENTIFIER;
 	}
 
 	return activeWindow->partition;
@@ -84,10 +84,14 @@ process_t* scheduler_processScheduler(partition_t *part)
 	return priority_process;
 }
 
+partition_t* getActivePartition(void)
+{
+	return activeWindow->partition;
+}
 
 void process_stop_self(void)
 {
-	partition_t *partition = &partitions[indexActivePartition];
+	partition_t *partition = activeWindow->partition;
 	process_t *proc = &partition->processes[partition->index_running_process];
 
 	proc->PROCESS_STATE = DORMANT;
