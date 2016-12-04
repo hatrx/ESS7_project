@@ -1,27 +1,17 @@
 #include <stm32f4xx_hal.h>
-#include <stdint.h>
-#include <stdbool.h>
 #include <stdio.h>
-#include <inttypes.h>
-#include <apex_process.h>
-#include <string.h>
 
 #include "drivers/uart.h"
 #include "drivers/mpu.h"
 #include "drivers/onboard_leds.h"
 #include "drivers/system_clock.h"
 #include "drivers/watchdog.h"
-#include "drivers/time_get.h"
 #include "drivers/rtc.h"
 #include "drivers/utils.h"
 
-#include "kernel/context.h"
 #include "kernel/error_handler.h"
-
 #include "kernel/arinc/partition.h"
-#include "kernel/arinc/statics.h"
 #include "kernel/arinc/queuing_port.h"
-#include "kernel/arinc/process.h"
 
 
 int main(void)
@@ -33,7 +23,7 @@ int main(void)
 
     if (BSP_UART_Init() != 0)
     {
-	Error_Handler(); // Shit not working!
+		Error_Handler(); // Shit not working!
     }
 
     init_onboard_LED(red_led);
