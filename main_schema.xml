@@ -10,7 +10,19 @@
 		<Queuing_Port PortName="sys_stio" MaxMessageSize="30" Direction="DESTINATION" MaxNbMessages="8" />
 	</Partition>
         <Partition PartitionIdentifier="4" PartitionName="evil" Criticality="LEVEL_A" SystemPartition="false" EntryPoint="evil_main">
-        </Partition>
+    </Partition>
+	<Partition_Memory PartitionIdentifier="1" PartitionName="dummy_1">
+       <Memory_Requirements Type="CODE" SizeBytes="8000" Access="READ_ONLY" />
+       <Memory_Requirements Type="DATA" SizeBytes="8000" Access="READ_WRITE" />
+    </Partition_Memory>
+    <Partition_Memory PartitionIdentifier="2" PartitionName="dummy_2">
+       <Memory_Requirements Type="CODE" SizeBytes="8000" Access="READ_ONLY" />
+       <Memory_Requirements Type="DATA" SizeBytes="8000" Access="READ_WRITE" />
+    </Partition_Memory>
+    <Partition_Memory PartitionIdentifier="3" PartitionName="stio_sys">
+       <Memory_Requirements Type="CODE" SizeBytes="8000" Access="READ_ONLY" />
+       <Memory_Requirements Type="DATA" SizeBytes="8000" Access="READ_WRITE" />
+    </Partition_Memory>
 	<Module_Schedule MajorFrameSeconds="0.200">
 	  <Partition_Schedule PartitionIdentifier="1" PartitionName="dummy_1" PeriodSeconds="0.100" PeriodDurationSeconds="0.020">
             <Window_Schedule WindowIdentifier="101" WindowStartSeconds="0.0" WindowDurationSeconds="0.020" PartitionPeriodStart="true" />
