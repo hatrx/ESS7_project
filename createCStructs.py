@@ -37,11 +37,11 @@ class ParseXML:
         return sub_structures
 
 
-    def write_to_file_h(self, data):        
+    def write_to_file_h(self, data):
         self.file_h.write(data)
 
 
-    def write_to_file_c(self, data):        
+    def write_to_file_c(self, data):
         self.file_c.write(data)
 
 
@@ -71,15 +71,15 @@ class ParseXML:
         sub_structure = self.put_dicts_in_list(sub_structure)
         no_of_sub_elements = len(sub_structure)
         for sub_element in sub_structure:
-            sub_element_struct = self.construct_sub_element_struct(sub_element)            
+            sub_element_struct = self.construct_sub_element_struct(sub_element)
             structs_string = structs_string + sub_element_struct
-            
-        partition = sub_element.get('@Criticality', None) 
-        partition_memory = sub_element.get('Memory_Requirements', None)         
-        partition_schedule = sub_element.get('Window_Schedule', None)    
-        channels = sub_element.get('@ChannelName', None)    
+
+        partition = sub_element.get('@Criticality', None)
+        partition_memory = sub_element.get('Memory_Requirements', None)
+        partition_schedule = sub_element.get('Window_Schedule', None)
+        channels = sub_element.get('@ChannelName', None)
         if partition:
-            complete_struct = "partition_t partitions[%s] = {%s};\n\n" % (no_of_sub_elements + 1, structs_string) #+1 added 
+            complete_struct = "partition_t partitions[%s] = {%s};\n\n" % (no_of_sub_elements + 1, structs_string) #+1 added
             self.write_to_file_c(complete_struct)
             self.externs_for_h_footer = self.externs_for_h_footer + "\n\nextern partition_t partitions[%s]\n" % (no_of_sub_elements + 1)
         elif partition_memory:
@@ -102,7 +102,7 @@ class ParseXML:
         partitions = sub_element.get("@Criticality", ())
         memory_requirements = sub_element.get("Memory_Requirements", ())
         window_schedule = sub_element.get("Window_Schedule", ())
-        channels = sub_element.get('Source', None)    
+        channels = sub_element.get('Source', None)
         if partitions:
             queuing_ports = self.put_dicts_in_list( sub_element.get("Queuing_Port", []) )
             sampling_ports = self.put_dicts_in_list( sub_element.get("Sampling_Port", []) )
@@ -111,7 +111,7 @@ class ParseXML:
             if not ports:
                 no_of_ports = 0
                 sub_element_struct, sub_element_name = self.partition_struct(sub_element, no_of_ports)
-            else:                
+            else:
                 structs_string = ""
                 no_of_ports = len(ports)
                 sub_element_struct, sub_element_name = self.partition_struct(sub_element, no_of_ports)
@@ -209,7 +209,7 @@ class ParseXML:
                 get_list_tuple = self.return_get_tuple(channel, get_list)
 
                 #channel_struct = """{{&p_{}[0],}},""".format(*get_list_tuple)
-                c = channel.get('@PartitionName', None) 
+                c = channel.get('@PartitionName', None)
                 channel_struct = """
     &p_%s[0],""" % (c)
                 structs_string = structs_string + channel_struct
@@ -224,12 +224,12 @@ class ParseXML:
 
     def partition_struct(self, sub_element, no_of_ports):
         #had to use @ sign as it appears in the data for some unknown reason
-        part_id = sub_element.get('@PartitionIdentifier', None) 
+        part_id = sub_element.get('@PartitionIdentifier', None)
         name = sub_element.get('@PartitionName', None).replace (" ", "_")
-        crit_level = sub_element.get('@Criticality', None) 
-        sys_part = sub_element.get('@SystemPartition', None) 
-        entry = sub_element.get('@EntryPoint', None) 
-        partition_struct = """{ 
+        crit_level = sub_element.get('@Criticality', None)
+        sys_part = sub_element.get('@SystemPartition', None)
+        entry = sub_element.get('@EntryPoint', None)
+        partition_struct = """{
     .IDENTIFIER = %s,
     .partitionname = \"%s\",
     .criticality = %s,
@@ -258,7 +258,7 @@ void %s(void);""" % (entry))
 
         return partition_memory_struct, name
 
-        
+
     def partition_schedule_struct(self, sub_element):
         part_id = sub_element.get('@PartitionIdentifier', None)
         name = sub_element.get('@PartitionName', "nope").replace (" ", "_")
@@ -301,14 +301,14 @@ void %s(void);""" % (entry))
 
     def return_get_tuple(self, element, get_list):
         get_list_values = ()
-        for get_item in get_list:            
+        for get_item in get_list:
             get_list_value = element.get(get_item, 0)#value set 0 because of C requirement
             if get_list_value:
                 get_list_value = get_list_value.replace(" ", "_")
             get_list_values = get_list_values + (get_list_value,)
         return get_list_values
 
-            
+
     def main(self):
         xml = self.get_xml()
         parsed_xml = self.parse_xml(xml)
