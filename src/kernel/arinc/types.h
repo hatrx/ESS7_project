@@ -119,8 +119,8 @@ typedef struct{
 
 typedef struct {
     int windowidentifier;
-    float windowstartseconds;
-    float windowdurationseconds;
+    uint32_t windowstartmilliseconds;
+    uint32_t windowdurationmilliseconds;
     bool partitionperiodstart;
 } window_schedule;
 
@@ -129,6 +129,7 @@ typedef struct {
     char partitionname[32];
     float peroidseconds;
     float perioddurationseconds;
+	const uint8_t numWindows;
     const window_schedule *window_arr;
 } partition_schedule;
 

@@ -4,8 +4,8 @@
 
 typedef struct {
     partition_t*        partition;
-    float               frameStartTime;
-    float               duration;
+    uint32_t            frameStartTimeMillis;
+    uint32_t            durationMillis;
 } window_t;
 
 #endif // !WINDOW_H
