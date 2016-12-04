@@ -36,7 +36,6 @@ class ParseXML:
         if partition_schedule:
             partition_schedule = parsed_xml.get('ARINC_653_Module').get('Module_Schedule').get('Partition_Schedule', None)
         channels = parsed_xml.get('ARINC_653_Module').get('Connection_Table').get('Channel', None)
-        #channels = parsed_xml.get('ARINC_653_Module').get('Connection_Table')
         sub_structures = [partitions, partition_memory, partition_schedule, channels]
         return sub_structures
 
@@ -76,69 +75,6 @@ class ParseXML:
         #self.write_to_file_c(""" """)
 
 
-    def write_file_h_declarations(self):#not uused anymore
-        partition_struct = """
-    typedef struct{
-        int partitionidentifier;
-        char partitionname[32];
-        char criticality[32];
-        bool systempartion;
-        void (*entrypoint)(void);
-        const queuing_port *queue_arr;
-        const sampling_port *sample_arr;
-    } partition;
-        """
-        q_ports_struct = """
-    typedef struct {
-        char portname[32];
-        int maxmessagesize;
-        char direction[32];
-        int maxnbmessages;
-    } queuing_port;
-        """
-        s_ports_struct = """
-    typedef struct {
-        char portname[32];
-        int maxmessagesize;
-        char direction[32];
-        float refreshrateseconds;
-    } sampling_port;
-        """
-
-        partition_memory_struct = """
-    typedef struct{
-        int partitionidentifier;
-        char partitionname[32];
-        const memory_requirements *memory_arr;
-    } partition_memory;
-        """
-        memory_requirements_struct = """
-    typedef struct {
-        char type[32];
-        int sizebytes;
-        char access[32];
-        char physicaladdress[32];
-    } memory_requirements;
-        """
-
-        partition_schedule_struct = """
-    typedef struct{
-        int partitionidentifier;
-        char partitionname[32];
-        float peroidseconds;
-        float perioddurationseconds;
-        const window_schedule *window_arr;
-    } partition_schedule;
-        """
-        window_schedule_struct = """
-    typedef struct {
-        int windowidentifier;
-        float windowstartseconds;
-        float windowdurationseconds;
-        bool partitionperiodstart;
-    } window_schedule;
-        """
-
         declaration_list = [q_ports_struct, s_ports_struct, partition_struct, 
                             memory_requirements_struct, partition_memory_struct, 
                             window_schedule_struct, partition_schedule_struct]        
@@ -148,7 +84,7 @@ class ParseXML:
 
     def create_sub_structure_structs(self, sub_structure):
         structs_string = ""
-        sub_structure = self.sub_sub_structure_validation(sub_structure)
+        sub_structure = self.put_dicts_in_list(sub_structure)
         no_of_sub_elements = len(sub_structure)
         for sub_element in sub_structure:
             sub_element_struct = self.construct_sub_element_struct(sub_element)            
@@ -183,14 +119,14 @@ class ParseXML:
             sampling_ports = sub_element.get("Sampling_Port", None)
 
             if queuing_ports and sampling_ports:
-                queuing_ports = self.sub_sub_structure_validation(queuing_ports)
-                sampling_ports = self.sub_sub_structure_validation(sampling_ports)
+                queuing_ports = self.put_dicts_in_list(queuing_ports)
+                sampling_ports = self.put_dicts_in_list(sampling_ports)
                 ports = queuing_ports + sampling_ports
             elif queuing_ports:
-                queuing_ports = self.sub_sub_structure_validation(queuing_ports)
+                queuing_ports = self.put_dicts_in_list(queuing_ports)
                 ports = queuing_ports
             elif sampling_ports:
-                sampling_ports = self.sub_sub_structure_validation(sampling_ports)
+                sampling_ports = self.put_dicts_in_list(sampling_ports)
                 ports = sampling_ports
 
             if not ports:
@@ -232,7 +168,7 @@ class ParseXML:
             sub_element_struct, sub_element_name = self.partition_memory_struct(sub_element)
             structs_string = ""
             get_list = ['@Type', '@SizeBytes', '@Access', '@PhysicalAddress']
-            memory_requirements = self.sub_sub_structure_validation(memory_requirements)
+            memory_requirements = self.put_dicts_in_list(memory_requirements)
             no_of_mem_req = len(memory_requirements)
             #mem_requirements_string, no_of_mem_requirements = self.create_memory_requirements_structs(mem_requirements)
             for requirement in memory_requirements:
@@ -253,7 +189,7 @@ class ParseXML:
 
             structs_string = ""
             get_list = ['@WindowIdentifier', '@WindowStartSeconds', '@WindowDurationSeconds', '@PartitionPeriodStart']
-            window_schedule = self.sub_sub_structure_validation(window_schedule)
+            window_schedule = self.put_dicts_in_list(window_schedule)
             no_of_win_sch = len(window_schedule)
             #win_schedule_string, no_of_win_schedules = self.create_window_schedules_structs(win_schedule)
             for win in window_schedule:
@@ -289,14 +225,14 @@ class ParseXML:
             destination = des_list
 
             if source and destination:
-                source = self.sub_sub_structure_validation(source)
-                destination = self.sub_sub_structure_validation(destination)
+                source = self.put_dicts_in_list(source)
+                destination = self.put_dicts_in_list(destination)
                 ports = source + destination
             elif source:
-                source = self.sub_sub_structure_validation(source)
+                source = self.put_dicts_in_list(source)
                 ports = source
             elif destination:
-                destination = self.sub_sub_structure_validation(destination)
+                destination = self.put_dicts_in_list(destination)
                 ports = destination
             no_of_ports = len(ports)
             sub_element_struct, sub_element_name = self.channel_struct(sub_element, no_of_ports)#change function
@@ -391,13 +327,14 @@ void %s(void);
         return channel_struct, name
 
 
-    def sub_sub_structure_validation(self, sub_sub_structure):
-        if sub_sub_structure:
-            if type(sub_sub_structure) == dict:
-                sub_sub_structure_list = []
-                sub_sub_structure_list.append(sub_sub_structure)
-                sub_sub_structure = sub_sub_structure_list
-        return sub_sub_structure
+    #sub_sub_structure_validation
+    def put_dicts_in_list(self, structure):
+        if structure:
+            if type(structure) == dict:
+                structure_list = []
+                structure_list.append(structure)
+                structure = structure_list
+        return structure
 
 
     def return_get_tuple(self, element, get_list):
@@ -414,13 +351,10 @@ void %s(void);
         xml = self.get_xml()
         parsed_xml = self.parse_xml(xml)
         self.write_file_h_header()
-        #self.write_file_h_declarations()
         self.write_file_c_header()
         sub_structures = self.get_sub_structures(parsed_xml) #will be a list of partitions, partition memory, ect
 
         for sub_structure in sub_structures:
-            #print sub_structure
-            print " "
             if sub_structure:
                 self.create_sub_structure_structs(sub_structure)
 
