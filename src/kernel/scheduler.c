@@ -1,7 +1,9 @@
 #include <stm32f4xx_hal.h>
 #include <stdbool.h>
+#include <tgmath.h>
 
 #include "kernel/scheduler.h"
+#include "kernel/error_handler.h"
 
 #include "../xml_data.h"
 
@@ -9,21 +11,36 @@
 #include "arinc/window.h"
 #include "arinc/queuing_port.h"
 
-uint8_t indexActivePartition = 0;
+static window_t schedule[MAX_NUM_WINDOWS];
+static int32_t majorFrameMillis = -1;
 
-static uint16_t timings1[4] = {1000, 1000, 1000, 3000};
-window_t schedule[MAX_NUM_WINDOWS];
-static uint32_t timings2 = 0;
-
-void scheduler_partitionScheduler(void)
+partition_t* scheduler_partitionScheduler(void)
 {
-	const uint32_t nb_partitions = sizeof(partitions) / sizeof(partition_t);
-	if(timings2 <= HAL_GetTick()){
-		indexActivePartition = (indexActivePartition + 1) % nb_partitions;
-		timings2 = HAL_GetTick() + timings1[indexActivePartition];
+	static int8_t activeWindowIndex = -1;
+	static uint32_t majorFrameStopMillis = 0;
+	static window_t* activeWindow;
 
-		curr_partition_id = partitions[indexActivePartition].IDENTIFIER;
+	uint32_t posMajorFrameMillis = HAL_GetTick() % majorFrameSeconds;
+	if(majorFrameStopMillis <= posMajorFrameMillis || posMajorFrameMillis == 0) {
+
+		// Have we reached the end of a major frame?
+		if(posMajorFrameMillis == 0)
+		{
+			// If so, we need to start a new one
+			activeWindowIndex = -1;
+		}
+
+		// Get the next active window, possibly skipping over any unused windows
+		do
+		{
+		    activeWindow = &schedule[++activeWindowIndex];
+		} while (activeWindow->partition == NULL);
+		majorFrameStopMillis = activeWindow->frameStartTimeMillis + activeWindow->durationMillis;
+
+		curr_partition_id = activeWindow->partition->IDENTIFIER;
 	}
+
+	return activeWindow->partition;
 }
 
 process_t* scheduler_processScheduler(partition_t *part)
@@ -67,10 +84,10 @@ process_t* scheduler_processScheduler(partition_t *part)
 void scheduler_buildSchedule(void)
 {
 	bool doubleBreak = false;
-	int i, j, windowIndex = 0, numTotalWindows = 0, numGeneratedWindows = 0;
-	float desiredStartTime = 0.0, earliestNextStartTime = 50000;
-	partition_schedule* tmpPSchedule;
-	window_schedule* tmpWSchedule;
+	uint32_t i, j, windowIndex = 0, numTotalWindows = 0, numGeneratedWindows = 0;
+	uint32_t desiredStartTime = 0, earliestNextStartTime = 50000;
+	const partition_schedule* tmpPSchedule;
+	const window_schedule* tmpWSchedule;
 	partition_t* tmpPartition;
 
 	// The goal: Create an ordered list of windows. Windows should be ordered
@@ -85,9 +102,11 @@ void scheduler_buildSchedule(void)
 	// idle, and we generate an idle window for that.
 
 	// Count the total number of windows first
-	for(i = 0; i < sizeof(partition_schedules) / sizeof(partition_schedule); i++ )
+	const uint32_t numPartitionSchedules = (uint32_t) sizeof(partition_schedules) / sizeof(partition_schedule);
+	for(i = 0; i < numPartitionSchedules; i++ )
 	{
-		for(j = 0; j < sizeof(tmpPSchedule->window_arr) / sizeof(window_schedule); j++)
+		tmpPSchedule = &partition_schedules[i];
+		for(j = 0; j < tmpPSchedule->numWindows; j++)
 		{
 			numTotalWindows++;
 		}
@@ -99,15 +118,16 @@ void scheduler_buildSchedule(void)
 		tmpWSchedule = NULL;
 
 		// Iterate through all partition schedules
-		for(i = 0, doubleBreak = false; i < sizeof(partition_schedules) / sizeof(partition_schedule); i++ )
+		for(i = 0, doubleBreak = false; i < numPartitionSchedules; i++ )
 		{
 			if(doubleBreak == true) break;
 			tmpPSchedule = &partition_schedules[i];
 
 			// Iterate through all windows in the partition
-			for(j = 0; j < sizeof(tmpPSchedule->window_arr) / sizeof(window_schedule); j++)
+			for(j = 0; j < tmpPSchedule->numWindows; j++)
 			{
-				if(tmpPSchedule->window_arr[j].windowstartseconds == desiredStartTime)
+				uint32_t windowStartTime = tmpPSchedule->window_arr[j].windowstartmilliseconds;
+				if(windowStartTime == desiredStartTime)
 				{
 					tmpWSchedule = &tmpPSchedule->window_arr[j];
 					doubleBreak = true;
@@ -115,9 +135,11 @@ void scheduler_buildSchedule(void)
 				}
 				else
 				{
-					if(earliestNextStartTime < tmpPSchedule->window_arr[j].windowstartseconds)
+					// Is this start time after the desired start time (i.e. a window we haven't 
+					// already put in the schedule), and is it the earliest we've otherwise seen so far? 
+					if(windowStartTime > desiredStartTime && windowStartTime < earliestNextStartTime)
 					{
-						earliestNextStartTime = tmpPSchedule->window_arr[j].windowstartseconds;
+						earliestNextStartTime = windowStartTime;
 					}
 				}
 			}
@@ -127,7 +149,8 @@ void scheduler_buildSchedule(void)
 		{
 			// Find the partition by ID
 			tmpPartition = NULL;
-			for(i = 0; i < sizeof(partitions) / sizeof(partition_t); i++)
+			const uint32_t numPartitions = (uint32_t) sizeof(partitions) / sizeof(partition_t);
+			for(i = 0; i < numPartitions; i++)
 			{
 				if (partitions[i].IDENTIFIER == tmpPSchedule->partitionidentifier)
 				{
@@ -139,17 +162,17 @@ void scheduler_buildSchedule(void)
 			// Create a window
 			schedule[windowIndex++] = (window_t) {
 				.partition = tmpPartition,
-				.frameStartTime = desiredStartTime,
-				.duration = tmpWSchedule->windowdurationseconds,
+				.frameStartTimeMillis = tmpWSchedule->windowstartmilliseconds,
+				.durationMillis = tmpWSchedule->windowdurationmilliseconds,
 			};
-			desiredStartTime = desiredStartTime + tmpWSchedule->windowdurationseconds;
+			desiredStartTime = desiredStartTime + tmpWSchedule->windowdurationmilliseconds;
 		}
 		else // Generate an idle window
 		{
 			schedule[windowIndex++] = (window_t) {
 				.partition = &partitions[0],
-				.frameStartTime = desiredStartTime,
-				.duration = earliestNextStartTime - desiredStartTime,
+				.frameStartTimeMillis = desiredStartTime,
+				.durationMillis = earliestNextStartTime - desiredStartTime,
 			};
 			desiredStartTime = earliestNextStartTime;
 			earliestNextStartTime = 50000;
@@ -157,5 +180,12 @@ void scheduler_buildSchedule(void)
 		}
 
 		numGeneratedWindows++;
+		if(numGeneratedWindows > MAX_NUM_WINDOWS) 
+		{
+			/* KERNEL PANIC! */
+			Error_Handler();
+		}
 	}
+
+	majorFrameMillis = majorFrameSeconds;
 }

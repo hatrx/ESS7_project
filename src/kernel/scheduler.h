@@ -7,7 +7,7 @@
 
 #define MAX_NUM_WINDOWS 20
 
-void scheduler_partitionScheduler(void);
+partition_t* scheduler_partitionScheduler(void);
 process_t* scheduler_processScheduler(partition_t *part);
 void scheduler_buildSchedule(void);
 
