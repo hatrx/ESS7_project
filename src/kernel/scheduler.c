@@ -6,7 +6,7 @@
 
 uint8_t indexActivePartition = 0;
 
-static uint16_t timings1[4] = {1000, 1000, 1000, 3000};
+static uint16_t timings1[4] = {30, 30, 30, 30};
 static uint32_t timings2 = 0;
 
 void scheduler_partitionScheduler(void)
