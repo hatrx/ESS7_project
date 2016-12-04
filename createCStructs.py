@@ -94,6 +94,7 @@ class ParseXML:
         elif partition_schedule:
             complete_struct = "const partition_schedule partition_schedules[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string)
             self.write_to_file_c(complete_struct)
+            self.externs_for_h_footer += "extern const partition_schedule partition_schedules[%s];\n" % (no_of_sub_elements)
         elif channels:
             complete_struct = "channel_t connection_table[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string)
             self.write_to_file_c(complete_struct)
