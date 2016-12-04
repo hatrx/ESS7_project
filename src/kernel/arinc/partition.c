@@ -26,6 +26,9 @@ mem_req_t get_ram_info(partition_t *partition)
 
 	/* KERNEL PANIC */
 	Error_Handler();
+
+	/* We return to satisfy the compiler. */
+	return (mem_req_t){0};
 }
 
 
