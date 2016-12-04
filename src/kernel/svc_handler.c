@@ -5,6 +5,7 @@
 #include "context.h"
 #include "drivers/time_get.h"
 #include "arinc/process.h"
+#include "scheduler.h"
 
 #include "arinc/queuing_port.h"
 
