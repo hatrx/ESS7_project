@@ -32,7 +32,7 @@ port_t p_evil[1] = {{
     .portname = "temp",
     },};
 
-partition_t partitions[5] = {{ 
+partition_t partitions[5] = {{
     .IDENTIFIER = 0,
     .partitionname = "idle",
     .criticality = LEVEL_E,
@@ -47,7 +47,7 @@ partition_t partitions[5] = {{
     .entrypoint = &dummy1_main,
     .nb_ports = 1,
     .ports = p_dummy_1,
-    },{ 
+    },{
     .IDENTIFIER = 2,
     .partitionname = "dummy_2",
     .criticality = LEVEL_A,
@@ -55,7 +55,7 @@ partition_t partitions[5] = {{
     .entrypoint = &dummy2_main,
     .nb_ports = 1,
     .ports = p_dummy_2,
-    },{ 
+    },{
     .IDENTIFIER = 3,
     .partitionname = "stio_sys",
     .criticality = LEVEL_A,
@@ -63,7 +63,7 @@ partition_t partitions[5] = {{
     .entrypoint = &stdio_sys_main,
     .nb_ports = 1,
     .ports = p_stio_sys,
-    },{ 
+    },{
     .IDENTIFIER = 4,
     .partitionname = "evil",
     .criticality = LEVEL_A,

@@ -110,8 +110,8 @@ void scheduler_buildSchedule(void)
 	// by the time inside a frame in which they run.
 	// The problem: Our source data (from the XML) is not ordered.
 	// The solution: Search through all the partitions and all the windows to
-	// find the next. When we have the next, insert it into the list. 
-	// We know the start time and the duration of all windows. With this it 
+	// find the next. When we have the next, insert it into the list.
+	// We know the start time and the duration of all windows. With this it
 	// should be easy to find the next.
 	// If we cannot find a window that start at
 	// (window-1).startTime + (window-1).duration, we assume it's an implicit
@@ -151,8 +151,8 @@ void scheduler_buildSchedule(void)
 				}
 				else
 				{
-					// Is this start time after the desired start time (i.e. a window we haven't 
-					// already put in the schedule), and is it the earliest we've otherwise seen so far? 
+					// Is this start time after the desired start time (i.e. a window we haven't
+					// already put in the schedule), and is it the earliest we've otherwise seen so far?
 					if(windowStartTime > desiredStartTime && windowStartTime < earliestNextStartTime)
 					{
 						earliestNextStartTime = windowStartTime;
@@ -196,7 +196,7 @@ void scheduler_buildSchedule(void)
 		}
 
 		numGeneratedWindows++;
-		if(numGeneratedWindows > MAX_NUM_WINDOWS) 
+		if(numGeneratedWindows > MAX_NUM_WINDOWS)
 		{
 			/* KERNEL PANIC! */
 			Error_Handler();
