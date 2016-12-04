@@ -29,8 +29,8 @@ class ParseXML:
     def get_sub_structures(self, parsed_xml):
         partitions = parsed_xml.get('ARINC_653_Module').get('Partition', None)
         partition_memory = parsed_xml.get('ARINC_653_Module').get('Partition_Memory', None)
-        partition_schedule = parsed_xml.get('ARINC_653_Module').get('Module_Schedule', None)
-        if partition_schedule:
+        self.major_frame = parsed_xml.get('ARINC_653_Module').get('Module_Schedule', None)
+        if self.major_frame:
             partition_schedule = parsed_xml.get('ARINC_653_Module').get('Module_Schedule').get('Partition_Schedule', None)
         channels = parsed_xml.get('ARINC_653_Module').get('Connection_Table').get('Channel', None)
         sub_structures = [partitions, partition_memory, partition_schedule, channels]
@@ -85,6 +85,9 @@ class ParseXML:
         elif partition_memory:
             complete_struct = "const partition_memory partition_memorys[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string)
             self.write_to_file_c(complete_struct)
+            major_frame = self.major_frame.get('@MajorFrameSeconds', None)
+            mf_wrapper = "const uint32_t majorFrameSeconds = %s\n\n;" % (major_frame)
+            self.write_to_file_c(mf_wrapper)
             self.externs_for_h_footer = self.externs_for_h_footer + "extern partition_memory partition_memorys[%s]\n" % (no_of_sub_elements)
         elif partition_schedule:
             complete_struct = "const partition_schedule partition_schedules[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string)
