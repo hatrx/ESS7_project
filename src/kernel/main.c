@@ -40,7 +40,7 @@ int main(void)
     init_onboard_LED(yellow_led);
 
     // Clear the UART terminal windows (if it supports ANSI Escape codes)
-    printf("%c[%dJ", 0x1B, 2);
+    printf("%c[%dJ\n", 0x1B, 2);
     printf("%c[0;0H", 0x1B);
     /*
 	if (BSP_IWDG_Init() != 0)		//Independent watchdog time initilisation
@@ -57,6 +57,7 @@ int main(void)
 	/* Initialize all ports */
     init_queuing_ports();
 	init_partitions();
+    scheduler_buildSchedule();
     TIME_Start_ns();
 
     /* Enable sysTick */
