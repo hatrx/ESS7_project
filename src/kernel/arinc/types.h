@@ -32,11 +32,6 @@ typedef enum {
 } CRITICALITY;
 
 typedef enum {
-	SAMPLING_PORT,
-	QUEUING_PORT,
-} PORT_TYPE;
-
-typedef enum {
 	CODE,
 	DATA,
 	INPUT_OUTPUT,
