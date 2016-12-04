@@ -8,6 +8,7 @@
 #include "drivers/watchdog.h"
 #include "drivers/rtc.h"
 #include "drivers/utils.h"
+#include "drivers/time_get.h"
 
 #include "kernel/error_handler.h"
 #include "kernel/arinc/partition.h"
