@@ -6,8 +6,6 @@
 #include <apex_queuing.h>
 
 
-extern uint8_t curr_partition_id;
-
 void init_queuing_ports(void);
 
 void create_queuing_port(

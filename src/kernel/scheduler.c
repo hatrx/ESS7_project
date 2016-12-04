@@ -15,8 +15,6 @@ void scheduler_partitionScheduler(void)
 	if(timings2 <= HAL_GetTick()){
 		indexActivePartition = (indexActivePartition + 1) % nb_partitions;
 		timings2 = HAL_GetTick() + timings1[indexActivePartition];
-
-		curr_partition_id = partitions[indexActivePartition].IDENTIFIER;
 	}
 }
 

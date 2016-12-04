@@ -6,9 +6,7 @@
 
 #include "queuing_port.h"
 #include "statics.h"
-
-
-uint8_t curr_partition_id = 0;
+#include "../context.h"
 
 
 void init_queuing_ports(void)
@@ -41,20 +39,6 @@ void init_queuing_ports(void)
 }
 
 
-/* This helper function should be removed/replaced */
-partition_t *get_partition(void)
-{
-	const size_t nb_partitions = sizeof(partitions) / sizeof(partition_t);
-	for (size_t i = 0; i < nb_partitions; ++i) {
-		if (partitions[i].IDENTIFIER == curr_partition_id) {
-			return &partitions[i];
-		}
-	}
-
-	return 0;
-}
-
-
 void create_queuing_port(
 	/*in */ QUEUING_PORT_NAME_TYPE   QUEUING_PORT_NAME,
 	/*in */ MESSAGE_SIZE_TYPE        MAX_MESSAGE_SIZE,
@@ -66,7 +50,7 @@ void create_queuing_port(
 {
 	(void) QUEUING_DISCIPLINE;
 
-	partition_t *this_partition = get_partition();
+	partition_t *this_partition = &partitions[indexActivePartition];
 	port_t *ports = this_partition->ports;
 
 	for (APEX_INTEGER n = 0; n < this_partition->nb_ports; ++n) {
@@ -95,7 +79,7 @@ void send_queuing_message(
 {
 	(void)TIME_OUT; /* Unused parameter */
 
-	partition_t *this_partition = get_partition();
+	partition_t *this_partition = &partitions[indexActivePartition];
 
 	/* Return error if invalid QUEUING_PORT_ID */
 	if (QUEUING_PORT_ID >= this_partition->nb_ports) {
@@ -159,7 +143,7 @@ void recieve_queuing_message(
 {
 	(void)TIME_OUT; /* Unused parameter */
 
-	partition_t *this_partition = get_partition();
+	partition_t *this_partition = &partitions[indexActivePartition];
 
 	/* Return error if invalid QUEUING_PORT_ID */
 	if (QUEUING_PORT_ID >= this_partition->nb_ports) {
@@ -183,7 +167,7 @@ void get_queuing_port_id(
 	/*out*/ QUEUING_PORT_ID_TYPE     *QUEUING_PORT_ID,
 	/*out*/ RETURN_CODE_TYPE         *RETURN_CODE)
 {
-	partition_t *this_partition = get_partition();
+	partition_t *this_partition = &partitions[indexActivePartition];
 	port_t *ports = this_partition->ports;
 
 	for (APEX_INTEGER n = 0; n < this_partition->nb_ports; ++n) {
@@ -203,7 +187,7 @@ void get_queuing_port_status(
 	/*out*/ QUEUING_PORT_STATUS_TYPE *QUEUING_PORT_STATUS,
 	/*out*/ RETURN_CODE_TYPE         *RETURN_CODE)
 {
-	partition_t *this_partition = get_partition();
+	partition_t *this_partition = &partitions[indexActivePartition];
 
 	/* Return error if invalid QUEUING_PORT_ID */
 	if (QUEUING_PORT_ID >= this_partition->nb_ports) {
