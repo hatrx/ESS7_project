@@ -127,7 +127,7 @@ class ParseXML:
     ],
     .PORT_DIRECTION = {},
     .portname = \"{}\",
-    }},""".format(*get_list_tuple)
+}},""".format(*get_list_tuple)
                         port_struct = port_struct.replace ("[", "{")
                         port_struct = port_struct.replace ("]", "}")
                     else:
@@ -138,7 +138,7 @@ class ParseXML:
     .maxmessagesize = {},
     .direction = \"{}\",
     .refreshrateseconds = {},
-    }},""".format(*get_list_tuple)
+}},""".format(*get_list_tuple)
 
                     structs_string = structs_string + port_struct
 
@@ -159,7 +159,7 @@ class ParseXML:
     .size = {},
     .access = {},
     .address = {},
-    }},""".format(*get_list_tuple)
+}},""".format(*get_list_tuple)
                 structs_string = structs_string + mem_requirement_struct
             mem_requirements_wrapper = "mem_req_t memoryp_%s[%s] = {%s};\n\n" % (sub_element_name, no_of_mem_req, structs_string)
             self.write_to_file_c(mem_requirements_wrapper)
@@ -178,7 +178,7 @@ class ParseXML:
     .windowstartmilliseconds = {},
     .windowdurationmilliseconds = {},
     .partitionperiodstart = {},
-    }},""".format(*get_list_tuple)
+}},""".format(*get_list_tuple)
                 structs_string = structs_string + win_schedule_struct
             win_schedule_wrapper = "const window_schedule windowp_%s[%s] = {%s};\n\n" % (sub_element_name, no_of_win_sch, structs_string)
             self.write_to_file_c(win_schedule_wrapper)
@@ -240,7 +240,7 @@ class ParseXML:
     .entrypoint = %s,
     .nb_ports = %s,
     .ports = p_%s,
-    },""" % (part_id, name, crit_level, sys_part, "&"+entry, no_of_ports, name)
+},""" % (part_id, name, crit_level, sys_part, "&"+entry, no_of_ports, name)
 
         #this write the entry point to the .h file as it is a function needed to be defined
         self.write_to_file_h("""
@@ -257,7 +257,7 @@ void %s(void);""" % (entry))
     .IDENTIFIER = %s,
     .partitionname = \"%s\",
     .memory_arr = %s,
-    },""" % (part_id, name, memory_arr)
+},""" % (part_id, name, memory_arr)
 
         return partition_memory_struct, name
 
@@ -275,7 +275,7 @@ void %s(void);""" % (entry))
     .peroidseconds = %s,
     .perioddurationseconds = %s,
     .window_arr = %s,
-    },""" % (part_id, name, period_seconds, period_duration_seconds, window_arr)
+},""" % (part_id, name, period_seconds, period_duration_seconds, window_arr)
 
         return partition_schedule_struct, name
 
@@ -288,7 +288,7 @@ void %s(void);""" % (entry))
     .channelname = \"%s\",
     .nb_ports = %s,
     .ports = %s,
-    },""" % (channel_id, name, no_of_ports, name + "_ports" )
+},""" % (channel_id, name, no_of_ports, name + "_ports" )
 
         return channel_struct, name
 
