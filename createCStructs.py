@@ -1,11 +1,8 @@
-#!/usr/bin/python
-import sys
-import xmltodict # to parse the xml structure to an ordered dict
-import json # to convert the ordered dict to a normal dict
+B#!/usr/bin/python
+import sys, xmltodict, json
 from collections import OrderedDict
 
 class ParseXML:
-
 
     def __init__(self):
         self.xml_schema = "main_schema.xml" #main_schema.xml default_schema.xml
@@ -68,18 +65,6 @@ class ParseXML:
 #include "arinc/queuing_port.h"
 
 """)
-
-
-    def write_file_c_footer(self):
-        x = "this function is not used currently"
-        #self.write_to_file_c(""" """)
-
-
-        declaration_list = [q_ports_struct, s_ports_struct, partition_struct, 
-                            memory_requirements_struct, partition_memory_struct, 
-                            window_schedule_struct, partition_schedule_struct]        
-        for n in declaration_list:
-            self.write_to_file_h(n)
 
 
     def create_sub_structure_structs(self, sub_structure):
