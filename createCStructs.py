@@ -6,8 +6,8 @@ class ParseXML:
 
     def __init__(self):
         self.xml_schema = "main_schema.xml" #main_schema.xml default_schema.xml
-        self.file_h = open("xml_data.h", "w")
-        self.file_c = open("xml_data.c", "w")
+        self.file_h = open(sys.argv[1] + "xml_data.h", "w")
+        self.file_c = open(sys.argv[1] + "xml_data.c", "w")
         self.externs_for_h_footer = ""
 
 
