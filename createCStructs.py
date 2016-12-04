@@ -35,7 +35,9 @@ class ParseXML:
         partition_schedule = parsed_xml.get('ARINC_653_Module').get('Module_Schedule', None)
         if partition_schedule:
             partition_schedule = parsed_xml.get('ARINC_653_Module').get('Module_Schedule').get('Partition_Schedule', None)
-        sub_structures = [partitions, partition_memory, partition_schedule]
+        channels = parsed_xml.get('ARINC_653_Module').get('Connection_Table').get('Channel', None)
+        #channels = parsed_xml.get('ARINC_653_Module').get('Connection_Table')
+        sub_structures = [partitions, partition_memory, partition_schedule, channels]
         return sub_structures
 
 
@@ -146,76 +148,84 @@ class ParseXML:
 
     def create_sub_structure_structs(self, sub_structure):
         structs_string = ""
+        sub_structure = self.sub_sub_structure_validation(sub_structure)
         no_of_sub_elements = len(sub_structure)
-        
         for sub_element in sub_structure:
-            sub_element_struct = self.construct_sub_element_struct(sub_element)
+            sub_element_struct = self.construct_sub_element_struct(sub_element)            
             structs_string = structs_string + sub_element_struct
-
-        partition = sub_element.get('Queuing_Port', None) 
+            
+        partition = sub_element.get('@Criticality', None) 
         partition_memory = sub_element.get('Memory_Requirements', None)         
-        partition_schedule = sub_element.get('Window_Schedule', None)         
+        partition_schedule = sub_element.get('Window_Schedule', None)    
+        channels = sub_element.get('@ChannelName', None)    
         if partition:
-            complete_struct = "partition_t partitions[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string)
+            complete_struct = "partition_t partitions[%s] = {%s};\n\n" % (no_of_sub_elements + 1, structs_string) #+1 added 
             self.write_to_file_c(complete_struct)
-        if partition_memory:
+        elif partition_memory:
             complete_struct = "const partition_memory partition_memorys[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string)
             self.write_to_file_c(complete_struct)
-        if partition_schedule:
+        elif partition_schedule:
             complete_struct = "const partition_schedule partition_schedules[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string)
+            self.write_to_file_c(complete_struct)
+        elif channels:
+            complete_struct = "channel_t connection_table[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string)
             self.write_to_file_c(complete_struct)
 
 
     def construct_sub_element_struct(self, sub_element):
-        temp = sub_element.get("@Criticality", ())
-        queuing_ports = sub_element.get("Queuing_Port", ())
-        sampling_ports = sub_element.get("Sampling_Port", ())
+        partitions = sub_element.get("@Criticality", ())
         memory_requirements = sub_element.get("Memory_Requirements", ())
         window_schedule = sub_element.get("Window_Schedule", ())
+        channels = sub_element.get('Source', None)    
+        if partitions:
+            ports = None
+            queuing_ports = sub_element.get("Queuing_Port", None)
+            sampling_ports = sub_element.get("Sampling_Port", None)
 
-        if temp and not queuing_ports:
-            sub_element_struct, sub_element_name = self.partition_struct(sub_element, sampling_ports, 0)
-        
-        elif queuing_ports:
-            structs_string = ""
-            get_list = ['@MaxNbMessages', '@MaxMessageSize', '@Direction', '@PortName']
-            queuing_ports = self.sub_sub_structure_validation(queuing_ports)
-            no_of_ports = len(queuing_ports)
+            if queuing_ports and sampling_ports:
+                queuing_ports = self.sub_sub_structure_validation(queuing_ports)
+                sampling_ports = self.sub_sub_structure_validation(sampling_ports)
+                ports = queuing_ports + sampling_ports
+            elif queuing_ports:
+                queuing_ports = self.sub_sub_structure_validation(queuing_ports)
+                ports = queuing_ports
+            elif sampling_ports:
+                sampling_ports = self.sub_sub_structure_validation(sampling_ports)
+                ports = sampling_ports
 
-            sub_element_struct, sub_element_name = self.partition_struct(sub_element, sampling_ports, no_of_ports)
-            for port in queuing_ports:
-                get_list_tuple = self.return_get_tuple(port, get_list)
-                q_port_struct = """{{
+            if not ports:
+                no_of_ports = 0
+                sub_element_struct, sub_element_name = self.partition_struct(sub_element, no_of_ports)
+            else:                
+                structs_string = ""
+                no_of_ports = len(ports)
+                sub_element_struct, sub_element_name = self.partition_struct(sub_element, no_of_ports)
+                for port in ports:
+                    if port.get("@MaxNbMessages", None):
+                        get_list = ['@MaxNbMessages', '@MaxMessageSize', '@Direction', '@PortName']
+                        get_list_tuple = self.return_get_tuple(port, get_list)
+                        port_struct = """{{
     .is_queuing_port = true,
     .q_buf = [ MESSAGE_BUFFER({}, {}), ]
     .PORT_DIRECTION = {},
     .portname = \"{}\",
     }},""".format(*get_list_tuple)
-
-            q_port_struct = q_port_struct.replace ("[", "{")
-            q_port_struct = q_port_struct.replace ("]", "}")
-            structs_string = structs_string + q_port_struct
-            #port_t p_stio_sys[1]
-            q_ports_wrapper = "port_t p_%s[%s] = {%s};\n\n" % (sub_element_name, no_of_ports, structs_string)
-            self.write_to_file_c(q_ports_wrapper)
-
-            if sampling_ports:
-                structs_string = ""
-                get_list = ['@PortName', '@MaxMessageSize', '@Direction', '@RefreshRateSeconds']
-                no_of_ports = len(sampling_ports)
-                sampling_ports = self.sub_sub_structure_validation(sampling_ports)                
-                #s_port_string, no_of_s_ports = self.create_sampling_port_structs(sampling_ports)
-                for port in sampling_ports:
-                    get_list_tuple = self.return_get_tuple(port, get_list)
-                    s_port_struct = """{{
+                        port_struct = port_struct.replace ("[", "{")
+                        port_struct = port_struct.replace ("]", "}")
+                        structs_string = structs_string + port_struct
+                    else:
+                        get_list = ['@PortName', '@MaxMessageSize', '@Direction', '@RefreshRateSeconds']
+                        get_list_tuple = self.return_get_tuple(port, get_list)
+                        port_struct = """{{
     .portname = \"{}\",
     .maxmessagesize = {},
     .direction = \"{}\",
     .refreshrateseconds = {},
     }},""".format(*get_list_tuple)
-                    structs_string = structs_string + s_port_struct
-                s_ports_wrapper = "const sampling_port samplep_%s[%s] = {%s};\n\n" % (sub_element_name, no_of_ports, structs_string)
-                self.write_to_file_c(s_ports_wrapper)
+                        structs_string = structs_string + port_struct
+
+                ports_wrapper = "port_t p_%s[%s] = {%s};\n\n" % (sub_element_name, no_of_ports, structs_string)
+                self.write_to_file_c(ports_wrapper)
 
 
         elif memory_requirements:
@@ -258,27 +268,71 @@ class ParseXML:
             win_schedule_wrapper = "const window_schedule windowp_%s[%s] = {%s};\n\n" % (sub_element_name, no_of_win_sch, structs_string)
             self.write_to_file_c(win_schedule_wrapper)
 
+        elif channels:
+            ports = None
+            source_list = []
+            source = sub_element.get("Source", None)
+            if len(source) > 0:
+                for src in source:
+                    s = src.get("Standard_Partition", None)
+                    source_list.append(s)
+            source = source_list
+
+            des_list = []
+            t_list = []
+            destination = sub_element.get("Destination", None)
+            t_list.append(destination)
+            if destination:
+                for des in t_list:
+                    d = des.get("Standard_Partition", None)
+                    des_list.append(d)
+            destination = des_list
+
+            if source and destination:
+                source = self.sub_sub_structure_validation(source)
+                destination = self.sub_sub_structure_validation(destination)
+                ports = source + destination
+            elif source:
+                source = self.sub_sub_structure_validation(source)
+                ports = source
+            elif destination:
+                destination = self.sub_sub_structure_validation(destination)
+                ports = destination
+            no_of_ports = len(ports)
+            sub_element_struct, sub_element_name = self.channel_struct(sub_element, no_of_ports)#change function
+
+            structs_string = ""
+            get_list = ['@PartitionName']
+            no_of_channels = len(ports)
+            for channel in ports:
+                get_list_tuple = self.return_get_tuple(channel, get_list)
+
+                #channel_struct = """{{&p_{}[0],}},""".format(*get_list_tuple)
+                c = channel.get('@PartitionName', None) 
+                channel_struct = """
+    &p_%s[0],""" % (c)
+                structs_string = structs_string + channel_struct
+            channel_wrapper = "port_t *stio_channel_ports[%s] = {%s};\n\n" % (no_of_channels, structs_string)
+            self.write_to_file_c(channel_wrapper)
+
+
         else:
             print "unknown sub_element: %s" % (sub_element)
 
         return sub_element_struct
 
 
-    def partition_struct(self, sub_element, sampling_ports, no_of_ports):
+    def partition_struct(self, sub_element, no_of_ports):
         #had to use @ sign as it appears in the data for some unknown reason
         part_id = sub_element.get('@PartitionIdentifier', None) 
         name = sub_element.get('@PartitionName', None).replace (" ", "_")
         crit_level = sub_element.get('@Criticality', None) 
         sys_part = sub_element.get('@SystemPartition', None) 
         entry = "&" + sub_element.get('@EntryPoint', None) 
-        queue_arr = "queuep_%s" % (name).replace (" ", "_")
-        sample_arr = "samplep_%s" % (name).replace (" ", "_")
-        if not sampling_ports:
-            sample_arr = 0
         partition_struct = """{ 
     .IDENTIFIER = %s,
     .partitionname = \"%s\",
-    .criticality = \"%s\",
+    .criticality = %s,
     .systempartion = %s,
     .entrypoint = %s,
     .nb_ports = %s,
@@ -324,6 +378,19 @@ void %s(void);
         return partition_schedule_struct, name
 
 
+    def channel_struct(self, sub_element, no_of_ports):
+        channel_id = sub_element.get('@ChannelIdentifier', None)
+        name = sub_element.get('@ChannelName', "nope").replace (" ", "_")
+        channel_struct = """{
+    .channelidentifier = %s,
+    .channelname = \"%s\",
+    .nb_ports = %s,
+    .ports = %s,
+    },""" % (channel_id, name, no_of_ports, name + "_ports" )
+
+        return channel_struct, name
+
+
     def sub_sub_structure_validation(self, sub_sub_structure):
         if sub_sub_structure:
             if type(sub_sub_structure) == dict:
@@ -352,6 +419,8 @@ void %s(void);
         sub_structures = self.get_sub_structures(parsed_xml) #will be a list of partitions, partition memory, ect
 
         for sub_structure in sub_structures:
+            #print sub_structure
+            print " "
             if sub_structure:
                 self.create_sub_structure_structs(sub_structure)
 

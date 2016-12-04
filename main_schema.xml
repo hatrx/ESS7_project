@@ -10,7 +10,6 @@
 		<Queuing_Port PortName="sys_stio" MaxMessageSize="30" Direction="DESTINATION" MaxNbMessages="8" />
 	</Partition>
         <Partition PartitionIdentifier="4" PartitionName="evil" Criticality="LEVEL_A" SystemPartition="false" EntryPoint="evil_main">
-		<Queuing_Port PortName="temp" MaxMessageSize="0" Direction="pls_delete" MaxNbMessages="0" />
         </Partition>
 	<Module_Schedule MajorFrameSeconds="0.200">
 	  <Partition_Schedule PartitionIdentifier="1" PartitionName="dummy_1" PeriodSeconds="0.100" PeriodDurationSeconds="0.020">
