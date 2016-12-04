@@ -8,6 +8,7 @@ class ParseXML:
         self.xml_schema = "main_schema.xml" #main_schema.xml default_schema.xml
         self.file_h = open("xml_data.h", "w")
         self.file_c = open("xml_data.c", "w")
+        self.externs_for_h_footer = ""
 
 
     def get_xml(self):
@@ -80,15 +81,18 @@ class ParseXML:
         if partition:
             complete_struct = "partition_t partitions[%s] = {%s};\n\n" % (no_of_sub_elements + 1, structs_string) #+1 added 
             self.write_to_file_c(complete_struct)
+            self.externs_for_h_footer = self.externs_for_h_footer + "\n\nextern partition_t partitions[%s]\n" % (no_of_sub_elements + 1)
         elif partition_memory:
             complete_struct = "const partition_memory partition_memorys[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string)
             self.write_to_file_c(complete_struct)
+            self.externs_for_h_footer = self.externs_for_h_footer + "extern partition_memory partition_memorys[%s]\n" % (no_of_sub_elements)
         elif partition_schedule:
             complete_struct = "const partition_schedule partition_schedules[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string)
             self.write_to_file_c(complete_struct)
         elif channels:
             complete_struct = "channel_t connection_table[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string)
             self.write_to_file_c(complete_struct)
+            self.externs_for_h_footer = self.externs_for_h_footer + "extern channel_t connection_table[%s]\n" % (no_of_sub_elements + 1)
 
 
     def construct_sub_element_struct(self, sub_element):
@@ -234,8 +238,7 @@ class ParseXML:
 
         #this write the entry point to the .h file as it is a function needed to be defined
         self.write_to_file_h("""
-void %s(void);
-        """ % (entry))
+void %s(void);""" % (entry))
         return partition_struct, name
 
 
@@ -314,6 +317,7 @@ void %s(void);
             if sub_structure:
                 self.create_sub_structure_structs(sub_structure)
 
+        self.write_to_file_h(self.externs_for_h_footer)
         self.write_file_h_footer()
         self.file_h.close()
         self.file_c.close()
