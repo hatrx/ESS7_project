@@ -43,7 +43,7 @@ MEMORY
 FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 64K
 /*DUMMY1 (rx)       : ORIGIN = 0x8010000, LENGTH = 8K*/
 /*DUMMY2 (rx)       : ORIGIN = 0x8012000, LENGTH = 8K*/
-STDIO_SYS (rx)       : ORIGIN = 0x8014000, LENGTH = 8K
+/*STDIO_SYS (rx)       : ORIGIN = 0x8014000, LENGTH = 8K*/
 RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 128K
 CCMRAM (rw)      : ORIGIN = 0x10000000, LENGTH = 64K
 }
@@ -73,12 +73,12 @@ SECTIONS
     . = ALIGN(4);
   } >DUMMY2*/
 
-  .stdio_sys :
+  /*.stdio_sys :
   {
     . = ALIGN(4);
     libstdio_sys.a:*
     . = ALIGN(4);
-  } >STDIO_SYS
+  } >STDIO_SYS*/
 
   /* The program code and other data goes into FLASH */
   .text :
