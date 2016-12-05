@@ -59,8 +59,7 @@ class ParseXML:
 
 
     def write_file_c_header(self):
-        self.write_to_file_c("""
-#include <stdint.h>
+        self.write_to_file_c("""#include <stdint.h>
 
 #include "xml_data.h"
 #include "kernel/circular_buffer.h"
