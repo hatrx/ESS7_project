@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ARINC_653_Module>
 	<Partition PartitionIdentifier="1" PartitionName="dummy_1" Criticality="LEVEL_A" SystemPartition="false" EntryPoint="dummy1_main">
-		<Queuing_Port PortName="print_1" MaxMessageSize="30" Direction="SOURCE" MaxNbMessages="8" />
+		<Queuing_Port PortName="print_1" MaxMessageSize="32" Direction="SOURCE" MaxNbMessages="32" />
 	</Partition>
 	<Partition PartitionIdentifier="2" PartitionName="dummy_2" Criticality="LEVEL_A" SystemPartition="false" EntryPoint="dummy2_main">
-		<Queuing_Port PortName="print_2" MaxMessageSize="30" Direction="SOURCE" MaxNbMessages="8" />
+		<Queuing_Port PortName="print_2" MaxMessageSize="32" Direction="SOURCE" MaxNbMessages="32" />
 	</Partition>
 	<Partition PartitionIdentifier="3" PartitionName="stio_sys" Criticality="LEVEL_A" SystemPartition="true" EntryPoint="stdio_sys_main">
-		<Queuing_Port PortName="sys_stio" MaxMessageSize="30" Direction="DESTINATION" MaxNbMessages="8" />
+		<Queuing_Port PortName="sys_stio" MaxMessageSize="32" Direction="DESTINATION" MaxNbMessages="32" />
 	</Partition>
         <Partition PartitionIdentifier="4" PartitionName="evil" Criticality="LEVEL_A" SystemPartition="false" EntryPoint="evil_main">
     </Partition>
