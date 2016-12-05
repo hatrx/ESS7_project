@@ -3,5 +3,3 @@
 
 
 #include "kernel/arinc/types.h"
-
-void idle_main(void);
