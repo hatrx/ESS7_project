@@ -11,10 +11,7 @@
 
 
 struct queuing_port {
-	MESSAGE_RANGE_TYPE        MAX_NB_MESSAGE;
-	MESSAGE_SIZE_TYPE         MAX_MESSAGE_SIZE;
-	MESSAGE_RANGE_TYPE        NB_MESSAGE;
-	QUEUING_DISCIPLINE_TYPE   QUEUING_DISCIPLINE;
+	QUEUING_PORT_STATUS_TYPE;
 	circBuf_t                 circ_buf;
 	uint8_t                   *buffer;
 };
@@ -33,7 +30,6 @@ typedef struct {
 	};
 	bool                      activated;
 	void                      *channel_link;
-	PORT_DIRECTION_TYPE       PORT_DIRECTION;
 	NAME_TYPE                 portname;
 } port_t;
 

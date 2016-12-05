@@ -39,7 +39,7 @@ void create_sampling_port(
 		if (!strcmp(ports[n].portname, SAMPLING_PORT_NAME) &&
 			ports[n].s_buf.MAX_MESSAGE_SIZE == MAX_MESSAGE_SIZE &&
 			ports[n].s_buf.REFRESH_PERIOD == REFRESH_PERIOD &&
-			ports[n].PORT_DIRECTION == PORT_DIRECTION)
+			ports[n].s_buf.PORT_DIRECTION == PORT_DIRECTION)
 		{
 			ports[n].activated = true;
 			*SAMPLING_PORT_ID = n;
@@ -79,7 +79,7 @@ void write_sampling_message(
 
 		if (port->is_queuing_port ||
 			!port->activated ||
-			!(port->PORT_DIRECTION == DESTINATION)) {
+			!(port->s_buf.PORT_DIRECTION == DESTINATION)) {
 			/* Not a valid destination */
 			continue;
 		}
@@ -170,7 +170,7 @@ void get_sampling_port_status(
 	SAMPLING_PORT_STATUS->LAST_MSG_VALIDITY = port.s_buf.LAST_MSG_VALIDITY;
 	SAMPLING_PORT_STATUS->REFRESH_PERIOD = port.s_buf.REFRESH_PERIOD;
 	SAMPLING_PORT_STATUS->MAX_MESSAGE_SIZE = port.s_buf.MAX_MESSAGE_SIZE;
-	SAMPLING_PORT_STATUS->PORT_DIRECTION = port.PORT_DIRECTION;
+	SAMPLING_PORT_STATUS->PORT_DIRECTION = port.s_buf.PORT_DIRECTION;
 
 	/* A procedure is needed for SAMPLING_PORT_STATUS->WAITING_PROCESSES */
 

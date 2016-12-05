@@ -58,7 +58,7 @@ void create_queuing_port(
 		if (!strcmp(ports[n].portname, QUEUING_PORT_NAME) &&
 			ports[n].q_buf.MAX_MESSAGE_SIZE == MAX_MESSAGE_SIZE &&
 			ports[n].q_buf.MAX_NB_MESSAGE == MAX_NB_MESSAGE &&
-			ports[n].PORT_DIRECTION == PORT_DIRECTION)
+			ports[n].q_buf.PORT_DIRECTION == PORT_DIRECTION)
 		{
 			ports[n].activated = true;
 			*QUEUING_PORT_ID = n;
@@ -101,7 +101,7 @@ void send_queuing_message(
 
 		if (!port->is_queuing_port ||
 			!port->activated ||
-			!(port->PORT_DIRECTION == DESTINATION)) {
+			!(port->q_buf.PORT_DIRECTION == DESTINATION)) {
 			/* Not a valid destination */
 			continue;
 		}
@@ -201,7 +201,7 @@ void get_queuing_port_status(
 	QUEUING_PORT_STATUS->NB_MESSAGE = port.q_buf.NB_MESSAGE;
 	QUEUING_PORT_STATUS->MAX_NB_MESSAGE = port.q_buf.MAX_NB_MESSAGE;
 	QUEUING_PORT_STATUS->MAX_MESSAGE_SIZE = port.q_buf.MAX_MESSAGE_SIZE;
-	QUEUING_PORT_STATUS->PORT_DIRECTION = port.PORT_DIRECTION;
+	QUEUING_PORT_STATUS->PORT_DIRECTION = port.q_buf.PORT_DIRECTION;
 
 	/* A procedure is needed for QUEUING_PORT_STATUS->WAITING_PROCESSES */
 
