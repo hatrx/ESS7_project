@@ -120,14 +120,15 @@ class ParseXML:
                 sub_element_struct, sub_element_name = self.partition_struct(sub_element, no_of_ports)
                 for port in ports:
                     if port.get("@MaxNbMessages", None):
-                        get_list = ['@MaxNbMessages', '@MaxMessageSize', '@Direction', '@PortName']
+                        get_list = ['@Direction', '@MaxNbMessages', '@MaxMessageSize', '@PortName']
                         get_list_tuple = self.return_get_tuple(port, get_list)
                         port_struct = """{{
     .is_queuing_port = true,
     .q_buf = [
+        .WAITING_PROCESSES = 0,
+        .PORT_DIRECTION = {},
         MESSAGE_BUFFER({}, {}),
     ],
-    .PORT_DIRECTION = {},
     .portname = \"{}\",
 }},""".format(*get_list_tuple)
                         port_struct = port_struct.replace ("[", "{")
