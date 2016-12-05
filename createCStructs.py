@@ -9,6 +9,7 @@ class ParseXML:
         self.file_h = open(sys.argv[1] + "xml_data.h", "w")
         self.file_c = open(sys.argv[1] + "xml_data.c", "w")
         self.externs_for_h_footer = ""
+        self.idle_partition = [{u'@Criticality': u'LEVEL_E', u'@PartitionIdentifier': u'0', u'@EntryPoint': u'idle_main', u'@PartitionName': u'idle', u'@SystemPartition': u'false'}]
 
 
     def get_xml(self):
@@ -28,6 +29,7 @@ class ParseXML:
 
     def get_sub_structures(self, parsed_xml):
         partitions = parsed_xml.get('ARINC_653_Module').get('Partition', None)
+        partitions = self.idle_partition + partitions
         partition_memory = parsed_xml.get('ARINC_653_Module').get('Partition_Memory', None)
         self.major_frame = parsed_xml.get('ARINC_653_Module').get('Module_Schedule', None)
         if self.major_frame:
@@ -80,9 +82,9 @@ class ParseXML:
         partition_schedule = sub_element.get('Window_Schedule', None)
         channels = sub_element.get('@ChannelName', None)
         if partition:
-            complete_struct = "partition_t partitions[%s] = {%s};\n\n" % (no_of_sub_elements + 1, structs_string) #+1 added
+            complete_struct = "partition_t partitions[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string) #+1 added
             self.write_to_file_c(complete_struct)
-            self.externs_for_h_footer += "\n\nextern partition_t partitions[%s];\n" % (no_of_sub_elements + 1)
+            self.externs_for_h_footer += "\n\nextern partition_t partitions[%s];\n" % (no_of_sub_elements)
         elif partition_memory:
             complete_struct = "part_mem_t partition_memorys[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string)
             self.write_to_file_c(complete_struct)
@@ -110,7 +112,6 @@ class ParseXML:
             queuing_ports = self.put_dicts_in_list( sub_element.get("Queuing_Port", []) )
             sampling_ports = self.put_dicts_in_list( sub_element.get("Sampling_Port", []) )
             ports = queuing_ports + sampling_ports
-
             if not ports:
                 no_of_ports = 0
                 sub_element_struct, sub_element_name = self.partition_struct(sub_element, no_of_ports)
@@ -169,11 +170,11 @@ class ParseXML:
 
 
         elif window_schedule:
-            sub_element_struct, sub_element_name = self.partition_schedule_struct(sub_element)
             structs_string = ""
             get_list = ['@WindowIdentifier', '@WindowStartSeconds', '@WindowDurationSeconds', '@PartitionPeriodStart']
             window_schedule = self.put_dicts_in_list(window_schedule)
             no_of_win_sch = len(window_schedule)
+            sub_element_struct, sub_element_name = self.partition_schedule_struct(sub_element, no_of_win_sch)
             for win in window_schedule:
                 get_list_tuple = self.return_get_tuple(win, get_list)
                 win_schedule_struct = """{{
@@ -235,6 +236,9 @@ class ParseXML:
         crit_level = sub_element.get('@Criticality', None)
         sys_part = sub_element.get('@SystemPartition', None)
         entry = sub_element.get('@EntryPoint', None)
+        ports_name = "p_"+name
+        if no_of_ports == 0:
+            ports_name = 0
         partition_struct = """{
     .id = %s,
     .partitionname = \"%s\",
@@ -242,8 +246,8 @@ class ParseXML:
     .systempartion = %s,
     .entrypoint = %s,
     .nb_ports = %s,
-    .ports = p_%s,
-},""" % (part_id, name, crit_level, sys_part, "&"+entry, no_of_ports, name)
+    .ports = %s,
+},""" % (part_id, name, crit_level, sys_part, "&"+entry, no_of_ports, ports_name)
 
         #this write the entry point to the .h file as it is a function needed to be defined
         self.write_to_file_h("""
@@ -265,7 +269,7 @@ void %s(void);""" % (entry))
         return partition_memory_struct, name
 
 
-    def partition_schedule_struct(self, sub_element):
+    def partition_schedule_struct(self, sub_element, no_of_win_sch):
         part_id = sub_element.get('@PartitionIdentifier', None)
         name = sub_element.get('@PartitionName', "nope").replace (" ", "_")
         period_seconds = sub_element.get('@PeriodSeconds', None)
@@ -277,8 +281,9 @@ void %s(void);""" % (entry))
     .partitionname = \"%s\",
     .peroidseconds = %s,
     .perioddurationseconds = %s,
+    .numWindows = %s,
     .window_arr = %s,
-},""" % (part_id, name, period_seconds, period_duration_seconds, window_arr)
+},""" % (part_id, name, period_seconds, period_duration_seconds, no_of_win_sch, window_arr)
 
         return partition_schedule_struct, name
 
