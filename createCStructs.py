@@ -68,6 +68,10 @@ class ParseXML:
 """)
 
 
+    def time_format(self, mill):
+        return int(1000 * float(mill))
+
+
     def create_sub_structure_structs(self, sub_structure):
         structs_string = ""
         sub_structure = self.put_dicts_in_list(sub_structure)
@@ -87,7 +91,7 @@ class ParseXML:
         elif partition_memory:
             complete_struct = "part_mem_t partition_memorys[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string)
             self.write_to_file_c(complete_struct)
-            major_frame = int(float(self.major_frame.get('@MajorFrameSeconds', None)) * 1000)
+            major_frame = self.time_format(self.major_frame.get('@MajorFrameSeconds', None))
             mf_wrapper = "const uint32_t majorFrameSeconds = %s;\n\n" % (major_frame)
             self.write_to_file_c(mf_wrapper)
             self.externs_for_h_footer += "extern part_mem_t partition_memorys[%s];\n" % (no_of_sub_elements)
@@ -282,7 +286,7 @@ void %s(void);""" % (entry))
     .perioddurationseconds = %s,
     .numWindows = %s,
     .window_arr = %s,
-},""" % (part_id, name, period_seconds, period_duration_seconds, no_of_win_sch, window_arr)
+},""" % (part_id, name, self.time_format(period_seconds), self.time_format(period_duration_seconds), no_of_win_sch, window_arr)
 
         return partition_schedule_struct, name
 
@@ -310,11 +314,14 @@ void %s(void);""" % (entry))
 
 
     def return_get_tuple(self, element, get_list):
+        keys = ["@WindowStartSeconds", "@WindowDurationSeconds"]
         get_list_values = ()
         for get_item in get_list:
             get_list_value = element.get(get_item, 0)#value set 0 because of C requirement
             if get_list_value:
                 get_list_value = get_list_value.replace(" ", "_")
+                if get_item in keys:
+                    get_list_value = self.time_format(get_list_value)
             get_list_values = get_list_values + (get_list_value,)
         return get_list_values
 
