@@ -74,6 +74,7 @@ add_executable(${PROJECT_NAME}
 	${SRC_DIR}/kernel/arinc/partition.c
 	${SRC_DIR}/kernel/arinc/process.c
 	${SRC_DIR}/kernel/arinc/queuing_port.c
+	${SRC_DIR}/kernel/arinc/sampling_port.c
 	${SRC_DIR}/kernel/circular_buffer.c
 	${SRC_DIR}/kernel/arinc/statics.c
 	${SRC_DIR}/kernel/error_handlers.c

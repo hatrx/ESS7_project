@@ -52,7 +52,7 @@ typedef struct {
 } process_t;
 
 typedef struct {
-	PARTITION_ID_TYPE         IDENTIFIER;
+	uint32_t                  IDENTIFIER;
 	NAME_TYPE                 partitionname;
 	CRITICALITY	              criticality; /* Not used */
 	bool                      systempartion; /* Not used*/
