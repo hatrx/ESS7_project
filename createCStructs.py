@@ -177,7 +177,7 @@ class ParseXML:
             for win in window_schedule:
                 get_list_tuple = self.return_get_tuple(win, get_list)
                 win_schedule_struct = """{{
-    .windowidentifier = {},
+    .id = {},
     .windowstartmilliseconds = {},
     .windowdurationmilliseconds = {},
     .partitionperiodstart = {},
@@ -236,7 +236,7 @@ class ParseXML:
         sys_part = sub_element.get('@SystemPartition', None)
         entry = sub_element.get('@EntryPoint', None)
         partition_struct = """{
-    .IDENTIFIER = %s,
+    .id = %s,
     .partitionname = \"%s\",
     .criticality = %s,
     .systempartion = %s,
@@ -257,7 +257,7 @@ void %s(void);""" % (entry))
         memory_arr = "memoryp_%s" % (name).replace (" ", "_")
 
         partition_memory_struct = """{
-    .IDENTIFIER = %s,
+    .id = %s,
     .partitionname = \"%s\",
     .memory_arr = %s,
 },""" % (part_id, name, memory_arr)
@@ -273,7 +273,7 @@ void %s(void);""" % (entry))
         window_arr = "windowp_%s" % (name).replace (" ", "_")
 
         partition_schedule_struct = """{
-    .partitionidentifier = %s,
+    .id = %s,
     .partitionname = \"%s\",
     .peroidseconds = %s,
     .perioddurationseconds = %s,
@@ -287,7 +287,7 @@ void %s(void);""" % (entry))
         channel_id = sub_element.get('@ChannelIdentifier', None)
         name = sub_element.get('@ChannelName', "nope").replace (" ", "_")
         channel_struct = """{
-    .channelidentifier = %s,
+    .id = %s,
     .channelname = \"%s\",
     .nb_ports = %s,
     .ports = %s,

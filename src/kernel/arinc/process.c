@@ -48,20 +48,20 @@ void create_process(partition_t* partition, uint32_t memoryAddress, PROCESS_ATTR
 void runtime_create_process(PROCESS_ATTRIBUTE_TYPE *attributes, PROCESS_ID_TYPE *processId, RETURN_CODE_TYPE *RETURN_CODE)
 {
 	partition_t *partition = getActivePartition();
-	int32_t id = partition->IDENTIFIER;
+	int32_t id = partition->id;
 
 	/* Find overall memmory structure for this partition. */
 	part_mem_t *p_mem = {0};
 	const uint32_t nb_mems = sizeof(partition_memory) / sizeof(part_mem_t);
 	for (size_t i = 0; i < nb_mems; i++) {
-		if (partition_memory[i].IDENTIFIER == id) {
+		if (partition_memory[i].id == id) {
 			p_mem = &partition_memory[i];
 		}
 	}
 
 
 	/* If not found data is missing, return error. */
-	if (p_mem->IDENTIFIER == 0) {
+	if (p_mem->id == 0) {
 		*RETURN_CODE = INVALID_CONFIG;
 		return;
 	}

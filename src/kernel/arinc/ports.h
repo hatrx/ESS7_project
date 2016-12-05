@@ -34,7 +34,7 @@ typedef struct {
 } port_t;
 
 typedef struct{
-	int                       channelidentifier;
+	uint8_t                   id;
 	NAME_TYPE                 channelname;
 	APEX_INTEGER              nb_ports;
 	port_t                    **ports;

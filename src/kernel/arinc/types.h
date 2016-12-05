@@ -52,7 +52,7 @@ typedef struct {
 } process_t;
 
 typedef struct {
-	uint32_t                  IDENTIFIER;
+	uint8_t                   id;
 	NAME_TYPE                 partitionname;
 	CRITICALITY	              criticality; /* Not used */
 	bool                      systempartion; /* Not used*/
@@ -72,7 +72,7 @@ typedef struct {
 } mem_req_t;
 
 typedef struct{
-	PARTITION_ID_TYPE         IDENTIFIER;
+	uint8_t                   id;
 	NAME_TYPE                 partitionname;
 	uint32_t                  arr_size;
 	mem_req_t                 *memory_arr;
@@ -83,14 +83,14 @@ typedef struct{
 } part_mem_t;
 
 typedef struct {
-    int windowidentifier;
+    uint8_t id;
     uint32_t windowstartmilliseconds;
     uint32_t windowdurationmilliseconds;
     bool partitionperiodstart;
 } window_schedule;
 
 typedef struct {
-	int partitionidentifier;
+	uint8_t id;
     char partitionname[32];
     float peroidseconds;
     float perioddurationseconds;

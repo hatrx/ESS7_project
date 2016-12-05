@@ -168,7 +168,7 @@ void scheduler_buildSchedule(void)
 			const uint32_t numPartitions = (uint32_t) sizeof(partitions) / sizeof(partition_t);
 			for(i = 0; i < numPartitions; i++)
 			{
-				if (partitions[i].IDENTIFIER == tmpPSchedule->partitionidentifier)
+				if (partitions[i].id == tmpPSchedule->id)
 				{
 					tmpPartition = &partitions[i];
 					break;

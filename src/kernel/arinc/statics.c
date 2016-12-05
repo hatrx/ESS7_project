@@ -53,25 +53,25 @@ mem_req_t mem_evil[2] = {{
 },};
 
 part_mem_t partition_memory[4] = {{
-	.IDENTIFIER = 1,
+	.id = 1,
 	.partitionname = "dummy_1",
 	.arr_size = 2,
 	.memory_arr = mem_dummy_1,
 	.mem_offset = 1024, /* TODO: This could be initialized at memeory init. */
 },{
-	.IDENTIFIER = 2,
+	.id = 2,
 	.partitionname = "dummy_2",
 	.arr_size = 2,
 	.memory_arr = mem_dummy_2,
 	.mem_offset = 1024, /* TODO: This could be initialized at memeory init. */
 },{
-	.IDENTIFIER = 3,
+	.id = 3,
 	.partitionname = "stio_sys",
 	.arr_size = 2,
 	.memory_arr = mem_stdio_sys,
 	.mem_offset = 1024, /* TODO: This could be initialized at memeory init. */
 },{
-	.IDENTIFIER = 4,
+	.id = 4,
 	.partitionname = "evil",
 	.arr_size = 2,
 	.memory_arr = mem_evil,
