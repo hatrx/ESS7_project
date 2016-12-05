@@ -1,6 +1,10 @@
 #ifndef RTC_H
 #define RTC_H
 
+
+#include <stdint.h>
+
+
 typedef struct
 {
 	uint8_t subseconds;
@@ -37,4 +41,4 @@ void RTC_Get_Date_Time(Date_Time_t*);
 
 int RTC_State();
 
-#endif /* UART_H */
+#endif /* RTC_H */
