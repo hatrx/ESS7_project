@@ -34,17 +34,12 @@ Desktop.ini
 $RECYCLE.BIN/
 
 
-# Sublime Text
-*.sublime-project
-*.sublime-workspace
+# Python libs
+xmltodict.pyc
 
 
 # Everything in the build dir
 build/*
-
-
-# Everything in the bin dir
-bin/*
 
 
 # Ignore dot-folders/files, except the gitignore file
