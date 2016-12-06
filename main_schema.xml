@@ -30,19 +30,19 @@
     </Partition_Memory>
 	<Module_Schedule MajorFrameSeconds="0.200">
 	  <Partition_Schedule PartitionIdentifier="1" PartitionName="dummy_1" PeriodSeconds="0.100" PeriodDurationSeconds="0.020">
-            <Window_Schedule WindowIdentifier="101" WindowStartSeconds="0.0" WindowDurationSeconds="0.020" PartitionPeriodStart="true" />
-            <Window_Schedule WindowIdentifier="102" WindowStartSeconds="0.1" WindowDurationSeconds="0.020" PartitionPeriodStart="true" />
+            <Window_Schedule WindowIdentifier="1" WindowStartSeconds="0.0" WindowDurationSeconds="0.020" PartitionPeriodStart="true" />
+            <Window_Schedule WindowIdentifier="2" WindowStartSeconds="0.1" WindowDurationSeconds="0.020" PartitionPeriodStart="true" />
 	  </Partition_Schedule>
 	  <Partition_Schedule PartitionIdentifier="2" PartitionName="dummy_2" PeriodSeconds="0.100" PeriodDurationSeconds="0.010">
-            <Window_Schedule WindowIdentifier="201" WindowStartSeconds="0.030" WindowDurationSeconds="0.010" PartitionPeriodStart="true" />
-            <Window_Schedule WindowIdentifier="202" WindowStartSeconds="0.130" WindowDurationSeconds="0.010" PartitionPeriodStart="true" />
+            <Window_Schedule WindowIdentifier="1" WindowStartSeconds="0.030" WindowDurationSeconds="0.010" PartitionPeriodStart="true" />
+            <Window_Schedule WindowIdentifier="2" WindowStartSeconds="0.130" WindowDurationSeconds="0.010" PartitionPeriodStart="true" />
 	  </Partition_Schedule>
 	  <Partition_Schedule PartitionIdentifier="3" PartitionName="stio_sys" PeriodSeconds="0.100" PeriodDurationSeconds="0.030">
-            <Window_Schedule WindowIdentifier="301" WindowStartSeconds="0.040" WindowDurationSeconds="0.030" PartitionPeriodStart="true" />
-            <Window_Schedule WindowIdentifier="302" WindowStartSeconds="0.140" WindowDurationSeconds="0.030" PartitionPeriodStart="true" />
+            <Window_Schedule WindowIdentifier="1" WindowStartSeconds="0.040" WindowDurationSeconds="0.030" PartitionPeriodStart="true" />
+            <Window_Schedule WindowIdentifier="2" WindowStartSeconds="0.140" WindowDurationSeconds="0.030" PartitionPeriodStart="true" />
 	  </Partition_Schedule>
 	  <Partition_Schedule PartitionIdentifier="4" PartitionName="evil" PeriodSeconds="0.200" PeriodDurationSeconds="0.020">
-            <Window_Schedule WindowIdentifier="401" WindowStartSeconds="0.180" WindowDurationSeconds="0.020" PartitionPeriodStart="true" />
+            <Window_Schedule WindowIdentifier="1" WindowStartSeconds="0.180" WindowDurationSeconds="0.020" PartitionPeriodStart="true" />
 	  </Partition_Schedule>
 	</Module_Schedule>
 	<Connection_Table>
