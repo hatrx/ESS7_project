@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include "arinc/statics.h"
+#include "../xml_data.h"
 
 #define MAX_NUM_WINDOWS 20
 

@@ -7,7 +7,6 @@
 
 #include "../xml_data.h"
 
-#include "arinc/statics.h"
 #include "arinc/window.h"
 #include "arinc/ports.h"
 
