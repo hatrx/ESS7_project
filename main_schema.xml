@@ -13,16 +13,20 @@
 		<Queuing_Port PortName="temp" MaxMessageSize="1" Direction="DESTINATION" MaxNbMessages="1" />
     </Partition>
 	<Partition_Memory PartitionIdentifier="1" PartitionName="dummy_1">
-       <Memory_Requirements Type="CODE" SizeBytes="8000" Access="READ_ONLY" />
-       <Memory_Requirements Type="DATA" SizeBytes="8000" Access="READ_WRITE" />
+       <Memory_Requirements Type="CODE" SizeBytes="8000" Access="READ_ONLY" PhysicalAddress="0x8010000" />
+       <Memory_Requirements Type="DATA" SizeBytes="8000" Access="READ_WRITE" PhysicalAddress="0x20010000" />
     </Partition_Memory>
     <Partition_Memory PartitionIdentifier="2" PartitionName="dummy_2">
-       <Memory_Requirements Type="CODE" SizeBytes="8000" Access="READ_ONLY" />
-       <Memory_Requirements Type="DATA" SizeBytes="8000" Access="READ_WRITE" />
+       <Memory_Requirements Type="CODE" SizeBytes="8000" Access="READ_ONLY" PhysicalAddress="0x8012000" />
+       <Memory_Requirements Type="DATA" SizeBytes="8000" Access="READ_WRITE" PhysicalAddress="0x20012000" />
     </Partition_Memory>
     <Partition_Memory PartitionIdentifier="3" PartitionName="stio_sys">
-       <Memory_Requirements Type="CODE" SizeBytes="8000" Access="READ_ONLY" />
-       <Memory_Requirements Type="DATA" SizeBytes="8000" Access="READ_WRITE" />
+       <Memory_Requirements Type="CODE" SizeBytes="8000" Access="READ_ONLY" PhysicalAddress="0x8014000" />
+       <Memory_Requirements Type="DATA" SizeBytes="8000" Access="READ_WRITE" PhysicalAddress="0x20014000" />
+    </Partition_Memory>
+	<Partition_Memory PartitionIdentifier="3" PartitionName="evil">
+       <Memory_Requirements Type="CODE" SizeBytes="8000" Access="READ_ONLY" PhysicalAddress="0x8016000" />
+       <Memory_Requirements Type="DATA" SizeBytes="8000" Access="READ_WRITE" PhysicalAddress="0x20016000" />
     </Partition_Memory>
 	<Module_Schedule MajorFrameSeconds="0.200">
 	  <Partition_Schedule PartitionIdentifier="1" PartitionName="dummy_1" PeriodSeconds="0.100" PeriodDurationSeconds="0.020">
