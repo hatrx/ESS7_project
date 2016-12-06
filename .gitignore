@@ -1,29 +1,6 @@
-# Object files
-*.o
-*.ko
-*.lst
-
-
-# Libraries
-*.lib
-*.a
-
-
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
-
-
-# Executables
-*.exe
-*.out
-*.app
-*.elf
-*elf.map
-*.hex
-*.ee.hex
+# Generated data
+xml_data.c
+xml_data.h
 
 
 # Windows files
