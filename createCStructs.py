@@ -154,11 +154,12 @@ class ParseXML:
 
 
         elif memory_requirements:
-            sub_element_struct, sub_element_name = self.partition_memory_struct(sub_element)
+
             structs_string = ""
             get_list = ['@Type', '@SizeBytes', '@Access', '@PhysicalAddress']
             memory_requirements = self.put_dicts_in_list(memory_requirements)
             no_of_mem_req = len(memory_requirements)
+            sub_element_struct, sub_element_name = self.partition_memory_struct(sub_element, no_of_mem_req)
             for requirement in memory_requirements:
                 get_list_tuple = self.return_get_tuple(requirement, get_list)
                 mem_requirement_struct = """{{
@@ -258,7 +259,7 @@ void %s(void);""" % (entry))
         return partition_struct, name
 
 
-    def partition_memory_struct(self, sub_element):
+    def partition_memory_struct(self, sub_element, num_of_memory):
         part_id = sub_element.get('@PartitionIdentifier', None)
         name = sub_element.get('@PartitionName', None).replace (" ", "_")
         memory_arr = "memoryp_%s" % (name).replace (" ", "_")
@@ -266,8 +267,9 @@ void %s(void);""" % (entry))
         partition_memory_struct = """{
     .id = %s,
     .partitionname = \"%s\",
+    .nummemory = %s,
     .memory_arr = %s,
-},""" % (part_id, name, memory_arr)
+},""" % (part_id, name, num_of_memory, memory_arr)
 
         return partition_memory_struct, name
 
