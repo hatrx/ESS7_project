@@ -41,12 +41,12 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 MEMORY
 {
   FLASH (rx)     : ORIGIN = 0x08000000, LENGTH = 1024K
-  OS (rx)        : ORIGIN = 0x08000000, LENGTH = 64K
-  DUMMY1 (rx)    : ORIGIN = 0x08010000, LENGTH = 8K
-  DUMMY2 (rx)    : ORIGIN = 0x08012000, LENGTH = 8K
-  STDIO_SYS (rx) : ORIGIN = 0x08014000, LENGTH = 8K
-  RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 128K
-  CCMRAM (rw)    : ORIGIN = 0x10000000, LENGTH = 64K
+  OS (rx)        : ORIGIN = 0x08000000, LENGTH =   64K
+  DUMMY1 (rx)    : ORIGIN = 0x08010000, LENGTH =    8K
+  DUMMY2 (rx)    : ORIGIN = 0x08012000, LENGTH =    8K
+  STDIO_SYS (rx) : ORIGIN = 0x08014000, LENGTH =    8K
+  RAM (xrw)      : ORIGIN = 0x20000000, LENGTH =  128K
+  CCMRAM (rw)    : ORIGIN = 0x10000000, LENGTH =   64K
 }
 
 /* Define output sections */
