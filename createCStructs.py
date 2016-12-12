@@ -267,7 +267,7 @@ void %s(void);""" % (entry))
         partition_memory_struct = """{
     .id = %s,
     .partitionname = \"%s\",
-    .nummemory = %s,
+    .arr_size = %s,
     .memory_arr = %s,
 },""" % (part_id, name, num_of_memory, memory_arr)
 
