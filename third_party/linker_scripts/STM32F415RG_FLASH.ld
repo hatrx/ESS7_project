@@ -40,26 +40,27 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 /* Specify the memory areas */
 MEMORY
 {
-FLASH (rx)      : ORIGIN = 0x8000000, LENGTH = 64K
-/*DUMMY1 (rx)       : ORIGIN = 0x8010000, LENGTH = 8K*/
-/*DUMMY2 (rx)       : ORIGIN = 0x8012000, LENGTH = 8K*/
-/*STDIO_SYS (rx)       : ORIGIN = 0x8014000, LENGTH = 8K*/
-RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 128K
-CCMRAM (rw)      : ORIGIN = 0x10000000, LENGTH = 64K
+  FLASH (rx)     : ORIGIN = 0x08000000, LENGTH = 1024K
+  OS (rx)        : ORIGIN = 0x08000000, LENGTH = 64K
+  DUMMY1 (rx)    : ORIGIN = 0x08010000, LENGTH = 8K
+  DUMMY2 (rx)    : ORIGIN = 0x08012000, LENGTH = 8K
+  STDIO_SYS (rx) : ORIGIN = 0x08014000, LENGTH = 8K
+  RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 128K
+  CCMRAM (rw)    : ORIGIN = 0x10000000, LENGTH = 64K
 }
 
 /* Define output sections */
 SECTIONS
 {
-  /* The startup code goes first into FLASH */
+  /* The startup code goes first into OS */
   .isr_vector :
   {
     . = ALIGN(4);
     KEEP(*(.isr_vector)) /* Startup code */
     . = ALIGN(4);
-  } >FLASH
+  } >OS
 
-  /*.dummy1 :
+  .dummy1 :
   {
     . = ALIGN(4);
     libdummy1.a:*
@@ -71,16 +72,16 @@ SECTIONS
     . = ALIGN(4);
     libdummy2.a:*
     . = ALIGN(4);
-  } >DUMMY2*/
+  } >DUMMY2
 
-  /*.stdio_sys :
+  .stdio_sys :
   {
     . = ALIGN(4);
     libstdio_sys.a:*
     . = ALIGN(4);
-  } >STDIO_SYS*/
+  } >STDIO_SYS
 
-  /* The program code and other data goes into FLASH */
+  /* The program code and other data goes into OS */
   .text :
   {
     . = ALIGN(4);
@@ -95,44 +96,44 @@ SECTIONS
 
     . = ALIGN(4);
     _etext = .;        /* define a global symbols at end of code */
-  } >FLASH
+  } >OS
 
-  /* Constant data goes into FLASH */
+  /* Constant data goes into OS */
   .rodata :
   {
     . = ALIGN(4);
     *(.rodata)         /* .rodata sections (constants, strings, etc.) */
     *(.rodata*)        /* .rodata* sections (constants, strings, etc.) */
     . = ALIGN(4);
-  } >FLASH
+  } >OS
 
-  .ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) } >FLASH
+  .ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) } >OS
   .ARM : {
     __exidx_start = .;
     *(.ARM.exidx*)
     __exidx_end = .;
-  } >FLASH
+  } >OS
 
   .preinit_array     :
   {
     PROVIDE_HIDDEN (__preinit_array_start = .);
     KEEP (*(.preinit_array*))
     PROVIDE_HIDDEN (__preinit_array_end = .);
-  } >FLASH
+  } >OS
   .init_array :
   {
     PROVIDE_HIDDEN (__init_array_start = .);
     KEEP (*(SORT(.init_array.*)))
     KEEP (*(.init_array*))
     PROVIDE_HIDDEN (__init_array_end = .);
-  } >FLASH
+  } >OS
   .fini_array :
   {
     PROVIDE_HIDDEN (__fini_array_start = .);
     KEEP (*(SORT(.fini_array.*)))
     KEEP (*(.fini_array*))
     PROVIDE_HIDDEN (__fini_array_end = .);
-  } >FLASH
+  } >OS
 
   /* used by the startup to initialize data */
   _sidata = LOADADDR(.data);
@@ -147,7 +148,7 @@ SECTIONS
 
     . = ALIGN(4);
     _edata = .;        /* define a global symbol at data end */
-  } >RAM AT> FLASH
+  } >RAM AT> OS
 
   _siccmram = LOADADDR(.ccmram);
 
@@ -166,7 +167,7 @@ SECTIONS
 
     . = ALIGN(4);
     _eccmram = .;       /* create a global symbol at ccmram end */
-  } >CCMRAM AT> FLASH
+  } >CCMRAM AT> OS
 
 
   /* Uninitialized data section */
