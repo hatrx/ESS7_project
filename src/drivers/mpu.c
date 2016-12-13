@@ -2,7 +2,6 @@
 
 #include "mpu.h"
 
-
 void init_mpu(uint32_t base_addr, MPU_REGION_SIZE size)
 {
 	HAL_MPU_Disable();
