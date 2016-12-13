@@ -19,7 +19,7 @@ void HardFault_Handler()
     ARM_HW_context_state* stack;
     __ASM volatile (
         "TST	LR, #0x4    	\n\t"		// Test bit 2 of EXC_RETURN
-		"ITE	EQ      		\n\t"		// Which stack pointer was used?
+        "ITE	EQ      		\n\t"		// Which stack pointer was used?
         "MRSEQ  %0, MSP         \n\t"       // Move MSP into pointer if EQ flag is set
         "MRSNE  %0, PSP         \n\t"       // Move SSP into pointer if NE flag is set
         : "=r"  (stack)
@@ -55,7 +55,7 @@ __attribute__((noreturn))
 void Error_Handler(void)
 {
     printf("Initialisation Error\n");
-	onboard_led_on(yellow_led);
+    onboard_led_on(yellow_led);
     onboard_led_on(red_led);
     while (1);
 }

@@ -25,7 +25,7 @@ int main(void)
 
     if (BSP_UART_Init() != 0)
     {
-		Error_Handler(); // Shit not working!
+        Error_Handler(); // Shit not working!
     }
 
     init_onboard_LED(red_led);
@@ -35,20 +35,20 @@ int main(void)
     printf("%c[%dJ\n", 0x1B, 2);
     printf("%c[0;0H", 0x1B);
     /*
-	if (BSP_IWDG_Init() != 0)		//Independent watchdog time initilisation
-	{
-		Error_Handler();		// Shit not working!
-	}
+    if (BSP_IWDG_Init() != 0)		//Independent watchdog time initilisation
+    {
+        Error_Handler();		// Shit not working!
+    }
 
-	if (BSP_RTC_Init() != 0)		//Real time clock initialisation. Define the time interval in the header file
-	{
-		Error_Handler();		// Shit not working!
-	}
-	*/
+    if (BSP_RTC_Init() != 0)		//Real time clock initialisation. Define the time interval in the header file
+    {
+        Error_Handler();		// Shit not working!
+    }
+    */
 
-	/* Initialize all ports */
+    /* Initialize all ports */
     init_queuing_ports();
-	init_partitions();
+    init_partitions();
     scheduler_buildSchedule();
     TIME_Start_ns();
 
@@ -56,11 +56,11 @@ int main(void)
     SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_TICKINT_Msk | SysTick_CTRL_ENABLE_Msk;
 
     __asm volatile (
-		"MRS R4, CONTROL			\n\t"
-		"ORR R4, R4, #0x1			\n\t"
-		"MSR CONTROL, R4			\n\t"
-		: : :
-	);
+        "MRS R4, CONTROL			\n\t"
+        "ORR R4, R4, #0x1			\n\t"
+        "MSR CONTROL, R4			\n\t"
+        : : :
+    );
 
     while (1);
 }

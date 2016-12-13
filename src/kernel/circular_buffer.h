@@ -7,10 +7,10 @@
 
 
 typedef struct {
-	uint8_t *buffer;
-	size_t head;
-	size_t tail;
-	const size_t maxLen;
+    uint8_t *buffer;
+    size_t head;
+    size_t tail;
+    const size_t maxLen;
 } circBuf_t;
 
 #define CIRCBUF_DEF(x,y) uint8_t x##_space[y]; circBuf_t x = { x##_space,0,0,y}

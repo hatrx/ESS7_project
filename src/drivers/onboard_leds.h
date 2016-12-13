@@ -6,8 +6,8 @@
 
 
 typedef enum {
-	yellow_led = GPIO_PIN_12,
-	red_led = GPIO_PIN_13,
+    yellow_led = GPIO_PIN_12,
+    red_led = GPIO_PIN_13,
 } ONBOARD_LED;
 
 

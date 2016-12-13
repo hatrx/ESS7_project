@@ -11,19 +11,19 @@ void delay_ms(uint32_t ms);
 #define ARR_LEN(arr)    (sizeof(arr) / sizeof(arr[0]))
 
 /* Bit operations
- * Does operation on the specified bit
- * where a=target, b=bit number to act on
- */
+* Does operation on the specified bit
+* where a=target, b=bit number to act on
+*/
 #define BIT_SET(a,b) 		( (a) |= (1<<(b))	)
 #define BIT_CLEAR(a,b) 		( (a) &= ~(1<<(b))	)
 #define BIT_FLIP(a,b) 		( (a) ^= (1<<(b))	)
 #define BIT_CHECK(a,b) 		( (a) & (1<<(b))	)
 
 /* Bit mask operations
- * Does operation on the specified target
- * according to the mask where
- * x=target, y=mask
- */
+* Does operation on the specified target
+* according to the mask where
+* x=target, y=mask
+*/
 #define BITMASK_SET(x,y) 	( (x) |= (y)	)
 #define BITMASK_CLEAR(x,y) 	( (x) &= (~(y))	)
 #define BITMASK_FLIP(x,y) 	( (x) ^= (y)	) // Use: ( (x) = ~(y)	) instead?
@@ -39,8 +39,8 @@ void delay_ms(uint32_t ms);
 #define LOW_BYTE(w) 		( (uint8_t) ((w) & 0xFF)		)
 
 /* Extracts the high-order (leftmost) byte of a word
- * (or the second lowest byte of a larger data type).
- */
+* (or the second lowest byte of a larger data type).
+*/
 #define HIGH_BYTE(w) 		( (uint8_t) ((w) >> 8)			)
 
 
