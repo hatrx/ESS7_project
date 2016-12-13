@@ -37,7 +37,7 @@ void SVC_Handler(void)
         SysTick_CTRL_ENABLE_Msk;
 
     switch (stack->R0) {
-    case 0xc0ffee0a:        // CREATE_PROCESS
+    case 0xc0ffee0a:
     {
         uint8_t argc = 3;
         uint32_t argv[argc];
@@ -52,7 +52,7 @@ void SVC_Handler(void)
             (RETURN_CODE_TYPE *) argv[2]);
         break;
     }
-    case 0xc0ffee0b:        // GET_TIME
+    case 0xc0ffee0b:
     {
         uint64_t time = TIME_Get_Total();
         stack->R0 = NO_ERROR;
@@ -60,7 +60,7 @@ void SVC_Handler(void)
         stack->R2 = (uint32_t) (time >> 32);
         break;
     }
-    case 0xc0ffee0c:        // CREATE_QUEUING_PORT
+    case 0xc0ffee0c:
     {
         uint8_t argc = 7;
         uint32_t argv[argc];
@@ -79,7 +79,7 @@ void SVC_Handler(void)
             (RETURN_CODE_TYPE *) argv[6]);
         break;
     }
-    case 0xc0ffee0d:        // CREATE_QUEUING_PORT
+    case 0xc0ffee0d:
     {
         uint8_t argc = 5;
         uint32_t argv[argc];
@@ -96,7 +96,7 @@ void SVC_Handler(void)
             (RETURN_CODE_TYPE *) argv[4]);
         break;
     }
-    case 0xc0ffee0e:        // CREATE_QUEUING_PORT
+    case 0xc0ffee0e:
     {
         uint8_t argc = 5;
         uint32_t argv[argc];
@@ -113,7 +113,7 @@ void SVC_Handler(void)
             (RETURN_CODE_TYPE *) argv[4]);
         break;
     }
-    case 0xc0ffee0f:        // CREATE_QUEUING_PORT
+    case 0xc0ffee0f:
     {
         uint8_t argc = 3;
         uint32_t argv[argc];
@@ -128,7 +128,7 @@ void SVC_Handler(void)
             (RETURN_CODE_TYPE *) argv[2]);
         break;
     }
-    case 0xc0ffee10:        // CREATE_QUEUING_PORT
+    case 0xc0ffee10:
     {
         uint8_t argc = 3;
         uint32_t argv[argc];
@@ -143,7 +143,7 @@ void SVC_Handler(void)
             (RETURN_CODE_TYPE *) argv[2]);
         break;
     }
-    case 0xc0ffee11:        // CREATE_QUEUING_PORT
+    case 0xc0ffee11:
     {
         process_stop_self();
         break;
