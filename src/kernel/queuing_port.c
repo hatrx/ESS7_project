@@ -6,7 +6,7 @@
 
 #include "ports.h"
 #include "../xml_data.h"
-#include "kernel/scheduler.h"
+#include "kernel/part_scheduler.h"
 
 
 void init_queuing_ports(void)

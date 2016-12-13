@@ -6,7 +6,7 @@
 
 #include "kernel/context.h"
 #include "kernel/error_handler.h"
-#include "kernel/scheduler.h"
+#include "kernel/part_scheduler.h"
 
 #include "../xml_data.h"
 

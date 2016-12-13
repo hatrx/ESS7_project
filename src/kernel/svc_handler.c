@@ -5,7 +5,7 @@
 #include "context.h"
 #include "drivers/time_get.h"
 #include "process.h"
-#include "scheduler.h"
+#include "part_scheduler.h"
 
 #include "ports.h"
 

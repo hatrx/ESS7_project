@@ -2,7 +2,7 @@
 
 #include "process.h"
 #include "kernel/context.h"
-#include "kernel/scheduler.h"
+#include "kernel/part_scheduler.h"
 
 
 static int find_dormant_process(partition_t *partition)

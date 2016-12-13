@@ -10,7 +10,7 @@
 #include "drivers/utils.h"
 #include "drivers/time_get.h"
 
-#include "kernel/scheduler.h"
+#include "kernel/part_scheduler.h"
 #include "kernel/error_handler.h"
 #include "kernel/partition.h"
 #include "kernel/ports.h"
