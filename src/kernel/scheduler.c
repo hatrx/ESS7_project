@@ -2,8 +2,11 @@
 #include <stdbool.h>
 #include <tgmath.h>
 
-#include "kernel/scheduler.h"
+#include "drivers/time_get.h"
+
+#include "kernel/context.h"
 #include "kernel/error_handler.h"
+#include "kernel/scheduler.h"
 
 #include "../xml_data.h"
 
@@ -13,6 +16,53 @@
 static window_t schedule[MAX_NUM_WINDOWS];
 static int32_t majorFrameMillis = -1;
 static window_t* activeWindow;
+
+//#define DISABLE_CONTEXT_SWITCH
+#ifndef DISABLE_CONTEXT_SWITCH
+/**
+ * @brief Handles SysTick interrupts. This should fire once every millisecond.
+ * This function also handles context switches. This function is called directly
+ * by the NVIC.
+ * Note: This function is declared as naked to tell GCC not to add the usual padding,
+ *       which is disastrous in a context switing function
+ * TODO: This function does not handle context switches from functions that use the FPU, 
+ *			as the FPU registers are not all saved
+ */
+__attribute__((naked,noreturn))
+void SysTick_Handler(void)
+{
+	uint32_t stackpointer = context_save();
+	uint32_t exc_return_value;
+	__asm volatile ("MOV %0, LR" : "=r" (exc_return_value));
+
+
+	static process_t* active_process = NULL;
+	if (active_process != NULL)
+	{
+		// Save the value of the stack pointer for later use.
+		active_process->stackpointer = stackpointer;
+		active_process->exc_return_value = (exc_return_value & 0xFF);
+	}
+
+	/* Get pointer to currently running partition. */
+	partition_t *part = scheduler_partitionScheduler();
+
+	active_process = scheduler_processScheduler(part);
+
+	// Increase HAL ticks. This is by the HAL_Delay(int) function, so we need to do this.
+	HAL_IncTick();
+	TIME_Add_Count();
+
+	// Restore the context and switch to it. This function never returns
+	context_restoreAndSwitch(active_process->stackpointer, active_process->exc_return_value);
+}
+#else
+void SysTick_Handler(void)
+{
+	HAL_IncTick();
+	TIME_Add_Count();
+}
+#endif
 
 partition_t* scheduler_partitionScheduler(void)
 {

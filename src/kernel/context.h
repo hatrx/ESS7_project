@@ -63,6 +63,28 @@ static inline uint32_t context_save()
 	return stackpointer;
 }
 
+__attribute__((always_inline))
+static inline void context_restoreAndSwitch(uint32_t stackpointer, uint8_t exc_return_value)
+{
+	// Resote the software context of the new process.
+	// Variable data is loaded into static registers in the beginnning
+	// to make sure the GCC doesn't decide to use the registers R4-R11 after
+	// they've been restored; that would be catastrophic!
+	__asm volatile (
+		"MOV	R0, %[stack]			\n\t"		// Move the stack pointer to R0
+		"MOV	R2, %[exc]				\n\t"		// Move the process specific EXC_RETURN value to R2 
+		"LDR	R1, =0xFFFFFF00 		\n\t"		// Load R1 with the constant part of EXC_RETURN values
+		"LDMFD  R0!, {R4-R11}     		\n\t"		// Restore the stacked registers R4-R11
+		"TST	R2, #0x4    			\n\t"		// Test bit 2 of EXC_RETURN
+		"ITE	EQ      				\n\t"		// Which stack pointer was used?
+		"MSREQ	MSP, R0		 			\n\n"		// Update MSP if EQ is set
+		"MSRNE 	PSP, R0					\n\t"		// Update PSP if NE is set
+		"ADD	R1, R1, R2				\n\t"		// Add the process specific part of the EXC_RETURN value to the constant
+		"BX		R1						\n\t"		// Branch to the EXC_RETURN value to active the NVIC's context restore
+		: : [stack] "r" (stackpointer), [exc] "r" (exc_return_value) :
+	);
+}
+
 extern uint8_t indexActivePartition;
 
 void context_setup(void (*foo)(void), void *addr);
