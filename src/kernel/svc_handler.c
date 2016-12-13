@@ -4,10 +4,10 @@
 
 #include "context.h"
 #include "drivers/time_get.h"
-#include "arinc/process.h"
+#include "process.h"
 #include "scheduler.h"
 
-#include "arinc/ports.h"
+#include "ports.h"
 
 
 static uint32_t pop(uint32_t *p)

@@ -5,7 +5,7 @@
 #include <apex_sampling.h>
 
 #include "ports.h"
-#include "../../xml_data.h"
+#include "../xml_data.h"
 #include "kernel/scheduler.h"
 
 

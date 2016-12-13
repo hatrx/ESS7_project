@@ -12,8 +12,8 @@
 
 #include "kernel/scheduler.h"
 #include "kernel/error_handler.h"
-#include "kernel/arinc/partition.h"
-#include "kernel/arinc/ports.h"
+#include "kernel/partition.h"
+#include "kernel/ports.h"
 
 
 int main(void)

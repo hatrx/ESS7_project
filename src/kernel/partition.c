@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stddef.h>
 #include "partition.h"
-#include "../../xml_data.h"
+#include "../xml_data.h"
 #include "statics.h"
 #include "process.h"
-#include <kernel/error_handler.h>
+#include "error_handler.h"
 
 
 mem_req_t get_ram_info(partition_t *partition)

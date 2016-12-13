@@ -1,7 +1,7 @@
 #include <stdint.h>
 
-#include "../circular_buffer.h"
-#include "../../xml_data.h"
+#include "circular_buffer.h"
+#include "../xml_data.h"
 #include "ports.h"
 
 mem_req_t mem_dummy_1[2] = {{

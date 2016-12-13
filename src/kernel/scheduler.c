@@ -10,8 +10,8 @@
 
 #include "../xml_data.h"
 
-#include "arinc/window.h"
-#include "arinc/ports.h"
+#include "window.h"
+#include "ports.h"
 
 static window_t schedule[MAX_NUM_WINDOWS];
 static int32_t majorFrameMillis = -1;

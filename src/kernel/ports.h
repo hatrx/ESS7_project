@@ -7,7 +7,7 @@
 #include <apex_queuing.h>
 #include <apex_sampling.h>
 
-#include "../circular_buffer.h"
+#include "circular_buffer.h"
 
 
 struct queuing_port {

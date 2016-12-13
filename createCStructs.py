@@ -63,7 +63,7 @@ class ParseXML:
 
 #include "xml_data.h"
 #include "kernel/circular_buffer.h"
-#include "kernel/arinc/ports.h"
+#include "kernel/ports.h"
 
 """)
 

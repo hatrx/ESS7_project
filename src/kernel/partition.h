@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <apex_process.h>
 
-#include "../../xml_data.h"
+#include "../xml_data.h"
 
 
 void init_partitions(void);

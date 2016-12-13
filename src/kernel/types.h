@@ -7,7 +7,7 @@
 #include <apex_partition.h>
 #include "ports.h"
 
-#include "../circular_buffer.h"
+#include "circular_buffer.h"
 
 /*
 * This macro simplifies the generation of message buffers.
