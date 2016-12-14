@@ -3,12 +3,13 @@
 #include "process.h"
 #include "kernel/context.h"
 #include "kernel/part_scheduler.h"
+#include "types.h"
 
 
-static int find_dormant_process(partition_t *partition)
+static size_t find_dormant_process(process_t *processes, size_t nb_proc)
 {
-    for (int i = 0; i < MAX_PROCESSES_PER_PARTITIONS; ++i) {
-        if(partition->processes[i].PROCESS_STATE == DORMANT) {
+    for (size_t i = 0; i < nb_proc; ++i) {
+        if(processes[i].PROCESS_STATE == DORMANT) {
             return i;
         }
     }
@@ -17,10 +18,10 @@ static int find_dormant_process(partition_t *partition)
 }
 
 
-void create_process(partition_t* partition, uint32_t memoryAddress, PROCESS_ATTRIBUTE_TYPE* attributes, PROCESS_ID_TYPE* processId, RETURN_CODE_TYPE *RETURN_CODE)
+void create_process(partition_t *partition, uint32_t memoryAddress, PROCESS_ATTRIBUTE_TYPE* attributes, PROCESS_ID_TYPE* processId, RETURN_CODE_TYPE *RETURN_CODE)
 {
     /* TODO: memoryAddress should be calculated and not given */
-    const int i = find_dormant_process(partition);
+    const int i = find_dormant_process(partition->processes, MAX_PROCESSES_PER_PARTITIONS);
 
     if (i == -1) {
         *RETURN_CODE = NOT_AVAILABLE;
