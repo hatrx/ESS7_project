@@ -70,7 +70,6 @@ add_executable(${PROJECT_NAME}
 	${SRC_DIR}/kernel/syscalls.c
 	${SRC_DIR}/kernel/context.c
 	${SRC_DIR}/kernel/part_scheduler.c
-    ${SRC_DIR}/kernel/proc_scheduler.c
 	${SRC_DIR}/kernel/svc_handler.c
 	${SRC_DIR}/kernel/partition.c
 	${SRC_DIR}/kernel/process.c
