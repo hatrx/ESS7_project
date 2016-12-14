@@ -89,12 +89,12 @@ class ParseXML:
             self.write_to_file_c(complete_struct)
             self.externs_for_h_footer += "\n\nextern partition_t partitions[%s];\n" % (no_of_sub_elements)
         elif partition_memory:
-            complete_struct = "part_mem_t partition_memorys[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string)
+            complete_struct = "part_mem_t partition_memory[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string)
             self.write_to_file_c(complete_struct)
             major_frame = self.time_format(self.major_frame.get('@MajorFrameSeconds', None))
             mf_wrapper = "const uint32_t majorFrameSeconds = %s;\n\n" % (major_frame)
             self.write_to_file_c(mf_wrapper)
-            self.externs_for_h_footer += "extern part_mem_t partition_memorys[%s];\n" % (no_of_sub_elements)
+            self.externs_for_h_footer += "extern part_mem_t partition_memory[%s];\n" % (no_of_sub_elements)
             self.externs_for_h_footer += "extern const uint32_t majorFrameSeconds;\n"
         elif partition_schedule:
             complete_struct = "const partition_schedule partition_schedules[%s] = {%s};\n\n" % (no_of_sub_elements, structs_string)
@@ -128,23 +128,27 @@ class ParseXML:
                         get_list_tuple = self.return_get_tuple(port, get_list)
                         port_struct = """{{
     .is_queuing_port = true,
-    .q_buf = [
+    .q_buf = {{
         .WAITING_PROCESSES = 0,
         .PORT_DIRECTION = {},
-        MESSAGE_BUFFER({}, {}),
-    ],
+        Q_MESSAGE_BUFFER({}, {}),
+    }},
     .portname = \"{}\",
 }},""".format(*get_list_tuple)
                         port_struct = port_struct.replace ("[", "{")
                         port_struct = port_struct.replace ("]", "}")
                     else:
-                        get_list = ['@PortName', '@MaxMessageSize', '@Direction', '@RefreshRateSeconds']
+                        get_list = ['@RefreshRateSeconds', '@Direction', '@MaxMessageSize', '@PortName']
                         get_list_tuple = self.return_get_tuple(port, get_list)
                         port_struct = """{{
+    .is_queuing_port = false,
+    .s_buf = {{
+        .LAST_MSG_VALIDITY = VALID,
+        .REFRESH_PERIOD = {},
+        .PORT_DIRECTION = {},
+        S_MESSAGE_BUFFER({}),
+    }},
     .portname = \"{}\",
-    .maxmessagesize = {},
-    .direction = \"{}\",
-    .refreshrateseconds = {},
 }},""".format(*get_list_tuple)
 
                     structs_string = structs_string + port_struct
@@ -224,7 +228,7 @@ class ParseXML:
                 channel_struct = """
     &p_%s[0],""" % (c)
                 structs_string = structs_string + channel_struct
-            channel_wrapper = "port_t *stio_channel_ports[%s] = {%s};\n\n" % (no_of_channels, structs_string)
+            channel_wrapper = "port_t *%s_ports[%s] = {%s};\n\n" % (sub_element_name, no_of_channels, structs_string)
             self.write_to_file_c(channel_wrapper)
 
         else:
@@ -269,6 +273,7 @@ void %s(void);""" % (entry))
     .partitionname = \"%s\",
     .arr_size = %s,
     .memory_arr = %s,
+    .mem_offset = 1024,
 },""" % (part_id, name, num_of_memory, memory_arr)
 
         return partition_memory_struct, name

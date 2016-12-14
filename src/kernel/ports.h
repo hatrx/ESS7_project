@@ -18,7 +18,6 @@ struct queuing_port {
 
 struct sampling_port {
     SAMPLING_PORT_STATUS_TYPE;
-    uint32_t                  mess_size;
     uint8_t                   *buffer;
 };
 

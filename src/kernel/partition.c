@@ -2,7 +2,6 @@
 #include <stddef.h>
 #include "partition.h"
 #include "../xml_data.h"
-#include "statics.h"
 #include "process.h"
 #include "error_handler.h"
 

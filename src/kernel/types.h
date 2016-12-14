@@ -14,13 +14,17 @@
 * It sets the maximum message size, maximum message number
 * and the buffer to hold them.
 */
-#define MESSAGE_BUFFER(nb_message, message_size) \
+#define Q_MESSAGE_BUFFER(nb_message, message_size) \
     .MAX_MESSAGE_SIZE = message_size, \
     .MAX_NB_MESSAGE = nb_message, \
     .buffer = (uint8_t [(message_size * nb_message) + \
     (message_size * sizeof(size_t))]) {0}, \
     .circ_buf = {0, 0, 0, (message_size * nb_message) + \
     (message_size * sizeof(size_t))}
+
+#define S_MESSAGE_BUFFER(message_size) \
+    .MAX_MESSAGE_SIZE = message_size, \
+    .buffer = (uint8_t [message_size]) {0}
 
 #define MAX_PROCESSES_PER_PARTITIONS 3
 

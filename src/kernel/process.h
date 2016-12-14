@@ -6,7 +6,7 @@
 
 #include <apex_process.h>
 
-#include "statics.h"
+#include "types.h"
 
 
 void create_process (

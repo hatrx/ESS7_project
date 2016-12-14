@@ -89,7 +89,7 @@ void write_sampling_message(
             continue;
         }
 
-        port->s_buf.mess_size = LENGTH;
+        port->s_buf.MAX_MESSAGE_SIZE = LENGTH;
         for (int32_t i = 0; i < LENGTH; ++i) {
             port->s_buf.buffer[i] = ((uint8_t *)MESSAGE_ADDR)[i];
         }
@@ -123,7 +123,7 @@ void read_sampling_message(
     }
 
     port_t *port = &this_partition->ports[SAMPLING_PORT_ID];
-    *LENGTH = port->s_buf.mess_size;
+    *LENGTH = port->s_buf.MAX_MESSAGE_SIZE;
     for (int32_t i = 0; i < *LENGTH; i++) {
         MESSAGE_ADDR[i] = port->s_buf.buffer[i];
     }

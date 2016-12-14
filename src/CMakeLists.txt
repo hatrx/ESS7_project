@@ -76,7 +76,6 @@ add_executable(${PROJECT_NAME}
 	${SRC_DIR}/kernel/queuing_port.c
 	${SRC_DIR}/kernel/sampling_port.c
 	${SRC_DIR}/kernel/circular_buffer.c
-	${SRC_DIR}/kernel/statics.c
 	${SRC_DIR}/kernel/error_handlers.c
 )
 target_link_libraries(${PROJECT_NAME}
