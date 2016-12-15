@@ -93,6 +93,7 @@ partition_t* scheduler_partitionScheduler(void)
 
 process_t* scheduler_processScheduler(partition_t *part)
 {
+    size_t i;
     /* Set state of currently running process to READY. */
     //process_t *curr_process = &part->processes[part->index_running_process];
     //	if (curr_process->PROCESS_STATE == RUNNING) {
@@ -104,7 +105,7 @@ process_t* scheduler_processScheduler(partition_t *part)
 
     /* Find a READY partition as default candidate for execution. */
     process_t *priority_process;
-    for (size_t i = 0; i < MAX_PROCESSES_PER_PARTITIONS; i++) {
+    for (i = 0; i < MAX_PROCESSES_PER_PARTITIONS; i++) {
         //printf("%d - %d - %d\n", indexActivePartition, i, processes[i].PROCESS_STATE);
         if (processes[i].PROCESS_STATE == READY) {
             priority_process = &processes[i];
@@ -113,7 +114,7 @@ process_t* scheduler_processScheduler(partition_t *part)
     }
 
     /* Attempt to find a better candidate by comparing to default. */
-    for (size_t i = 0; i < MAX_PROCESSES_PER_PARTITIONS; i++) {
+    for ( ; i < MAX_PROCESSES_PER_PARTITIONS; i++) {
         if (processes[i].PROCESS_STATE != READY)
         continue;
 
