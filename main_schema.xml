@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ARINC_653_Module>
-	<Partition PartitionIdentifier="1" PartitionName="dummy_1" Criticality="LEVEL_A" SystemPartition="false" EntryPoint="dummy1_main">
-		<Queuing_Port PortName="print_1" MaxMessageSize="32" Direction="SOURCE" MaxNbMessages="32" />
+	<Partition PartitionIdentifier="1" PartitionName="yellow_toggler" Criticality="LEVEL_A" SystemPartition="false" EntryPoint="yellow_toggler_main">
+		<Queuing_Port PortName="yellow_print" MaxMessageSize="32" Direction="SOURCE" MaxNbMessages="32" />
 	</Partition>
-	<Partition PartitionIdentifier="2" PartitionName="dummy_2" Criticality="LEVEL_A" SystemPartition="false" EntryPoint="dummy2_main">
-		<Queuing_Port PortName="print_2" MaxMessageSize="32" Direction="SOURCE" MaxNbMessages="32" />
+	<Partition PartitionIdentifier="2" PartitionName="red_toggler" Criticality="LEVEL_A" SystemPartition="false" EntryPoint="red_toggler_main">
+		<Queuing_Port PortName="red_print" MaxMessageSize="32" Direction="SOURCE" MaxNbMessages="32" />
 	</Partition>
 	<Partition PartitionIdentifier="3" PartitionName="stio_sys" Criticality="LEVEL_A" SystemPartition="true" EntryPoint="stdio_sys_main">
 		<Queuing_Port PortName="sys_stio" MaxMessageSize="32" Direction="DESTINATION" MaxNbMessages="32" />
@@ -29,11 +29,11 @@
        <Memory_Requirements Type="DATA" SizeBytes="8000" Access="READ_WRITE" PhysicalAddress="0x20016000" />
     </Partition_Memory>
 	<Module_Schedule MajorFrameSeconds="0.200">
-	  <Partition_Schedule PartitionIdentifier="1" PartitionName="dummy_1" PeriodSeconds="0.100" PeriodDurationSeconds="0.020">
+	  <Partition_Schedule PartitionIdentifier="1" PartitionName="yellow_toggler" PeriodSeconds="0.100" PeriodDurationSeconds="0.020">
             <Window_Schedule WindowIdentifier="1" WindowStartSeconds="0.0" WindowDurationSeconds="0.020" PartitionPeriodStart="true" />
             <Window_Schedule WindowIdentifier="2" WindowStartSeconds="0.1" WindowDurationSeconds="0.020" PartitionPeriodStart="true" />
 	  </Partition_Schedule>
-	  <Partition_Schedule PartitionIdentifier="2" PartitionName="dummy_2" PeriodSeconds="0.100" PeriodDurationSeconds="0.010">
+	  <Partition_Schedule PartitionIdentifier="2" PartitionName="red_toggler" PeriodSeconds="0.100" PeriodDurationSeconds="0.010">
             <Window_Schedule WindowIdentifier="1" WindowStartSeconds="0.030" WindowDurationSeconds="0.010" PartitionPeriodStart="true" />
             <Window_Schedule WindowIdentifier="2" WindowStartSeconds="0.130" WindowDurationSeconds="0.010" PartitionPeriodStart="true" />
 	  </Partition_Schedule>
@@ -48,10 +48,10 @@
 	<Connection_Table>
 	  <Channel ChannelIdentifier="1" ChannelName="stio_channel">
 	    <Source>
-	      <Standard_Partition PartitionIdentifier="1" PartitionName="dummy_1" PortName="print_1" PhysicalAddress="0x80000000" />
+	      <Standard_Partition PartitionIdentifier="2" PartitionName="red_toggler" PortName="red_print" PhysicalAddress="0x80000000" />
 	    </Source>
 	    <Source>
-	      <Standard_Partition PartitionIdentifier="2" PartitionName="dummy_2" PortName="print_2" PhysicalAddress="0x80000000" />
+	      <Standard_Partition PartitionIdentifier="1" PartitionName="yellow_toggler" PortName="yellow_print" PhysicalAddress="0x80000000" />
 	    </Source>
 	    <Destination>
 	      <Standard_Partition PartitionIdentifier="3" PartitionName="stio_sys" PortName="sys_stio" PhysicalAddress="0x80000000" />

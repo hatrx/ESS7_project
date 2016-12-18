@@ -22,19 +22,19 @@ target_link_libraries(APEX
 	STM32f4xx_HAL_Driver
 )
 
-add_library(dummy1
-	${SRC_DIR}/partitions/dummy1/dummy1.c
+add_library(yellow_toggler
+	${SRC_DIR}/partitions/yellow_toggler/yellow_toggler.c
 )
-target_link_libraries(dummy1
+target_link_libraries(yellow_toggler
 	drivers
 	APEX
 )
 
 
-add_library(dummy2
-	${SRC_DIR}/partitions/dummy2/dummy2.c
+add_library(red_toggler
+	${SRC_DIR}/partitions/red_toggler/red_toggler.c
 )
-target_link_libraries(dummy2
+target_link_libraries(red_toggler
 	drivers
 	APEX
 )
@@ -83,8 +83,8 @@ target_link_libraries(${PROJECT_NAME}
 	CMSIS
 	STM32f4xx_HAL_Driver
 
-	dummy1
-	dummy2
+	yellow_toggler
+	red_toggler
 	stdio_sys
 	idle_sys
 	evil
