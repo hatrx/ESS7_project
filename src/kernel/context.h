@@ -50,12 +50,12 @@ static inline uint32_t context_save()
         "use_psp:				\n\t"
         "MRS    %0, PSP			\n\t"		// Move Process Stack Pointer to R1 (the stackpointer variable)
         "STMFD  %0!, {R4-R11}   \n\t"		// Store registers R4 to R11 on the stack. (The FD in STMFB means fully descending [stack])
-        "MSR    PSP, %0         \n\t"		// Opdate the actual PSP stackpointer register with the new value after STMFD.
+        "MSR    PSP, %0         \n\t"		// Update the actual PSP stackpointer register with the new value after STMFD.
         "B 		exit			\n\n"		// Skip over the use_msp routine
         "use_msp:				\n\t"
         "MRS    %0, MSP			\n\t"		// Move Master Stack Pointer to R1 (the stackpointer variable)
         "STMFD  %0!, {R4-R11}   \n\t"		// Store registers R4 to R11 on the stack.
-        "MSR    MSP, %0         \n\n"		// Opdate the actual MSP stackpointer register with the new value after STMFD.
+        "MSR    MSP, %0         \n\n"		// Update the actual MSP stackpointer register with the new value after STMFD.
         "exit:					\n\t"
         : "=r" (stackpointer)
         : :
@@ -66,7 +66,7 @@ static inline uint32_t context_save()
 __attribute__((always_inline))
 static inline void context_restoreAndSwitch(uint32_t stackpointer, uint8_t exc_return_value)
 {
-    // Resote the software context of the new process.
+    // Restore the software context of the new process.
     // Variable data is loaded into static registers in the beginnning
     // to make sure the GCC doesn't decide to use the registers R4-R11 after
     // they've been restored; that would be catastrophic!
