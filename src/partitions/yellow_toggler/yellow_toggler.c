@@ -40,13 +40,13 @@ void worker(void)
 
 
     while (1) {
-        char *str = "Yellow toggler\n\r";
+        char *str = "  Yellow toggler\n\r";
         size_t len = strlen(str);
         RETURN_CODE_TYPE RETURN_CODE;
         SEND_QUEUING_MESSAGE(QUEUING_PORT_ID, (uint8_t *)str,
 			len, 0,	&RETURN_CODE);
 
-        for (size_t i = 0; i < 8; i++) {
+        for (size_t i = 0; i < 20; i++) {
             onboard_led_toggle(yellow_led);
             delay_ms(100);
         }
